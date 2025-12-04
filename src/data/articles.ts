@@ -6,6 +6,7 @@ export interface Article {
   content: string;
   category: 'market-intelligence' | 'tech-explain' | 'events' | 'companies' | 'spatial-updates';
   subcategory: string;
+  region?: 'Global' | 'NA' | 'EU' | 'ASEAN' | 'Pacific' | 'South Asia' | 'MENA';
   author: {
     name: string;
     avatar: string;
@@ -19,6 +20,7 @@ export interface Article {
   tags: string[];
   imageUrl: string;
   keyTakeaways: string[];
+  metrics?: { label: string; value: string }[];
 }
 
 const authors = [
@@ -27,1045 +29,779 @@ const authors = [
   { name: 'Emily Watson', avatar: 'EW', title: 'Industry Reporter' },
   { name: 'David Kim', avatar: 'DK', title: 'Investment Strategist' },
   { name: 'Lisa Park', avatar: 'LP', title: 'XR Technology Specialist' },
+  { name: 'Ahmed Hassan', avatar: 'AH', title: 'MENA Correspondent' },
+  { name: 'Priya Sharma', avatar: 'PS', title: 'Asia Pacific Editor' },
+  { name: 'Hans Mueller', avatar: 'HM', title: 'European Markets Analyst' },
 ];
 
 export const articles: Article[] = [
-  // Market Intelligence
+  // GLOBAL MARKET INTELLIGENCE
   {
     id: '1',
     slug: 'apple-vision-pro-market-impact-2024',
     title: 'Apple Vision Pro: A $3.5B Market Catalyst',
-    excerpt: 'How Apple\'s spatial computing device is reshaping the XR landscape and creating new investment opportunities across the ecosystem.',
-    content: `
-## The Vision Pro Effect
-
-Apple's entry into spatial computing with the Vision Pro has sent ripples throughout the technology sector. At $3,499, the device targets enterprise and prosumer markets, but its real impact lies in legitimizing the entire spatial computing category.
-
-### Market Dynamics
-
-The XR market, previously dominated by Meta's Quest line, is experiencing a fundamental shift. Apple's entry has:
-
-1. **Elevated consumer expectations** - The premium positioning sets new standards for display quality, pass-through capabilities, and user interface design.
-
-2. **Attracted developer attention** - Over 1,500 apps were available at launch, with major enterprise players including Microsoft, SAP, and Salesforce announcing visionOS support.
-
-3. **Validated enterprise use cases** - Apple's focus on productivity applications has opened doors for B2B spatial computing adoption.
-
-### Investment Implications
-
-> "Apple's Vision Pro represents the most significant catalyst for spatial computing since the iPhone revolutionized mobile computing." - Tim Merel, Digi-Capital
-
-The supply chain tells a compelling story. Key beneficiaries include:
-
-- **Sony** - Provides the micro-OLED displays
-- **TSMC** - Manufactures the M2 and R1 chips
-- **Luxshare** - Primary assembly partner
-
-### Looking Ahead
-
-While Vision Pro's $3,499 price point limits mass adoption, Apple's roadmap reportedly includes more affordable models by 2025. This trajectory mirrors the iPhone's evolution from premium to mainstream.
-
-The real opportunity lies in the ecosystem development. Companies providing spatial computing software, content creation tools, and enterprise solutions stand to benefit most from this new computing paradigm.
-    `,
+    excerpt: 'How Apple\'s spatial computing device is reshaping the XR landscape and creating new investment opportunities.',
+    content: `## The Vision Pro Effect\n\nApple's entry into spatial computing with the Vision Pro has sent ripples throughout the technology sector. At $3,499, the device targets enterprise and prosumer markets.\n\n### Market Dynamics\n\nThe XR market is experiencing a fundamental shift:\n\n1. **Elevated consumer expectations** - Premium positioning sets new standards\n2. **Attracted developer attention** - Over 1,500 apps at launch\n3. **Validated enterprise use cases** - B2B adoption accelerating\n\n### Investment Implications\n\n> "Vision Pro represents the most significant catalyst for spatial computing since the iPhone." - Tim Merel, Digi-Capital\n\nSupply chain beneficiaries include Sony (micro-OLED), TSMC (M2/R1 chips), and Luxshare (assembly).`,
     category: 'market-intelligence',
     subcategory: 'Analysis',
+    region: 'Global',
     author: authors[0],
     publishedAt: new Date('2024-02-15'),
     updatedAt: new Date('2024-02-20'),
-    readTime: 8,
+    readTime: 6,
     trending: true,
     featured: true,
     tags: ['Apple', 'Vision Pro', 'XR Market', 'Investment'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Apple Vision Pro has legitimized the spatial computing market',
-      'Supply chain beneficiaries include Sony, TSMC, and Luxshare',
-      'Enterprise adoption is accelerating faster than consumer adoption',
-      'More affordable models expected by 2025'
-    ]
+    keyTakeaways: ['Apple Vision Pro legitimized spatial computing', 'Supply chain beneficiaries: Sony, TSMC, Luxshare', 'Enterprise adoption accelerating faster than consumer', 'Affordable models expected by 2025'],
+    metrics: [{ label: 'Market Impact', value: '$3.5B' }, { label: 'Apps at Launch', value: '1,500+' }]
   },
   {
     id: '2',
-    slug: 'meta-quest-3-sales-analysis',
-    title: 'Meta Quest 3: 10M Units and Growing',
-    excerpt: 'Meta\'s latest headset surpasses sales expectations, signaling strong demand for mixed reality at accessible price points.',
-    content: `
-## Quest 3's Breakthrough Performance
-
-Meta's Quest 3 has achieved what many analysts thought impossible: making mixed reality mainstream. With over 10 million units sold in its first year, the device has outpaced its predecessor by 40%.
-
-### Key Success Factors
-
-**Price-Performance Balance**
-At $499, the Quest 3 offers mixed reality capabilities that previously required $3,000+ devices. The Snapdragon XR2 Gen 2 processor delivers:
-- 2x GPU performance vs Quest 2
-- Full-color passthrough at 18 PPD
-- Hand tracking 2.0 with improved accuracy
-
-**Content Library**
-The Quest platform now hosts over 500 titles, with several achieving $10M+ in revenue:
-- Beat Saber: $250M lifetime
-- Gorilla Tag: $100M+
-- Population: One: $60M+
-
-### Market Position
-
-Meta's aggressive pricing strategy has effectively created a two-tier market:
-- **Consumer/Gaming**: Dominated by Quest at $299-$499
-- **Enterprise/Pro**: Apple Vision Pro at $3,499+
-
-### Financial Impact
-
-Despite hardware losses, Meta's Reality Labs division shows improving unit economics:
-- Hardware gross margin: -15% (improving from -40% in 2022)
-- Content revenue: $2B annually
-- Enterprise subscriptions: 300% YoY growth
-    `,
-    category: 'market-intelligence',
-    subcategory: 'Analysis',
-    author: authors[3],
-    publishedAt: new Date('2024-02-10'),
-    updatedAt: new Date('2024-02-18'),
-    readTime: 6,
-    trending: true,
-    featured: false,
-    tags: ['Meta', 'Quest 3', 'VR Gaming', 'Market Analysis'],
-    imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Quest 3 sold 10M+ units in first year',
-      'Mixed reality at $499 price point proving viable',
-      'Content ecosystem generating $2B annually',
-      'Enterprise subscriptions growing 300% YoY'
-    ]
-  },
-  {
-    id: '3',
-    slug: 'xr-startup-funding-q1-2024',
-    title: 'XR Startup Funding Rebounds: $2.8B in Q1 2024',
-    excerpt: 'Venture capital returns to spatial computing with major rounds for AI-powered content creation and enterprise solutions.',
-    content: `
-## VC Confidence Returns to XR
-
-After a challenging 2023, spatial computing startups are experiencing a funding renaissance. Q1 2024 saw $2.8B in total investment, up 65% from Q4 2023.
-
-### Notable Funding Rounds
-
-**Mega Rounds ($100M+)**
-- Magic Leap: $500M Series F (enterprise pivot)
-- Niantic: $200M (AR gaming/mapping)
-- Varjo: $150M Series D (enterprise XR)
-
-**Growth Stage ($20-100M)**
-- ImmersiveTouch: $85M (medical training)
-- Gravity Sketch: $65M (3D design)
-- Spatial: $55M (collaboration)
-
-### Investment Themes
-
-1. **AI + XR Convergence**: 40% of funding went to companies combining generative AI with spatial computing
-2. **Enterprise Focus**: 60% of dollars targeted B2B applications
-3. **Content Creation Tools**: Significant interest in democratizing 3D content
-
-### Geographic Distribution
-
-- USA: 55% ($1.54B)
-- Europe: 25% ($700M)
-- Asia: 20% ($560M)
-
-China's XR investment has notably declined due to regulatory concerns, while European startups are capturing more share.
-    `,
+    slug: 'global-xr-funding-q4-2024',
+    title: 'Global XR Funding: $12.8B in 2024',
+    excerpt: 'Annual investment in spatial computing reaches new highs with AI convergence driving deal flow.',
+    content: `## 2024 Investment Summary\n\nGlobal XR investment reached $12.8B across 847 deals, marking a 23.5% YoY increase.\n\n### Regional Breakdown\n\n- **North America**: $5.89B (46%)\n- **Europe**: $2.34B (18%)\n- **Asia Pacific**: $3.17B (25%)\n- **MENA/Others**: $1.40B (11%)\n\n### Key Trends\n\n1. AI + XR convergence drove 40% of funding\n2. Enterprise focus dominated (60% of dollars)\n3. Content creation tools gained momentum`,
     category: 'market-intelligence',
     subcategory: 'Funding',
-    author: authors[0],
-    publishedAt: new Date('2024-02-08'),
-    updatedAt: new Date('2024-02-08'),
+    region: 'Global',
+    author: authors[3],
+    publishedAt: new Date('2024-02-18'),
+    updatedAt: new Date('2024-02-18'),
     readTime: 5,
-    trending: false,
+    trending: true,
     featured: true,
-    tags: ['Venture Capital', 'Startups', 'Funding', 'Investment Trends'],
+    tags: ['Funding', 'VC', 'Global', 'Investment'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'XR funding up 65% QoQ to $2.8B',
-      'AI + XR convergence driving investment',
-      'Enterprise applications dominating deal flow',
-      'European startups gaining momentum'
-    ]
+    keyTakeaways: ['$12.8B invested globally in 2024', 'North America leads with 46% share', 'AI+XR convergence driving deals', '847 deals completed'],
+    metrics: [{ label: 'Total Funding', value: '$12.8B' }, { label: 'Deal Count', value: '847' }]
   },
-  // Tech Explain
+  // NORTH AMERICA
+  {
+    id: '3',
+    slug: 'us-xr-market-leads-global',
+    title: 'US XR Market: $5.89B Investment Surge',
+    excerpt: 'North America maintains dominance in XR investment with enterprise and defense leading sectors.',
+    content: `## US Market Leadership\n\nNorth America captured 46% of global XR investment in 2024 with $5.89B across 312 deals.\n\n### Top Sectors\n\n1. **Enterprise Solutions**: $2.1B\n2. **Healthcare XR**: $1.3B\n3. **Defense Tech**: $1.2B\n4. **Gaming**: $0.8B\n\n### Notable Deals\n\n- Anduril: $1.48B Series E\n- Magic Leap: $500M enterprise pivot\n- ImmersiveTouch: $85M Series B`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'NA',
+    author: authors[0],
+    publishedAt: new Date('2024-02-17'),
+    updatedAt: new Date('2024-02-17'),
+    readTime: 5,
+    trending: true,
+    featured: false,
+    tags: ['USA', 'Investment', 'Enterprise', 'Defense'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$5.89B invested in North America', '312 deals completed', 'Enterprise and defense lead', 'Average deal size: $18.9M'],
+    metrics: [{ label: 'Investment', value: '$5.89B' }, { label: 'Market Share', value: '46%' }]
+  },
   {
     id: '4',
-    slug: 'understanding-spatial-computing-architecture',
+    slug: 'silicon-valley-xr-startup-boom',
+    title: 'Silicon Valley XR Startups: 2024 Landscape',
+    excerpt: 'Bay Area continues to dominate with 40% of US XR startup activity.',
+    content: `## Bay Area Dominance\n\nSilicon Valley remains the epicenter of XR innovation with 40% of US startup activity.\n\n### Key Clusters\n\n- **San Francisco**: Enterprise/AI XR\n- **Palo Alto**: Research/Deep Tech\n- **Santa Clara**: Hardware/Chips\n- **San Jose**: Gaming/Consumer`,
+    category: 'market-intelligence',
+    subcategory: 'Startup Ecosystem',
+    region: 'NA',
+    author: authors[0],
+    publishedAt: new Date('2024-02-14'),
+    updatedAt: new Date('2024-02-14'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Silicon Valley', 'Startups', 'USA', 'Ecosystem'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['40% of US XR startups in Bay Area', 'Enterprise focus dominates', 'Strong VC presence', 'Hardware cluster in Santa Clara'],
+    metrics: [{ label: 'Startup Share', value: '40%' }, { label: 'Active VCs', value: '186' }]
+  },
+  // EUROPE
+  {
+    id: '5',
+    slug: 'eu-xr-investment-growth-2024',
+    title: 'EU XR Investment Grows 31.5% YoY',
+    excerpt: 'European spatial computing market outpaces global growth with industrial and automotive focus.',
+    content: `## European Market Surge\n\nEU XR investment reached $2.34B in 2024, growing 31.5% year-over-year—outpacing global average.\n\n### Key Markets\n\n- **Germany**: $680M (automotive, industrial)\n- **UK**: $520M (finance, gaming)\n- **France**: $380M (luxury, retail)\n- **Nordics**: $340M (enterprise)`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'EU',
+    author: authors[7],
+    publishedAt: new Date('2024-02-16'),
+    updatedAt: new Date('2024-02-16'),
+    readTime: 5,
+    trending: true,
+    featured: false,
+    tags: ['Europe', 'Investment', 'Industrial', 'Automotive'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$2.34B invested in EU', '31.5% YoY growth', 'Germany leads with automotive focus', '198 deals completed'],
+    metrics: [{ label: 'Investment', value: '$2.34B' }, { label: 'Growth', value: '31.5%' }]
+  },
+  {
+    id: '6',
+    slug: 'germany-industrial-xr-leader',
+    title: 'Germany: Industrial XR Powerhouse',
+    excerpt: 'German manufacturers lead adoption of XR for training, maintenance, and design.',
+    content: `## German Industrial Excellence\n\nGermany's manufacturing sector has embraced XR at scale with 45% of DAX companies deploying solutions.\n\n### Adoption Leaders\n\n- **BMW**: AR assembly assistance\n- **Siemens**: Digital twin XR\n- **Bosch**: XR maintenance training\n- **BASF**: VR safety simulation`,
+    category: 'market-intelligence',
+    subcategory: 'Industry Focus',
+    region: 'EU',
+    author: authors[7],
+    publishedAt: new Date('2024-02-12'),
+    updatedAt: new Date('2024-02-12'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Germany', 'Industrial', 'Manufacturing', 'Enterprise'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['45% of DAX companies use XR', 'Training and maintenance lead', 'BMW, Siemens lead adoption', 'Average ROI: 280%'],
+    metrics: [{ label: 'DAX Adoption', value: '45%' }, { label: 'Avg ROI', value: '280%' }]
+  },
+  // ASEAN
+  {
+    id: '7',
+    slug: 'asean-xr-fastest-growing-region',
+    title: 'ASEAN XR: 45% Growth Makes It Fastest Rising Market',
+    excerpt: 'Southeast Asian XR investment surges with gaming and tourism leading sectors.',
+    content: `## ASEAN Market Explosion\n\nASEAN XR investment hit $1.28B in 2024, growing 45.2% YoY—the fastest of any region.\n\n### Key Markets\n\n- **Singapore**: $420M (enterprise hub)\n- **Indonesia**: $380M (gaming, e-commerce)\n- **Vietnam**: $220M (manufacturing)\n- **Thailand**: $180M (tourism)`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'ASEAN',
+    author: authors[6],
+    publishedAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    readTime: 5,
+    trending: true,
+    featured: true,
+    tags: ['ASEAN', 'Growth', 'Gaming', 'Tourism'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$1.28B invested in ASEAN', '45.2% YoY growth (fastest)', 'Singapore leads as hub', 'Gaming and tourism dominate'],
+    metrics: [{ label: 'Investment', value: '$1.28B' }, { label: 'Growth', value: '45.2%' }]
+  },
+  {
+    id: '8',
+    slug: 'singapore-asean-xr-hub',
+    title: 'Singapore: ASEAN\'s XR Innovation Hub',
+    excerpt: 'City-state positions itself as regional headquarters for global XR companies.',
+    content: `## Singapore's Strategic Position\n\nSingapore has emerged as the XR hub for Southeast Asia with 32% of regional investment.\n\n### Advantages\n\n- Strong IP protection\n- Government support via IMDA\n- Regional talent pool\n- Connectivity to ASEAN markets`,
+    category: 'market-intelligence',
+    subcategory: 'Ecosystem',
+    region: 'ASEAN',
+    author: authors[6],
+    publishedAt: new Date('2024-02-10'),
+    updatedAt: new Date('2024-02-10'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Singapore', 'Hub', 'ASEAN', 'Enterprise'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['32% of ASEAN XR investment', 'Government backing via IMDA', 'Regional HQ for global firms', 'Strong enterprise focus'],
+    metrics: [{ label: 'Regional Share', value: '32%' }, { label: 'Active Startups', value: '85+' }]
+  },
+  // PACIFIC (Japan, Korea, ANZ)
+  {
+    id: '9',
+    slug: 'japan-korea-xr-hardware-leaders',
+    title: 'Japan & Korea: XR Hardware Innovation Centers',
+    excerpt: 'Asian tech giants lead in display technology and component manufacturing.',
+    content: `## Pacific Hardware Excellence\n\nJapan and Korea dominate XR hardware components with 70% market share in key technologies.\n\n### Japanese Leadership\n\n- **Sony**: Micro-OLED for Vision Pro\n- **Panasonic**: VR glasses optics\n- **JDI**: LCD for standalone\n\n### Korean Innovation\n\n- **Samsung**: Android XR headset\n- **LG**: Display technology\n- **SK Hynix**: Memory solutions`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'Pacific',
+    author: authors[6],
+    publishedAt: new Date('2024-02-13'),
+    updatedAt: new Date('2024-02-13'),
+    readTime: 5,
+    trending: true,
+    featured: false,
+    tags: ['Japan', 'Korea', 'Hardware', 'Components'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['70% component market share', 'Sony supplies Apple\'s displays', 'Samsung entering headset market', '$1.89B regional investment'],
+    metrics: [{ label: 'Component Share', value: '70%' }, { label: 'Investment', value: '$1.89B' }]
+  },
+  // SOUTH ASIA
+  {
+    id: '10',
+    slug: 'india-xr-growth-52-percent',
+    title: 'India XR Market: 52.3% Growth Driven by Enterprise',
+    excerpt: 'South Asia\'s largest economy sees explosive XR adoption in training and education.',
+    content: `## India's XR Momentum\n\nIndia leads South Asian XR growth at 52.3% YoY with $680M invested.\n\n### Key Sectors\n\n- **Education**: 30% of investment\n- **Healthcare**: 25%\n- **Manufacturing**: 20%\n- **Real Estate**: 15%\n\n### Notable Companies\n\n- AjnaLens: Enterprise AR\n- SmartVizX: Real estate VR\n- Merxius: Training solutions`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'South Asia',
+    author: authors[6],
+    publishedAt: new Date('2024-02-11'),
+    updatedAt: new Date('2024-02-11'),
+    readTime: 5,
+    trending: true,
+    featured: false,
+    tags: ['India', 'Growth', 'Education', 'Enterprise'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$680M invested in South Asia', '52.3% YoY growth', 'Education sector leads', 'Local startups emerging'],
+    metrics: [{ label: 'Investment', value: '$680M' }, { label: 'Growth', value: '52.3%' }]
+  },
+  // MENA
+  {
+    id: '11',
+    slug: 'mena-xr-67-percent-growth',
+    title: 'MENA XR: 67.4% Growth Led by Gulf States',
+    excerpt: 'Middle East sees fastest percentage growth driven by mega-projects and tourism.',
+    content: `## MENA's XR Ambition\n\nMENA XR investment grew 67.4% YoY to $720M, driven by Saudi Vision 2030 and UAE initiatives.\n\n### Investment Drivers\n\n- **NEOM**: XR-integrated city\n- **Saudi Tourism**: Heritage sites AR\n- **UAE**: Government digitization\n- **Qatar**: Sports/entertainment`,
+    category: 'market-intelligence',
+    subcategory: 'Regional Analysis',
+    region: 'MENA',
+    author: authors[5],
+    publishedAt: new Date('2024-02-14'),
+    updatedAt: new Date('2024-02-14'),
+    readTime: 5,
+    trending: true,
+    featured: true,
+    tags: ['MENA', 'Growth', 'Saudi', 'UAE'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$720M invested in MENA', '67.4% YoY growth (highest)', 'Saudi Vision 2030 driving', 'Tourism and government focus'],
+    metrics: [{ label: 'Investment', value: '$720M' }, { label: 'Growth', value: '67.4%' }]
+  },
+  {
+    id: '12',
+    slug: 'saudi-arabia-xr-vision-2030',
+    title: 'Saudi Arabia: XR as Vision 2030 Pillar',
+    excerpt: 'Kingdom positions spatial computing as key to economic diversification.',
+    content: `## Saudi XR Strategy\n\nSaudi Arabia has allocated $2B+ for XR initiatives as part of Vision 2030.\n\n### Key Projects\n\n- **NEOM**: Built-in XR infrastructure\n- **Diriyah**: AR heritage experience\n- **Red Sea**: VR tourism previews\n- **KAFD**: Smart city AR`,
+    category: 'market-intelligence',
+    subcategory: 'Government Initiative',
+    region: 'MENA',
+    author: authors[5],
+    publishedAt: new Date('2024-02-09'),
+    updatedAt: new Date('2024-02-09'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Saudi', 'Government', 'Vision 2030', 'Investment'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$2B+ allocated for XR', 'NEOM as flagship project', 'Heritage tourism focus', 'Government-led adoption'],
+    metrics: [{ label: 'Allocated', value: '$2B+' }, { label: 'Projects', value: '15+' }]
+  },
+  // TECH EXPLAIN
+  {
+    id: '13',
+    slug: 'spatial-computing-architecture-explained',
     title: 'Spatial Computing Architecture Explained',
-    excerpt: 'A deep dive into the hardware and software stack that powers modern XR devices, from sensors to rendering pipelines.',
-    content: `
-## The Spatial Computing Stack
-
-Spatial computing represents a fundamental shift in how humans interact with digital information. Understanding its architecture is crucial for evaluating companies and technologies in this space.
-
-### Hardware Layer
-
-**Display Systems**
-Modern XR devices use various display technologies:
-- **Micro-OLED**: High contrast, used in Vision Pro (Sony panels)
-- **LCD**: Cost-effective, used in Quest 3
-- **LCoS**: Used in some AR glasses (Hololens)
-
-Resolution is measured in Pixels Per Degree (PPD):
-- Human eye: ~60 PPD
-- Vision Pro: 23 PPD
-- Quest 3: 18 PPD
-
-**Sensor Array**
-Spatial awareness requires multiple sensors:
-- RGB cameras (6-12 per device)
-- Depth sensors (LiDAR, ToF, structured light)
-- IMUs (accelerometers, gyroscopes)
-- Eye tracking cameras
-- Hand tracking sensors
-
-### Software Layer
-
-**SLAM (Simultaneous Localization and Mapping)**
-The core algorithm enabling spatial awareness:
-1. Feature detection in camera feeds
-2. 3D point cloud generation
-3. Device pose estimation
-4. Map building and loop closure
-
-**Rendering Pipeline**
-XR rendering is uniquely demanding:
-- Stereo rendering (2x the pixels)
-- Low latency requirements (<20ms)
-- Foveated rendering optimization
-- Reprojection for missed frames
-
-### The Future Stack
-
-Emerging technologies to watch:
-- Neural rendering (NeRF, Gaussian Splatting)
-- AI-powered upscaling
-- Dedicated XR processors
-- Advanced optics (holographic, waveguide)
-    `,
+    excerpt: 'Deep dive into hardware and software stack powering modern XR devices.',
+    content: `## The Spatial Computing Stack\n\nSpatial computing represents a fundamental shift in human-computer interaction.\n\n### Hardware Layer\n\n**Display Systems:**\n- Micro-OLED: High contrast (Vision Pro)\n- LCD: Cost-effective (Quest 3)\n- LCoS: AR glasses (HoloLens)\n\n### Software Layer\n\n**SLAM (Simultaneous Localization and Mapping):**\n1. Feature detection\n2. 3D point cloud generation\n3. Device pose estimation\n4. Map building`,
     category: 'tech-explain',
     subcategory: 'Architecture',
     author: authors[4],
     publishedAt: new Date('2024-02-12'),
     updatedAt: new Date('2024-02-15'),
-    readTime: 10,
+    readTime: 7,
     trending: false,
     featured: true,
     tags: ['Technology', 'Architecture', 'Hardware', 'Software'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Display technology varies significantly across devices',
-      'SLAM algorithms are core to spatial awareness',
-      'XR rendering requires specialized optimization',
-      'Neural rendering is the next frontier'
-    ]
+    keyTakeaways: ['Display tech varies across devices', 'SLAM core to spatial awareness', 'XR rendering requires optimization', 'Neural rendering is next frontier']
   },
   {
-    id: '5',
+    id: '14',
     slug: 'passthrough-vs-see-through-ar',
-    title: 'Passthrough vs See-Through AR: Technical Tradeoffs',
-    excerpt: 'Comparing the two dominant approaches to augmented reality and why the industry is divided.',
-    content: `
-## Two Paths to Augmented Reality
-
-The AR industry faces a fundamental architectural choice: passthrough (video-based) or see-through (optical) augmented reality. Each approach has distinct advantages and limitations.
-
-### Passthrough AR (Video See-Through)
-
-**How it works:**
-Cameras capture the real world, which is then composited with virtual content and displayed on opaque screens.
-
-**Advantages:**
-- Perfect virtual object occlusion
-- Consistent lighting between real and virtual
-- Can adjust real-world brightness/contrast
-- Easier to achieve wide field of view
-
-**Disadvantages:**
-- Latency between capture and display
-- Resolution limited by cameras
-- Loses optical quality of direct vision
-- Higher power consumption
-
-**Examples:** Apple Vision Pro, Meta Quest 3, Varjo XR-4
-
-### See-Through AR (Optical)
-
-**How it works:**
-Transparent optical elements (waveguides, combiners) overlay virtual content onto direct view of reality.
-
-**Advantages:**
-- Zero latency for real world
-- Full resolution of natural vision
-- Lower power consumption
-- Lighter weight potential
-
-**Disadvantages:**
-- Limited field of view (typically 30-50°)
-- Poor outdoor visibility
-- Imperfect occlusion
-- Complex, expensive optics
-
-**Examples:** Microsoft HoloLens, Magic Leap, Nreal
-
-### Industry Direction
-
-Most investment is flowing toward passthrough systems due to:
-1. Faster improvement trajectory
-2. Better immersion quality
-3. Lower optical manufacturing costs
-4. More compelling current experiences
-
-However, the ultimate consumer AR device likely requires optical see-through for all-day wearability.
-    `,
+    title: 'Passthrough vs See-Through AR Tradeoffs',
+    excerpt: 'Comparing two dominant approaches to augmented reality.',
+    content: `## Two Paths to AR\n\n### Passthrough (Video See-Through)\n\n**Advantages:**\n- Perfect virtual object occlusion\n- Consistent lighting\n- Wide field of view\n\n**Disadvantages:**\n- Latency between capture/display\n- Resolution limited by cameras\n\n### See-Through (Optical)\n\n**Advantages:**\n- Zero latency for real world\n- Full resolution natural vision\n- Lower power consumption`,
     category: 'tech-explain',
     subcategory: 'Displays',
     author: authors[4],
     publishedAt: new Date('2024-02-05'),
     updatedAt: new Date('2024-02-05'),
-    readTime: 7,
+    readTime: 5,
     trending: true,
     featured: false,
     tags: ['AR', 'Display Technology', 'Passthrough', 'Optics'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Passthrough offers better immersion today',
-      'See-through enables lighter, more comfortable devices',
-      'Most current investment favors passthrough',
-      'Consumer AR glasses likely need optical approach'
-    ]
+    keyTakeaways: ['Passthrough offers better immersion today', 'See-through enables lighter devices', 'Most investment favors passthrough', 'Consumer AR likely needs optical']
   },
   {
-    id: '6',
+    id: '15',
     slug: 'hand-tracking-technology-deep-dive',
-    title: 'Hand Tracking: From Cameras to Neural Networks',
-    excerpt: 'How modern XR devices achieve precise hand tracking without gloves or controllers.',
-    content: `
-## The Evolution of Hand Tracking
-
-Hand tracking has evolved from research curiosity to essential XR input. Today's systems achieve sub-centimeter accuracy using only cameras and AI.
-
-### Technical Approach
-
-**Computer Vision Pipeline:**
-1. **Detection**: Locate hands in camera frames
-2. **Landmark Estimation**: Identify 21 key points per hand
-3. **Pose Reconstruction**: Build 3D hand model
-4. **Gesture Recognition**: Classify hand poses
-
-**Deep Learning Models:**
-Modern systems use neural networks trained on millions of hand images:
-- MediaPipe (Google): Real-time on mobile
-- Quest Hand Tracking 2.0: 120Hz updates
-- Vision Pro: ML-enhanced with LiDAR
-
-### Performance Metrics
-
-| System | Latency | Accuracy | Occlusion Handling |
-|--------|---------|----------|-------------------|
-| Quest 3 | 20ms | 8mm | Good |
-| Vision Pro | 12ms | 5mm | Excellent |
-| HoloLens 2 | 25ms | 10mm | Moderate |
-
-### Challenges Remaining
-
-1. **Self-occlusion**: Hands blocking themselves
-2. **Fast motion**: Motion blur issues
-3. **Lighting variation**: Low light performance
-4. **Object interaction**: Hands holding items
-
-### Investment Opportunities
-
-Companies advancing hand tracking:
-- Ultraleap: Specialized hardware/software
-- Handtracking.io: B2B solutions
-- Manomotion: Mobile SDK
-    `,
+    title: 'Hand Tracking: Cameras to Neural Networks',
+    excerpt: 'How XR devices achieve precise hand tracking without controllers.',
+    content: `## Hand Tracking Evolution\n\n### Technical Approach\n\n**Computer Vision Pipeline:**\n1. Detection: Locate hands in frames\n2. Landmark Estimation: 21 key points per hand\n3. Pose Reconstruction: Build 3D model\n4. Gesture Recognition: Classify poses\n\n### Performance Metrics\n\n| System | Latency | Accuracy |\n|--------|---------|----------|\n| Quest 3 | 20ms | 8mm |\n| Vision Pro | 12ms | 5mm |`,
     category: 'tech-explain',
     subcategory: 'Input Systems',
     author: authors[1],
     publishedAt: new Date('2024-01-28'),
     updatedAt: new Date('2024-02-01'),
-    readTime: 8,
+    readTime: 6,
     trending: false,
     featured: false,
-    tags: ['Hand Tracking', 'Computer Vision', 'Machine Learning', 'Input'],
+    tags: ['Hand Tracking', 'Computer Vision', 'ML', 'Input'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Modern hand tracking uses deep learning',
-      'Sub-centimeter accuracy now achievable',
-      'Occlusion remains the biggest challenge',
-      'Ultraleap leads in dedicated solutions'
-    ]
+    keyTakeaways: ['Modern tracking uses deep learning', 'Sub-centimeter accuracy achievable', 'Occlusion biggest challenge', 'Ultraleap leads dedicated solutions']
   },
-  // Events & Ecosystem
+  // EVENTS
   {
-    id: '7',
+    id: '16',
     slug: 'awe-2024-conference-preview',
-    title: 'AWE 2024: What to Expect',
-    excerpt: 'The world\'s largest AR/VR conference returns with focus on enterprise adoption and AI integration.',
-    content: `
-## Augmented World Expo 2024 Preview
-
-AWE (Augmented World Expo) 2024 promises to be the most significant gathering of spatial computing professionals yet. Here's what attendees can expect.
-
-### Key Themes
-
-**1. AI Everywhere**
-This year's conference heavily features AI integration:
-- Generative AI for 3D content creation
-- AI-powered virtual assistants
-- Neural rendering demonstrations
-- Automated testing and QA
-
-**2. Enterprise Scale**
-Major enterprise deployments will be showcased:
-- Manufacturing training programs
-- Healthcare visualization
-- Remote collaboration solutions
-- Retail and commerce applications
-
-**3. New Hardware**
-Expected announcements:
-- Multiple AR glasses from Asian manufacturers
-- Next-gen waveguide technology
-- Haptic feedback systems
-- Eye tracking advancements
-
-### Confirmed Keynotes
-
-- **Prabha Kumar**, CTO Qualcomm XR
-- **Stephanie Llamas**, VP SuperData/Nielsen
-- **Tony Parisi**, Metaverse Standards Forum
-- **Sophia Dominguez**, CEO Svrf
-
-### Sessions to Watch
-
-1. "Scaling XR Training to 100K Employees" - Walmart
-2. "The $1B AR Advertising Opportunity" - Niantic
-3. "Building for Vision Pro" - Apple Developer Relations
-4. "5 Years of Enterprise AR Learnings" - PTC
-
-### Investment Networking
-
-AWE hosts dedicated investor sessions:
-- VC office hours
-- Startup pitch competition ($100K prize)
-- Corporate VC meetups
-- Due diligence roundtables
-    `,
+    title: 'AWE 2024: Enterprise and AI Take Center Stage',
+    excerpt: 'World\'s largest AR/VR conference returns with focus on enterprise and AI.',
+    content: `## AWE 2024 Preview\n\n### Key Themes\n\n**1. AI Everywhere**\n- Generative AI for 3D content\n- AI-powered virtual assistants\n- Neural rendering demos\n\n**2. Enterprise Scale**\n- Manufacturing training programs\n- Healthcare visualization\n- Remote collaboration`,
     category: 'events',
     subcategory: 'Conference',
     author: authors[2],
     publishedAt: new Date('2024-02-01'),
     updatedAt: new Date('2024-02-01'),
-    readTime: 5,
+    readTime: 4,
     trending: true,
     featured: true,
-    tags: ['AWE', 'Conference', 'Industry Events', 'Networking'],
+    tags: ['AWE', 'Conference', 'Industry Events'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'AI integration is the dominant theme',
-      'Enterprise deployments taking center stage',
-      'New hardware announcements expected',
-      'Strong investor networking opportunities'
-    ]
+    keyTakeaways: ['AI integration dominant theme', 'Enterprise deployments featured', 'New hardware expected', 'Strong investor networking']
   },
   {
-    id: '8',
+    id: '17',
     slug: 'microsoft-meta-partnership-analysis',
-    title: 'Microsoft + Meta: Strategic Partnership Deepens',
-    excerpt: 'The unlikely alliance between tech giants is reshaping enterprise XR and workplace collaboration.',
-    content: `
-## The Microsoft-Meta Alliance
-
-In a surprising turn, Microsoft and Meta have formed a deep strategic partnership around XR. This collaboration has significant implications for the enterprise spatial computing market.
-
-### Partnership Scope
-
-**Integration Highlights:**
-- Microsoft 365 apps native on Quest
-- Teams VR meetings with Mesh avatars
-- Azure cloud services for Quest enterprise
-- Xbox Game Pass on Quest platform
-
-**Technical Collaboration:**
-- Shared workplace standards
-- Interoperable avatar systems
-- Cross-platform development tools
-- Security and compliance frameworks
-
-### Strategic Rationale
-
-**For Microsoft:**
-- Hardware partner for Mesh platform
-- Consumer reach through Quest
-- Defense against Apple ecosystem
-- Continued enterprise dominance
-
-**For Meta:**
-- Enterprise credibility boost
-- Office 365 as killer app
-- Azure infrastructure support
-- Gaming content library
-
-### Market Impact
-
-The partnership effectively creates:
-- **Consumer VR**: Meta Quest + Xbox
-- **Enterprise XR**: Meta Quest + Microsoft 365
-- **Apple alternative**: Unified ecosystem
-
-### Competitive Response
-
-- **Apple**: Doubling down on premium/enterprise
-- **Google**: Accelerating Android XR development
-- **Sony**: Focusing on gaming/entertainment
-    `,
+    title: 'Microsoft + Meta: Strategic Alliance Deepens',
+    excerpt: 'Tech giants reshape enterprise XR and workplace collaboration.',
+    content: `## The Microsoft-Meta Alliance\n\n### Integration Highlights\n\n- Microsoft 365 native on Quest\n- Teams VR meetings with Mesh\n- Azure cloud for Quest enterprise\n- Xbox Game Pass on Quest\n\n### Strategic Rationale\n\n**For Microsoft:** Hardware partner, consumer reach, Apple defense\n**For Meta:** Enterprise credibility, Office 365 as killer app`,
     category: 'events',
     subcategory: 'Partnership',
     author: authors[0],
     publishedAt: new Date('2024-01-25'),
     updatedAt: new Date('2024-02-10'),
-    readTime: 6,
+    readTime: 5,
     trending: false,
     featured: false,
     tags: ['Microsoft', 'Meta', 'Partnership', 'Enterprise'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Microsoft 365 now native on Quest',
-      'Azure powers Quest enterprise features',
-      'Partnership targets Apple competition',
-      'Gaming and productivity unified'
-    ]
+    keyTakeaways: ['Microsoft 365 native on Quest', 'Azure powers Quest enterprise', 'Partnership targets Apple', 'Gaming and productivity unified']
   },
-  // Company Structure
+  // COMPANIES
   {
-    id: '9',
-    slug: 'meta-reality-labs-financial-deep-dive',
-    title: 'Inside Meta Reality Labs: $50B Bet on the Metaverse',
-    excerpt: 'A comprehensive analysis of Meta\'s spatial computing division, its financials, strategy, and path to profitability.',
-    content: `
-## Meta Reality Labs: Financial Analysis
-
-Meta's Reality Labs represents the largest bet in tech history on spatial computing. Since 2019, the company has invested over $50 billion in its XR ambitions.
-
-### Financial Overview
-
-**Annual Investment:**
-- 2021: $10.2B
-- 2022: $13.7B  
-- 2023: $16.1B (estimated)
-- 2024: $18B (projected)
-
-**Revenue Breakdown:**
-- Quest hardware: $2.5B
-- Content/services: $2.0B
-- Enterprise: $0.3B
-- Advertising (Horizon): $0.1B
-
-**Operating Loss:**
-- 2023: ~$14B
-- Break-even target: 2028-2030
-
-### Organizational Structure
-
-Reality Labs employs ~17,000 people across:
-- **Consumer Hardware**: Quest development
-- **AR Glasses**: Project Orion/Artemis
-- **Research**: FAIR, Reality Labs Research
-- **Platforms**: Horizon Worlds, Workrooms
-- **Content**: Oculus Studios, Beat Games
-
-### Product Roadmap
-
-**Near-term (2024-2025):**
-- Quest 3S (budget model)
-- Quest 4 (next-gen)
-- Ray-Ban Meta Gen 2
-
-**Medium-term (2025-2027):**
-- AR glasses (Project Orion)
-- Neural wristband input
-- Photorealistic avatars
-
-### Investment Thesis
-
-**Bull Case:**
-- Winner-take-most XR platform
-- 1B+ users by 2030
-- $100B+ annual revenue potential
-
-**Bear Case:**
-- Apple captures premium market
-- Consumer adoption stalls
-- Regulatory headwinds
-    `,
+    id: '18',
+    slug: 'meta-reality-labs-50b-bet',
+    title: 'Meta Reality Labs: $50B Metaverse Bet',
+    excerpt: 'Comprehensive analysis of Meta\'s spatial computing division financials.',
+    content: `## Meta Reality Labs Analysis\n\n### Financial Overview\n\n**Annual Investment:**\n- 2021: $10.2B\n- 2022: $13.7B\n- 2023: $16.1B\n- 2024: $18B (projected)\n\n**Operating Loss:** ~$14B annually\n**Break-even target:** 2028-2030`,
     category: 'companies',
     subcategory: 'Financial Analysis',
     author: authors[3],
     publishedAt: new Date('2024-02-18'),
     updatedAt: new Date('2024-02-20'),
-    readTime: 10,
+    readTime: 7,
     trending: true,
     featured: true,
-    tags: ['Meta', 'Reality Labs', 'Financials', 'Investment Analysis'],
+    tags: ['Meta', 'Reality Labs', 'Financials'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Meta has invested $50B+ in XR',
-      'Operating losses of $14B annually',
-      'Break-even targeted for 2028-2030',
-      'AR glasses (Orion) launching 2025-2027'
-    ]
+    keyTakeaways: ['$50B+ invested in XR', '$14B annual operating loss', 'Break-even 2028-2030', 'AR glasses 2025-2027'],
+    metrics: [{ label: 'Total Invested', value: '$50B+' }, { label: 'Annual Loss', value: '$14B' }]
   },
   {
-    id: '10',
+    id: '19',
     slug: 'unity-xr-platform-strategy',
-    title: 'Unity Technologies: Powering 70% of XR Content',
-    excerpt: 'How Unity became the dominant development platform for spatial computing and its monetization strategy.',
-    content: `
-## Unity: The XR Engine King
-
-Unity Technologies powers approximately 70% of all XR applications, making it arguably the most critical infrastructure company in spatial computing.
-
-### Market Position
-
-**XR Market Share:**
-- Unity: ~70%
-- Unreal Engine: ~20%
-- Other (WebXR, custom): ~10%
-
-**Why Unity Dominates XR:**
-1. Earlier XR focus than competitors
-2. Better mobile/standalone performance
-3. Extensive XR SDK support
-4. Lower learning curve
-
-### Business Model
-
-**Revenue Streams:**
-- Create subscriptions: 45%
-- Runtime fees (sunset): 15%
-- Advertising (ironSource): 30%
-- Other services: 10%
-
-**XR-Specific Revenue:**
-- Estimated $200-300M annually
-- Growing 40%+ YoY
-- Enterprise subscriptions increasing
-
-### Strategic Moves
-
-**Recent Developments:**
-- Unity PolySpatial for visionOS
-- Acquired Wētā Digital tools
-- Partnered with Apple, Meta, Sony
-- AI-assisted content creation
-
-**Challenges:**
-- Runtime fee controversy
-- CEO transition
-- Unreal Engine improvements
-- Open source competition
-
-### Investment Considerations
-
-**Strengths:**
-- Dominant market position
-- Platform agnostic approach
-- Strong developer ecosystem
-
-**Risks:**
-- Competition from Unreal
-- XR adoption timeline
-- Monetization challenges
-    `,
+    title: 'Unity: Powering 70% of XR Content',
+    excerpt: 'How Unity became dominant in spatial computing development.',
+    content: `## Unity: The XR Engine King\n\n### Market Position\n\n**XR Market Share:**\n- Unity: ~70%\n- Unreal Engine: ~20%\n- Other: ~10%\n\n### Why Unity Dominates\n\n1. Earlier XR focus than competitors\n2. Better mobile/standalone performance\n3. Extensive SDK support\n4. Lower learning curve`,
     category: 'companies',
     subcategory: 'Platform Analysis',
     author: authors[1],
     publishedAt: new Date('2024-02-14'),
     updatedAt: new Date('2024-02-14'),
-    readTime: 7,
+    readTime: 5,
     trending: false,
     featured: false,
-    tags: ['Unity', 'Game Engine', 'Development Platform', 'XR Tools'],
+    tags: ['Unity', 'Game Engine', 'Development'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Unity powers 70% of XR applications',
-      'XR revenue growing 40%+ annually',
-      'PolySpatial enables visionOS development',
-      'Competition and monetization are key risks'
-    ]
+    keyTakeaways: ['Unity powers 70% of XR apps', 'XR revenue growing 40%+ annually', 'PolySpatial enables visionOS', 'Competition and monetization risks']
   },
-  // Spatial Updates
+  // SPATIAL UPDATES
   {
-    id: '11',
-    slug: 'samsung-xr-headset-announcement',
-    title: 'Breaking: Samsung Unveils Android XR Headset',
-    excerpt: 'Samsung partners with Google and Qualcomm to launch Project Moohan, challenging Apple and Meta.',
-    content: `
-## Samsung Enters the XR Race
-
-Samsung has officially announced its entry into the spatial computing market with Project Moohan, an Android XR headset developed in partnership with Google and Qualcomm.
-
-### Device Specifications
-
-**Hardware:**
-- Display: Dual micro-OLED, 3K per eye
-- Processor: Snapdragon XR2+ Gen 2
-- Passthrough: Full color, 18MP cameras
-- Battery: 2.5 hours active use
-- Weight: 450g
-
-**Key Features:**
-- Google Gemini AI integration
-- Circle to Search in XR
-- Native Google Workspace apps
-- Samsung ecosystem connectivity
-
-### Pricing & Availability
-
-- **Expected Price**: $1,200-1,500
-- **Release**: Q2 2024
-- **Markets**: US, Korea, Europe initially
-
-### Competitive Positioning
-
-Samsung is targeting the gap between:
-- Meta Quest 3 ($499)
-- Apple Vision Pro ($3,499)
-
-The device offers premium features at mid-range pricing.
-
-### Market Implications
-
-**Winners:**
-- Google: Android XR gains flagship device
-- Qualcomm: Major design win
-- Samsung suppliers
-
-**Challenged:**
-- Meta: Price pressure on Quest Pro successor
-- Apple: Competition in enterprise
-    `,
+    id: '20',
+    slug: 'samsung-android-xr-headset',
+    title: 'Samsung Unveils Android XR Headset',
+    excerpt: 'Project Moohan challenges Apple and Meta at mid-range price.',
+    content: `## Samsung Enters XR Race\n\n### Device Specifications\n\n**Hardware:**\n- Display: Dual micro-OLED, 3K per eye\n- Processor: Snapdragon XR2+ Gen 2\n- Passthrough: Full color, 18MP cameras\n- Weight: 450g\n\n### Pricing\n\n- **Expected**: $1,200-1,500\n- **Release**: Q2 2024`,
     category: 'spatial-updates',
     subcategory: 'Product Launch',
     author: authors[2],
     publishedAt: new Date('2024-02-21'),
     updatedAt: new Date('2024-02-21'),
-    readTime: 4,
+    readTime: 3,
     trending: true,
     featured: true,
-    tags: ['Samsung', 'Android XR', 'Product Launch', 'Breaking News'],
+    tags: ['Samsung', 'Android XR', 'Product Launch'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Samsung launching Project Moohan headset',
-      'Partnership with Google and Qualcomm',
-      'Priced between Quest 3 and Vision Pro',
-      'Expected Q2 2024 release'
-    ]
+    keyTakeaways: ['Samsung launching Project Moohan', 'Google and Qualcomm partnership', 'Priced between Quest 3 and Vision Pro', 'Q2 2024 release']
   },
   {
-    id: '12',
-    slug: 'nvidia-xr-chip-breakthrough',
-    title: 'NVIDIA Announces XR-Specific Chip Architecture',
-    excerpt: 'New silicon designed specifically for spatial computing promises 3x performance improvement.',
-    content: `
-## NVIDIA's XR Silicon Play
-
-NVIDIA has announced a dedicated chip architecture for XR devices, potentially disrupting the Qualcomm-dominated market.
-
-### Technical Details
-
-**Architecture Highlights:**
-- Custom ray tracing units for XR
-- Dedicated video passthrough processor
-- Neural rendering acceleration
-- Ultra-low latency display interface
-
-**Performance Claims:**
-- 3x graphics vs Snapdragon XR2 Gen 2
-- 50% power reduction
-- 8ms end-to-end latency
-- 4K per eye rendering
-
-### Target Markets
-
-**Primary Focus:**
-- High-end standalone devices
-- PC VR next generation
-- Enterprise/industrial applications
-- Automotive AR systems
-
-### Partnership Ecosystem
-
-Confirmed partners:
-- Apple (rumored for future Vision devices)
-- Sony (PlayStation VR3)
-- BMW/Mercedes (automotive AR)
-- Multiple enterprise OEMs
-
-### Investment Implications
-
-NVIDIA's entry could:
-- Pressure Qualcomm's XR dominance
-- Enable more powerful standalone devices
-- Accelerate enterprise XR adoption
-- Create new PC VR renaissance
-    `,
+    id: '21',
+    slug: 'nvidia-xr-chip-announcement',
+    title: 'NVIDIA Announces XR-Specific Chip',
+    excerpt: 'New silicon promises 3x performance improvement for spatial computing.',
+    content: `## NVIDIA's XR Silicon\n\n### Performance Claims\n\n- 3x graphics vs Snapdragon XR2 Gen 2\n- 50% power reduction\n- 8ms end-to-end latency\n- 4K per eye rendering\n\n### Target Markets\n\n- High-end standalone devices\n- PC VR next generation\n- Enterprise/industrial\n- Automotive AR`,
     category: 'spatial-updates',
     subcategory: 'Hardware',
     author: authors[4],
     publishedAt: new Date('2024-02-19'),
     updatedAt: new Date('2024-02-19'),
-    readTime: 5,
+    readTime: 4,
     trending: true,
     featured: false,
-    tags: ['NVIDIA', 'Chips', 'Hardware', 'Technology'],
+    tags: ['NVIDIA', 'Chips', 'Hardware'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'NVIDIA entering XR chip market',
-      '3x performance vs current Qualcomm',
-      'Targeting high-end and enterprise',
-      'Could disrupt Qualcomm dominance'
-    ]
+    keyTakeaways: ['NVIDIA entering XR chip market', '3x performance vs Qualcomm', 'Targeting high-end/enterprise', 'Could disrupt Qualcomm dominance']
   },
   {
-    id: '13',
+    id: '22',
     slug: 'xr-developer-survey-2024',
-    title: 'State of XR Development 2024: Developer Survey Results',
-    excerpt: '5,000 developers share insights on platforms, tools, and the future of spatial computing.',
-    content: `
-## XR Developer Survey 2024
-
-Our annual survey of 5,000 XR developers reveals shifting priorities, platform preferences, and technology adoption trends.
-
-### Platform Preferences
-
-**Primary Development Target:**
-- Meta Quest: 58%
-- Apple Vision Pro: 22%
-- PC VR: 12%
-- Other (Pico, etc.): 8%
-
-**Engine Usage:**
-- Unity: 68%
-- Unreal: 18%
-- WebXR: 8%
-- Custom: 6%
-
-### Development Challenges
-
-**Top Pain Points:**
-1. Performance optimization (67%)
-2. Cross-platform compatibility (54%)
-3. UI/UX design for spatial (51%)
-4. Testing and QA (48%)
-5. Monetization (45%)
-
-### Technology Adoption
-
-**Most Exciting Technologies:**
-- Hand tracking: 72%
-- Eye tracking: 65%
-- AI assistants: 61%
-- Haptic feedback: 54%
-- Body tracking: 48%
-
-### Monetization Strategies
-
-**Revenue Models:**
-- Premium (one-time): 45%
-- In-app purchases: 28%
-- Subscription: 15%
-- Enterprise licensing: 8%
-- Advertising: 4%
-
-### Future Outlook
-
-**Developer Sentiment:**
-- Very optimistic: 34%
-- Somewhat optimistic: 41%
-- Neutral: 18%
-- Pessimistic: 7%
-
-Vision Pro has significantly boosted developer optimism, despite its limited market size.
-    `,
+    title: 'State of XR Development 2024',
+    excerpt: '5,000 developers share insights on platforms and tools.',
+    content: `## XR Developer Survey 2024\n\n### Platform Preferences\n\n**Primary Target:**\n- Meta Quest: 58%\n- Apple Vision Pro: 22%\n- PC VR: 12%\n- Other: 8%\n\n### Top Challenges\n\n1. Performance optimization (67%)\n2. Cross-platform compatibility (54%)\n3. UI/UX design (51%)`,
     category: 'spatial-updates',
     subcategory: 'Industry Report',
     author: authors[1],
     publishedAt: new Date('2024-02-16'),
     updatedAt: new Date('2024-02-16'),
-    readTime: 6,
+    readTime: 5,
     trending: false,
     featured: false,
-    tags: ['Developers', 'Survey', 'Industry Trends', 'Report'],
+    tags: ['Developers', 'Survey', 'Industry'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Quest remains dominant development platform',
-      'Vision Pro attracting significant interest',
-      'Performance optimization is top challenge',
-      '75% of developers optimistic about XR future'
-    ]
+    keyTakeaways: ['Quest remains dominant platform', 'Vision Pro attracting interest', 'Performance top challenge', '75% developers optimistic']
   },
+  // More Market Intelligence
   {
-    id: '14',
-    slug: 'ar-advertising-market-growth',
-    title: 'AR Advertising Market Hits $5B Milestone',
-    excerpt: 'Snapchat, Instagram, and TikTok drive explosive growth in augmented reality advertising.',
-    content: `
-## AR Advertising Reaches Scale
-
-The AR advertising market has crossed the $5 billion milestone, driven by social media platforms and improving measurement capabilities.
-
-### Market Breakdown
-
-**By Platform:**
-- Snapchat: $2.1B (42%)
-- Instagram/Meta: $1.5B (30%)
-- TikTok: $0.8B (16%)
-- Other: $0.6B (12%)
-
-**By Format:**
-- Try-on experiences: 35%
-- Face filters/lenses: 30%
-- World effects: 20%
-- Gamified ads: 15%
-
-### Performance Metrics
-
-**Average Campaign Results:**
-- 2x engagement vs standard video
-- 30% higher purchase intent
-- 4x time spent with brand
-- 25% lower CPM than video
-
-### Case Studies
-
-**Nike Air Max AR Campaign:**
-- 50M impressions
-- 8% try-on rate
-- 12% click-through
-- $2M incremental sales
-
-**L'Oréal Virtual Try-On:**
-- 100M+ uses annually
-- 3x conversion rate
-- 28% reduction in returns
-
-### Growth Drivers
-
-1. **Better measurement**: Conversion attribution improving
-2. **WebAR maturity**: No app required
-3. **AI enhancement**: Realistic rendering
-4. **Retail recovery**: Post-COVID in-store decline
-
-### Investment Opportunities
-
-- AR ad platforms (Snap, Meta)
-- WebAR providers (8th Wall, Zappar)
-- Measurement/analytics
-- Creative agencies
-    `,
+    id: '23',
+    slug: 'ar-advertising-market-5b',
+    title: 'AR Advertising Market Hits $5B',
+    excerpt: 'Social media platforms drive explosive growth in AR ads.',
+    content: `## AR Advertising at Scale\n\n### Market Breakdown\n\n**By Platform:**\n- Snapchat: $2.1B (42%)\n- Instagram/Meta: $1.5B (30%)\n- TikTok: $0.8B (16%)\n- Other: $0.6B (12%)\n\n### Performance\n\n- 2x engagement vs standard video\n- 30% higher purchase intent`,
     category: 'market-intelligence',
     subcategory: 'Advertising',
+    region: 'Global',
     author: authors[3],
     publishedAt: new Date('2024-02-13'),
     updatedAt: new Date('2024-02-13'),
-    readTime: 6,
+    readTime: 4,
     trending: false,
     featured: false,
-    tags: ['AR Advertising', 'Social Media', 'Marketing', 'Revenue'],
+    tags: ['AR Advertising', 'Social Media', 'Marketing'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'AR advertising market exceeds $5B',
-      'Snapchat leads with 42% market share',
-      '2x engagement vs traditional video ads',
-      'WebAR enabling no-app experiences'
-    ]
+    keyTakeaways: ['AR advertising exceeds $5B', 'Snapchat leads at 42%', '2x engagement vs video', 'WebAR enabling growth']
   },
   {
-    id: '15',
+    id: '24',
+    slug: 'enterprise-xr-roi-analysis',
+    title: 'Enterprise XR: Average 280% ROI',
+    excerpt: 'Study reveals substantial returns for XR training and operations.',
+    content: `## Enterprise ROI Study\n\n### Key Findings\n\n**Average ROI by Use Case:**\n- Training: 320%\n- Remote assistance: 280%\n- Design review: 240%\n- Sales visualization: 210%\n\n### Time to ROI\n\n- Small deployment: 6-9 months\n- Enterprise scale: 12-18 months`,
+    category: 'market-intelligence',
+    subcategory: 'Enterprise',
+    region: 'Global',
+    author: authors[0],
+    publishedAt: new Date('2024-02-08'),
+    updatedAt: new Date('2024-02-08'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Enterprise', 'ROI', 'Training', 'Operations'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['280% average ROI', 'Training shows highest returns', 'ROI in 6-18 months', 'Scale improves economics']
+  },
+  // More Tech Explain
+  {
+    id: '25',
     slug: 'spatial-audio-technology-guide',
-    title: 'Spatial Audio: The Invisible Layer of Immersion',
-    excerpt: 'How 3D audio technologies create presence and why they\'re critical for XR experiences.',
-    content: `
-## The Science of Spatial Audio
-
-Spatial audio is often overlooked but represents up to 50% of the immersion factor in XR experiences. Understanding this technology is crucial for evaluating XR products and companies.
-
-### Core Technologies
-
-**HRTF (Head-Related Transfer Function)**
-- Models how ears process sound
-- Personalizable to individual anatomy
-- Apple's breakthrough: iPhone-based ear scanning
-
-**Ambisonics**
-- 360-degree sound field recording
-- Format used for VR content
-- Up to 7th order for highest fidelity
-
-**Object-Based Audio**
-- Each sound as individual object
-- Real-time positioning
-- Dolby Atmos for XR
-
-### Platform Implementations
-
-**Apple Spatial Audio:**
-- Dynamic head tracking
-- Personalized HRTF
-- Cross-device support
-- Industry-leading quality
-
-**Meta 3D Audio:**
-- Quest acoustic simulation
-- Room modeling
-- Voice presence optimization
-
-### Hardware Requirements
-
-**For Premium Spatial Audio:**
-- Head tracking sensors
-- High-quality DAC
-- Minimum 2 speakers (ideally 4+)
-- Processing overhead: 5-10%
-
-### Industry Applications
-
-1. **Entertainment**: Concerts, movies, gaming
-2. **Communication**: Spatial voice calls
-3. **Training**: Audio cues for learning
-4. **Accessibility**: Audio-first navigation
-
-### Companies to Watch
-
-- **Dolby**: Atmos for XR
-- **DTS**: Headphone:X solutions
-- **Dirac**: Audio optimization
-- **Embodied Labs**: Healthcare training
-    `,
+    title: 'Spatial Audio: Invisible Layer of Immersion',
+    excerpt: 'How 3D audio creates presence in XR experiences.',
+    content: `## Science of Spatial Audio\n\n### Core Technologies\n\n**HRTF (Head-Related Transfer Function)**\n- Models how ears process sound\n- Personalizable to individual anatomy\n- Apple's breakthrough: iPhone ear scanning\n\n**Ambisonics**\n- 360-degree sound field recording\n- Format used for VR content`,
     category: 'tech-explain',
     subcategory: 'Audio',
     author: authors[4],
     publishedAt: new Date('2024-02-07'),
     updatedAt: new Date('2024-02-07'),
-    readTime: 8,
+    readTime: 5,
     trending: false,
     featured: false,
-    tags: ['Spatial Audio', '3D Audio', 'Immersion', 'Technology'],
+    tags: ['Spatial Audio', '3D Audio', 'Immersion'],
     imageUrl: '/placeholder.svg',
-    keyTakeaways: [
-      'Spatial audio contributes 50% to immersion',
-      'HRTF personalization is key differentiator',
-      'Apple leads in consumer implementation',
-      'Object-based audio enables dynamic experiences'
-    ]
+    keyTakeaways: ['Audio contributes 50% to immersion', 'HRTF personalization key', 'Apple leads implementation', 'Object-based audio emerging']
+  },
+  {
+    id: '26',
+    slug: 'foveated-rendering-explained',
+    title: 'Foveated Rendering: Smarter XR Graphics',
+    excerpt: 'How eye tracking enables more efficient XR rendering.',
+    content: `## Foveated Rendering\n\n### Concept\n\nRenders high detail only where eyes focus, reducing GPU load by 50-70%.\n\n### Types\n\n- **Fixed**: Static center focus\n- **Dynamic**: Eye-tracked focus area\n- **AI-enhanced**: Predictive gaze`,
+    category: 'tech-explain',
+    subcategory: 'Graphics',
+    author: authors[4],
+    publishedAt: new Date('2024-02-03'),
+    updatedAt: new Date('2024-02-03'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Graphics', 'Rendering', 'Eye Tracking'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['50-70% GPU savings', 'Requires eye tracking', 'Vision Pro uses dynamic', 'Enables higher resolution']
+  },
+  // More Regional
+  {
+    id: '27',
+    slug: 'china-xr-market-regulatory-impact',
+    title: 'China XR: Regulatory Shifts Impact Investment',
+    excerpt: 'Tech crackdown reshapes Chinese spatial computing landscape.',
+    content: `## China Market Update\n\n### Regulatory Impact\n\n- Gaming restrictions affect VR\n- Data privacy requirements\n- Content moderation rules\n\n### Adaptation Strategies\n\n- Enterprise pivot by local firms\n- Overseas expansion (Pico, Xreal)\n- Industrial focus over consumer`,
+    category: 'market-intelligence',
+    subcategory: 'Regulatory',
+    region: 'Pacific',
+    author: authors[6],
+    publishedAt: new Date('2024-02-06'),
+    updatedAt: new Date('2024-02-06'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['China', 'Regulation', 'Gaming', 'Enterprise'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Gaming restrictions impact VR', 'Enterprise pivot underway', 'Overseas expansion accelerating', 'Industrial focus growing']
+  },
+  {
+    id: '28',
+    slug: 'australia-xr-mining-healthcare',
+    title: 'Australia: XR in Mining and Healthcare',
+    excerpt: 'Down under leads in industrial and medical XR applications.',
+    content: `## Australian XR Innovation\n\n### Mining Applications\n\n- Remote operation training\n- Safety simulation\n- Equipment visualization\n\n### Healthcare\n\n- Surgical planning\n- Mental health therapy\n- Medical training`,
+    category: 'market-intelligence',
+    subcategory: 'Industry Focus',
+    region: 'Pacific',
+    author: authors[6],
+    publishedAt: new Date('2024-02-04'),
+    updatedAt: new Date('2024-02-04'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Australia', 'Mining', 'Healthcare', 'Industrial'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Mining leads adoption', 'Healthcare growing fast', 'Government support strong', 'Export potential high']
+  },
+  {
+    id: '29',
+    slug: 'uae-metaverse-strategy',
+    title: 'UAE: Metaverse Capital Ambitions',
+    excerpt: 'Emirates targets becoming global metaverse hub by 2030.',
+    content: `## UAE Metaverse Strategy\n\n### Dubai's Goals\n\n- 40,000 metaverse jobs by 2030\n- $4B economic contribution\n- 1,000+ metaverse companies\n\n### Key Initiatives\n\n- Dubai Metaverse Assembly\n- DIFC Innovation Hub\n- Government services in VR`,
+    category: 'market-intelligence',
+    subcategory: 'Government Initiative',
+    region: 'MENA',
+    author: authors[5],
+    publishedAt: new Date('2024-02-02'),
+    updatedAt: new Date('2024-02-02'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['UAE', 'Dubai', 'Metaverse', 'Government'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['40,000 metaverse jobs target', '$4B economic goal', 'Government leading adoption', 'Innovation hubs expanding']
+  },
+  {
+    id: '30',
+    slug: 'vietnam-xr-manufacturing-hub',
+    title: 'Vietnam: Emerging XR Manufacturing Hub',
+    excerpt: 'Southeast Asian nation attracts XR hardware production.',
+    content: `## Vietnam Manufacturing Growth\n\n### Advantages\n\n- Lower costs than China\n- Trade agreement benefits\n- Growing skilled workforce\n\n### Major Investments\n\n- Meta Quest production\n- Apple supplier expansion\n- Local electronics growth`,
+    category: 'market-intelligence',
+    subcategory: 'Manufacturing',
+    region: 'ASEAN',
+    author: authors[6],
+    publishedAt: new Date('2024-01-30'),
+    updatedAt: new Date('2024-01-30'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Vietnam', 'Manufacturing', 'Supply Chain', 'ASEAN'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Meta Quest production here', 'Cost advantages over China', 'Skilled workforce growing', 'Trade benefits attractive']
+  },
+  // More Events
+  {
+    id: '31',
+    slug: 'ces-2024-xr-highlights',
+    title: 'CES 2024: XR Highlights Roundup',
+    excerpt: 'Key spatial computing announcements from Las Vegas.',
+    content: `## CES 2024 XR Summary\n\n### Major Announcements\n\n- Samsung/Google XR partnership\n- New AR glasses from multiple vendors\n- XR chip innovations\n- Enterprise solutions showcase\n\n### Trends Observed\n\n- AI integration everywhere\n- Lighter, sleeker form factors\n- Enterprise focus growing`,
+    category: 'events',
+    subcategory: 'Conference',
+    author: authors[2],
+    publishedAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['CES', 'Conference', 'Announcements'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Samsung/Google partnership announced', 'Multiple AR glasses shown', 'AI integration dominant theme', 'Enterprise focus growing']
+  },
+  {
+    id: '32',
+    slug: 'mwc-2024-xr-connectivity',
+    title: 'MWC 2024: XR and 5G Convergence',
+    excerpt: 'Mobile World Congress showcases wireless XR innovations.',
+    content: `## MWC 2024 XR Focus\n\n### Key Themes\n\n- 5G enabling cloud XR\n- AR glasses with cellular\n- Edge computing for latency\n- Carrier XR services\n\n### Notable Demos\n\n- Qualcomm Snapdragon Spaces\n- MediaTek XR platform\n- Carrier streaming VR`,
+    category: 'events',
+    subcategory: 'Conference',
+    author: authors[2],
+    publishedAt: new Date('2024-02-28'),
+    updatedAt: new Date('2024-02-28'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['MWC', '5G', 'Connectivity', 'Mobile'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['5G enabling cloud XR', 'Carrier services emerging', 'Edge computing critical', 'Mobile XR maturing']
+  },
+  // More Companies
+  {
+    id: '33',
+    slug: 'qualcomm-xr-platform-dominance',
+    title: 'Qualcomm: The Quiet XR Powerhouse',
+    excerpt: 'How Snapdragon XR became the industry standard.',
+    content: `## Qualcomm XR Dominance\n\n### Market Position\n\n- 85% of standalone headsets\n- Partners: Meta, Samsung, Pico, HTC\n- Snapdragon XR2 Gen 2 leading\n\n### Strategy\n\n- Reference designs accelerate adoption\n- Spaces platform for AR glasses\n- AI acceleration focus`,
+    category: 'companies',
+    subcategory: 'Platform Analysis',
+    author: authors[1],
+    publishedAt: new Date('2024-02-10'),
+    updatedAt: new Date('2024-02-10'),
+    readTime: 5,
+    trending: false,
+    featured: false,
+    tags: ['Qualcomm', 'Chips', 'Platform'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['85% standalone headset share', 'Reference designs key', 'AI acceleration growing', 'AR glasses next frontier']
+  },
+  {
+    id: '34',
+    slug: 'sony-xr-dual-strategy',
+    title: 'Sony: Dual XR Strategy Analysis',
+    excerpt: 'Gaming hardware and component supplier roles examined.',
+    content: `## Sony's XR Position\n\n### Two Revenue Streams\n\n**Consumer Hardware:**\n- PlayStation VR2\n- Console gaming focus\n- Entertainment emphasis\n\n**Components:**\n- Micro-OLED for Vision Pro\n- Camera sensors\n- Audio solutions`,
+    category: 'companies',
+    subcategory: 'Business Analysis',
+    author: authors[3],
+    publishedAt: new Date('2024-02-05'),
+    updatedAt: new Date('2024-02-05'),
+    readTime: 5,
+    trending: false,
+    featured: false,
+    tags: ['Sony', 'Gaming', 'Components', 'Strategy'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Dual revenue model', 'Apple component supplier', 'Gaming differentiation', 'Display tech leader']
+  },
+  {
+    id: '35',
+    slug: 'magic-leap-enterprise-pivot',
+    title: 'Magic Leap: Enterprise Pivot Success',
+    excerpt: 'How the AR company found its footing in B2B markets.',
+    content: `## Magic Leap Turnaround\n\n### Enterprise Focus\n\n- Healthcare visualization\n- Manufacturing assistance\n- Defense contracts\n\n### Results\n\n- Revenue: $250M (up 45% YoY)\n- $500M Series F raised\n- FDA surgical approval`,
+    category: 'companies',
+    subcategory: 'Turnaround',
+    author: authors[0],
+    publishedAt: new Date('2024-02-01'),
+    updatedAt: new Date('2024-02-01'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Magic Leap', 'Enterprise', 'AR', 'Healthcare'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$250M revenue achieved', '45% YoY growth', 'Healthcare breakthrough', 'Enterprise model validated']
+  },
+  // More Spatial Updates
+  {
+    id: '36',
+    slug: 'apple-visionos-2-features',
+    title: 'visionOS 2.0: Key Features Revealed',
+    excerpt: 'Apple announces major update to spatial operating system.',
+    content: `## visionOS 2.0 Update\n\n### New Features\n\n- Spatial photos from 2D images\n- Enhanced Mac Virtual Display\n- Train mode for travel\n- New enterprise APIs\n\n### Developer Tools\n\n- TabletopKit for games\n- Volumetric API improvements\n- Better Unity/Unreal support`,
+    category: 'spatial-updates',
+    subcategory: 'Software Update',
+    author: authors[1],
+    publishedAt: new Date('2024-02-20'),
+    updatedAt: new Date('2024-02-20'),
+    readTime: 3,
+    trending: true,
+    featured: false,
+    tags: ['Apple', 'visionOS', 'Software', 'Update'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Spatial photos from 2D', 'Mac Virtual Display enhanced', 'Travel mode added', 'Enterprise APIs expanded']
+  },
+  {
+    id: '37',
+    slug: 'meta-quest-3s-budget-headset',
+    title: 'Meta Quest 3S: Budget MR Coming',
+    excerpt: 'Meta to launch affordable mixed reality headset at $299.',
+    content: `## Quest 3S Details\n\n### Specifications\n\n- Price: $299\n- Display: LCD (vs OLED in Quest 3)\n- Processor: Snapdragon XR2 Gen 2\n- Same MR capabilities\n\n### Target Market\n\n- First-time VR users\n- Education market\n- Developing regions`,
+    category: 'spatial-updates',
+    subcategory: 'Product Launch',
+    author: authors[2],
+    publishedAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    readTime: 3,
+    trending: true,
+    featured: false,
+    tags: ['Meta', 'Quest', 'Budget', 'MR'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['$299 price point', 'LCD display tradeoff', 'Full MR capabilities', 'Targets new users']
+  },
+  {
+    id: '38',
+    slug: 'rayban-meta-gen2-leaked',
+    title: 'Ray-Ban Meta Gen 2: AI Upgrade Coming',
+    excerpt: 'Next-gen smart glasses to feature improved AI and display.',
+    content: `## Ray-Ban Meta Gen 2\n\n### Expected Features\n\n- Better camera resolution\n- Optional display module\n- Improved Llama AI integration\n- Longer battery life\n\n### Price\n\n- Expected: $349-499\n- Launch: Late 2024`,
+    category: 'spatial-updates',
+    subcategory: 'Rumor',
+    author: authors[2],
+    publishedAt: new Date('2024-02-12'),
+    updatedAt: new Date('2024-02-12'),
+    readTime: 3,
+    trending: false,
+    featured: false,
+    tags: ['Meta', 'Ray-Ban', 'Smart Glasses', 'AI'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Display option possible', 'AI integration improved', 'Better camera specs', 'Late 2024 launch']
+  },
+  {
+    id: '39',
+    slug: 'psvr2-pc-adapter-announced',
+    title: 'PSVR2 PC Adapter: Sony Opens Ecosystem',
+    excerpt: 'PlayStation VR2 coming to PC with official adapter.',
+    content: `## PSVR2 PC Support\n\n### Details\n\n- Official adapter launching\n- Steam VR compatibility\n- Full feature support\n- Price: $59.99\n\n### Implications\n\n- Expands user base\n- More software access\n- Competes with Quest 3`,
+    category: 'spatial-updates',
+    subcategory: 'Product Update',
+    author: authors[2],
+    publishedAt: new Date('2024-02-08'),
+    updatedAt: new Date('2024-02-08'),
+    readTime: 3,
+    trending: false,
+    featured: false,
+    tags: ['Sony', 'PSVR2', 'PC VR', 'Gaming'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['Official PC adapter coming', 'Steam VR compatible', '$59.99 price', 'Expands PSVR2 appeal']
+  },
+  {
+    id: '40',
+    slug: 'xreal-air-2-ultra-review',
+    title: 'Xreal Air 2 Ultra: Best AR Glasses Yet',
+    excerpt: 'Chinese company delivers impressive consumer AR glasses.',
+    content: `## Xreal Air 2 Ultra\n\n### Specs\n\n- 6DoF tracking (finally)\n- 52° FOV\n- 120Hz display\n- 75g weight\n\n### Use Cases\n\n- Mobile productivity\n- Gaming companion\n- Media consumption`,
+    category: 'spatial-updates',
+    subcategory: 'Product Review',
+    author: authors[4],
+    publishedAt: new Date('2024-02-05'),
+    updatedAt: new Date('2024-02-05'),
+    readTime: 4,
+    trending: false,
+    featured: false,
+    tags: ['Xreal', 'AR Glasses', 'Consumer', 'Review'],
+    imageUrl: '/placeholder.svg',
+    keyTakeaways: ['6DoF tracking added', '52° FOV impressive', '75g lightweight design', 'Best consumer AR glasses']
   }
 ];
 
@@ -1075,6 +811,10 @@ export const getArticleBySlug = (slug: string): Article | undefined => {
 
 export const getArticlesByCategory = (category: Article['category']): Article[] => {
   return articles.filter(a => a.category === category);
+};
+
+export const getArticlesByRegion = (region: string): Article[] => {
+  return articles.filter(a => a.region === region);
 };
 
 export const getFeaturedArticles = (): Article[] => {

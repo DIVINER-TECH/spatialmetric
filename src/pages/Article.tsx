@@ -43,16 +43,16 @@ const Article = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <article className="container mx-auto px-4 py-6 max-w-3xl">
+        <article className="container mx-auto px-4 py-8 max-w-4xl">
           {/* Breadcrumb */}
-          <Link to={`/${article.category}`} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-4">
-            <ArrowLeft className="h-3 w-3" />
+          <Link to={`/${article.category}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
+            <ArrowLeft className="h-4 w-4" />
             Back to {categoryLabels[article.category]}
           </Link>
 
           {/* Header */}
-          <header className="mb-6">
-            <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <header className="mb-8">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <Badge variant="outline" className="text-xs">{categoryLabels[article.category]}</Badge>
               <Badge variant="secondary" className="text-xs">{article.subcategory}</Badge>
               {article.region && (
@@ -61,40 +61,40 @@ const Article = () => {
                 </Badge>
               )}
               {article.trending && (
-                <Badge className="bg-accent/20 text-accent border-accent/30 text-xs">
+                <Badge className="bg-primary/20 text-primary border-primary/30 text-xs">
                   <TrendingUp className="h-3 w-3 mr-1" /> Trending
                 </Badge>
               )}
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">{article.title}</h1>
-            <p className="text-base text-muted-foreground mb-4">{article.excerpt}</p>
+            <h1 className="text-2xl md:text-3xl font-semibold mb-4">{article.title}</h1>
+            <p className="text-base text-muted-foreground mb-6 leading-relaxed">{article.excerpt}</p>
 
-            <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">{article.author.avatar}</AvatarFallback>
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback className="text-sm">{article.author.avatar}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-medium text-sm">{article.author.name}</p>
-                  <p className="text-xs text-muted-foreground">{article.author.title}</p>
+                  <p className="text-sm text-muted-foreground">{article.author.title}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime}m</span>
-                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(article.publishedAt, 'MMM d, yyyy')}</span>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{article.readTime} min read</span>
+                <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />{format(article.publishedAt, 'MMM d, yyyy')}</span>
               </div>
             </div>
           </header>
 
           {/* Key Takeaways */}
-          <Card className="mb-6 border-primary/30 bg-primary/5">
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-sm mb-2">Key Takeaways</h3>
-              <ul className="space-y-1.5">
+          <Card className="mb-8 border-primary/30 bg-primary/5">
+            <CardContent className="p-5">
+              <h3 className="font-medium text-base mb-3">Key Takeaways</h3>
+              <ul className="space-y-2">
                 {article.keyTakeaways.map((takeaway, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs">
+                  <li key={i} className="flex items-start gap-2 text-sm leading-relaxed">
                     <span className="text-primary mt-0.5">•</span>
                     <span>{takeaway}</span>
                   </li>
@@ -105,35 +105,35 @@ const Article = () => {
 
           {/* Content */}
           <div 
-            className="prose prose-sm prose-invert max-w-none mb-6 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-3 [&_li]:text-sm [&_blockquote]:text-sm [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:my-3" 
+            className="prose prose-base prose-invert max-w-none mb-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-lg [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:text-base [&_p]:leading-7 [&_p]:mb-4 [&_p]:font-normal [&_li]:text-base [&_li]:leading-7 [&_blockquote]:text-base [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_strong]:font-normal" 
             dangerouslySetInnerHTML={{ 
               __html: article.content
                 .replace(/\n/g, '<br/>')
                 .replace(/## /g, '<h2>')
                 .replace(/### /g, '<h3>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '$1')
                 .replace(/> (.*?)(<br\/>|$)/g, '<blockquote>$1</blockquote>') 
             }} 
           />
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-1.5 mb-6">
+          <div className="flex flex-wrap gap-2 mb-8">
             {article.tags.map(tag => (
               <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
             ))}
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 mb-8">
-            <Button variant="outline" size="sm" className="text-xs"><Share2 className="h-3 w-3 mr-1.5" />Share</Button>
-            <Button variant="outline" size="sm" className="text-xs"><Bookmark className="h-3 w-3 mr-1.5" />Save</Button>
+          <div className="flex gap-3 mb-10">
+            <Button variant="outline" size="sm"><Share2 className="h-4 w-4 mr-2" />Share</Button>
+            <Button variant="outline" size="sm"><Bookmark className="h-4 w-4 mr-2" />Save</Button>
           </div>
 
           {/* Related Articles */}
           {relatedArticles.length > 0 && (
             <section>
-              <h2 className="text-lg font-bold mb-4">Related Articles</h2>
-              <div className="grid md:grid-cols-3 gap-3">
+              <h2 className="text-xl font-semibold mb-5">Related Articles</h2>
+              <div className="grid md:grid-cols-3 gap-4">
                 {relatedArticles.map(a => (
                   <ArticleCard key={a.id} article={a} variant="compact" />
                 ))}

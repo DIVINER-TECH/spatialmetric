@@ -23,15 +23,15 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
     return (
       <Link to={`/article/${article.slug}`}>
         <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{categoryLabels[article.category]}</Badge>
-              {article.trending && <TrendingUp className="h-2.5 w-2.5 text-accent" />}
-              {article.region && <span className="text-[9px] text-muted-foreground">{article.region}</span>}
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="outline" className="text-xs px-2 py-0.5">{categoryLabels[article.category]}</Badge>
+              {article.trending && <TrendingUp className="h-3 w-3 text-primary" />}
+              {article.region && <span className="text-xs text-muted-foreground">{article.region}</span>}
             </div>
-            <h4 className="font-medium text-xs line-clamp-2 mb-1.5">{article.title}</h4>
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-              <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{article.readTime}m</span>
+            <h4 className="font-medium text-sm line-clamp-2 mb-2 leading-snug">{article.title}</h4>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime}m</span>
               <span>{format(article.publishedAt, 'MMM d')}</span>
             </div>
           </CardContent>
@@ -43,36 +43,36 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
   return (
     <Link to={`/article/${article.slug}`}>
       <Card className="hover:border-primary/50 transition-all cursor-pointer h-full group">
-        <CardHeader className="pb-1.5 pt-3 px-3">
+        <CardHeader className="pb-2 pt-4 px-4">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{categoryLabels[article.category]}</Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs px-2 py-0.5">{categoryLabels[article.category]}</Badge>
               {article.region && (
-                <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
-                  <MapPin className="h-2 w-2 mr-0.5" />{article.region}
+                <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                  <MapPin className="h-3 w-3 mr-1" />{article.region}
                 </Badge>
               )}
             </div>
             {article.trending && (
-              <Badge className="bg-accent/20 text-accent border-accent/30 text-[9px] px-1.5 py-0">
-                <TrendingUp className="h-2.5 w-2.5 mr-0.5" /> Hot
+              <Badge className="bg-primary/20 text-primary border-primary/30 text-xs px-2 py-0.5">
+                <TrendingUp className="h-3 w-3 mr-1" /> Hot
               </Badge>
             )}
           </div>
         </CardHeader>
-        <CardContent className="pb-1.5 px-3">
-          <h3 className="font-semibold text-sm mb-1.5 group-hover:text-primary transition-colors line-clamp-2">
+        <CardContent className="pb-2 px-4">
+          <h3 className="font-medium text-base mb-2 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {article.title}
           </h3>
-          <p className="text-muted-foreground text-xs line-clamp-2">{article.excerpt}</p>
+          <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{article.excerpt}</p>
         </CardContent>
-        <CardFooter className="pt-1.5 pb-3 px-3 flex items-center justify-between text-[10px] text-muted-foreground">
-          <div className="flex items-center gap-0.5">
-            <Clock className="h-3 w-3" />
-            <span>{article.readTime}m read</span>
+        <CardFooter className="pt-2 pb-4 px-4 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" />
+            <span>{article.readTime} min read</span>
           </div>
-          <div className="flex items-center gap-0.5">
-            <Calendar className="h-3 w-3" />
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3.5 w-3.5" />
             <span>{format(article.publishedAt, 'MMM d')}</span>
           </div>
         </CardFooter>

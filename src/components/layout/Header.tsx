@@ -10,14 +10,16 @@ import {
   Calendar, 
   Building2, 
   Globe,
-  Search
+  Search,
+  Rocket
 } from "lucide-react";
 
 const navItems = [
   { label: "Market Intelligence", href: "/market-intelligence", icon: TrendingUp },
+  { label: "Startup Tracker", href: "/startup-tracker", icon: Rocket },
   { label: "Tech Explain", href: "/tech-explain", icon: Cpu },
   { label: "Events & Ecosystem", href: "/events", icon: Calendar },
-  { label: "Company Structure", href: "/companies", icon: Building2 },
+  { label: "Companies", href: "/companies", icon: Building2 },
   { label: "Spatial Updates", href: "/spatial-updates", icon: Globe },
 ];
 

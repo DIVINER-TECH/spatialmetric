@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,14 +40,14 @@ export const AIInsightsFeed = () => {
 
   const SignalIcon = insight?.signal === 'bullish' ? TrendingUp : 
                      insight?.signal === 'bearish' ? TrendingDown : Minus;
-  const signalColor = insight?.signal === 'bullish' ? 'text-green-500' : 
-                      insight?.signal === 'bearish' ? 'text-red-500' : 'text-muted-foreground';
+  const signalColor = insight?.signal === 'bullish' ? 'text-success' : 
+                      insight?.signal === 'bearish' ? 'text-destructive' : 'text-muted-foreground';
 
   return (
     <Card className="border-primary/30">
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm flex items-center gap-2">
+          <CardTitle className="text-base flex items-center gap-2 font-medium">
             <Sparkles className="h-4 w-4 text-primary" />
             AI Market Brief
           </CardTitle>
@@ -57,32 +56,32 @@ export const AIInsightsFeed = () => {
             size="sm" 
             onClick={generateInsight}
             disabled={isGenerating}
-            className="h-7 text-xs"
+            className="h-8 text-sm"
           >
-            <RefreshCw className={`h-3 w-3 mr-1 ${isGenerating ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-1.5 ${isGenerating ? 'animate-spin' : ''}`} />
             {isGenerating ? 'Generating...' : 'Refresh'}
           </Button>
         </div>
       </CardHeader>
       <CardContent>
         {insight ? (
-          <div className="space-y-3">
-            <div className="flex items-start justify-between gap-2">
-              <p className="font-medium text-sm">{insight.headline}</p>
-              <Badge variant="outline" className={`text-[10px] ${signalColor}`}>
+          <div className="space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <p className="font-medium text-base leading-snug">{insight.headline}</p>
+              <Badge variant="outline" className={`text-xs ${signalColor}`}>
                 <SignalIcon className="h-3 w-3 mr-1" />
                 {insight.signal}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground">{insight.summary}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{insight.summary}</p>
             {insight.metrics && insight.metrics.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {insight.metrics.slice(0, 3).map((m, i) => (
-                  <div key={i} className="text-center p-2 bg-muted/50 rounded">
-                    <p className="text-[10px] text-muted-foreground">{m.label}</p>
-                    <p className="text-xs font-bold">{m.value}</p>
+                  <div key={i} className="text-center p-3 bg-muted/50 rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
+                    <p className="text-sm font-medium">{m.value}</p>
                     {m.change && (
-                      <p className={`text-[10px] ${m.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                      <p className={`text-xs ${m.change.startsWith('+') ? 'text-success' : 'text-destructive'}`}>
                         {m.change}
                       </p>
                     )}
@@ -92,10 +91,10 @@ export const AIInsightsFeed = () => {
             )}
           </div>
         ) : (
-          <div className="text-center py-4">
-            <p className="text-xs text-muted-foreground mb-2">Click refresh to generate AI insights</p>
+          <div className="text-center py-6">
+            <p className="text-sm text-muted-foreground mb-3">Click refresh to generate AI insights</p>
             <Button variant="outline" size="sm" onClick={generateInsight} disabled={isGenerating}>
-              <Sparkles className="h-3 w-3 mr-1" />
+              <Sparkles className="h-4 w-4 mr-1.5" />
               Generate Insight
             </Button>
           </div>

@@ -27,74 +27,77 @@ export interface IndustryMetric {
   positive: boolean;
 }
 
-// Historical XR Market Size Data
+// Historical XR Market Size Data (Updated December 2025)
 export const xrMarketHistory: MarketDataPoint[] = [
   { date: '2020', value: 18.8 },
   { date: '2021', value: 28.5 },
   { date: '2022', value: 38.2 },
   { date: '2023', value: 52.1 },
   { date: '2024', value: 74.5 },
-  { date: '2025E', value: 105.8 },
-  { date: '2026E', value: 142.3 },
-  { date: '2027E', value: 198.7 },
-  { date: '2028E', value: 268.4 },
+  { date: '2025', value: 105.8 },
+  { date: '2026E', value: 148.2 },
+  { date: '2027E', value: 208.5 },
+  { date: '2028E', value: 285.4 },
 ];
 
-// Monthly Market Cap Data by Segment
+// Monthly Market Cap Data by Segment (2025)
 export const monthlyMarketData: { month: string; vr: number; ar: number; mr: number }[] = [
-  { month: 'Jan', vr: 42, ar: 18, mr: 8 },
-  { month: 'Feb', vr: 45, ar: 20, mr: 10 },
-  { month: 'Mar', vr: 48, ar: 22, mr: 12 },
-  { month: 'Apr', vr: 52, ar: 25, mr: 15 },
-  { month: 'May', vr: 55, ar: 28, mr: 18 },
-  { month: 'Jun', vr: 58, ar: 32, mr: 22 },
-  { month: 'Jul', vr: 62, ar: 35, mr: 26 },
-  { month: 'Aug', vr: 65, ar: 38, mr: 30 },
-  { month: 'Sep', vr: 68, ar: 42, mr: 35 },
-  { month: 'Oct', vr: 72, ar: 48, mr: 42 },
-  { month: 'Nov', vr: 76, ar: 52, mr: 48 },
-  { month: 'Dec', vr: 80, ar: 58, mr: 55 },
+  { month: 'Jan', vr: 52, ar: 28, mr: 18 },
+  { month: 'Feb', vr: 55, ar: 31, mr: 21 },
+  { month: 'Mar', vr: 58, ar: 34, mr: 24 },
+  { month: 'Apr', vr: 62, ar: 38, mr: 28 },
+  { month: 'May', vr: 65, ar: 42, mr: 32 },
+  { month: 'Jun', vr: 68, ar: 46, mr: 36 },
+  { month: 'Jul', vr: 72, ar: 50, mr: 42 },
+  { month: 'Aug', vr: 75, ar: 54, mr: 48 },
+  { month: 'Sep', vr: 78, ar: 58, mr: 54 },
+  { month: 'Oct', vr: 82, ar: 64, mr: 62 },
+  { month: 'Nov', vr: 86, ar: 70, mr: 70 },
+  { month: 'Dec', vr: 90, ar: 78, mr: 78 },
 ];
 
-// Market Segments
+// Market Segments (Updated December 2025)
 export const marketSegments: MarketSegment[] = [
-  { name: 'VR Gaming', value: 28.5, growth: 24.2, color: 'hsl(var(--primary))' },
-  { name: 'Enterprise AR', value: 18.3, growth: 42.8, color: 'hsl(var(--accent))' },
-  { name: 'Consumer AR', value: 12.1, growth: 38.5, color: 'hsl(var(--chart-1))' },
-  { name: 'XR Training', value: 9.8, growth: 52.1, color: 'hsl(var(--chart-2))' },
-  { name: 'Healthcare XR', value: 7.2, growth: 61.3, color: 'hsl(var(--chart-3))' },
-  { name: 'XR Collaboration', value: 5.6, growth: 48.7, color: 'hsl(var(--chart-4))' },
+  { name: 'VR Gaming', value: 38.5, growth: 28.4, color: 'hsl(var(--primary))' },
+  { name: 'Enterprise AR', value: 28.2, growth: 48.6, color: 'hsl(var(--accent))' },
+  { name: 'AI-XR Convergence', value: 18.4, growth: 72.3, color: 'hsl(var(--chart-1))' },
+  { name: 'XR Training', value: 14.8, growth: 56.2, color: 'hsl(var(--chart-2))' },
+  { name: 'Healthcare XR', value: 12.4, growth: 65.8, color: 'hsl(var(--chart-3))' },
+  { name: 'XR Collaboration', value: 9.8, growth: 52.4, color: 'hsl(var(--chart-4))' },
 ];
 
-// VC Funding by Quarter
+// VC Funding by Quarter (Updated December 2025)
 export const vcFundingData: { quarter: string; funding: number; deals: number }[] = [
-  { quarter: 'Q1 2023', funding: 1.8, deals: 145 },
-  { quarter: 'Q2 2023', funding: 1.5, deals: 128 },
-  { quarter: 'Q3 2023', funding: 1.2, deals: 112 },
-  { quarter: 'Q4 2023', funding: 1.7, deals: 134 },
-  { quarter: 'Q1 2024', funding: 2.8, deals: 168 },
+  { quarter: 'Q1 2024', funding: 2.8, deals: 189 },
+  { quarter: 'Q2 2024', funding: 3.2, deals: 215 },
+  { quarter: 'Q3 2024', funding: 3.4, deals: 228 },
+  { quarter: 'Q4 2024', funding: 3.4, deals: 215 },
+  { quarter: 'Q1 2025', funding: 4.2, deals: 268 },
+  { quarter: 'Q2 2025', funding: 4.6, deals: 285 },
+  { quarter: 'Q3 2025', funding: 4.9, deals: 298 },
+  { quarter: 'Q4 2025', funding: 4.8, deals: 273 },
 ];
 
-// Key Industry Metrics
+// Key Industry Metrics (Updated December 2025)
 export const industryMetrics: IndustryMetric[] = [
-  { label: 'Total XR Market Cap', value: '$74.5B', change: 43.0, positive: true },
-  { label: 'Active XR Users', value: '171M', change: 28.5, positive: true },
-  { label: 'Quest Market Share', value: '72%', change: -3.2, positive: false },
-  { label: 'Enterprise Adoption', value: '34%', change: 12.8, positive: true },
-  { label: 'YoY Headset Growth', value: '+38%', change: 8.2, positive: true },
-  { label: 'Avg. XR App Revenue', value: '$2.4M', change: 15.6, positive: true },
+  { label: 'Total XR Market Cap', value: '$105.8B', change: 42.0, positive: true },
+  { label: 'Active XR Users', value: '285M', change: 38.5, positive: true },
+  { label: 'Quest Market Share', value: '58%', change: -8.2, positive: false },
+  { label: 'Enterprise Adoption', value: '48%', change: 14.8, positive: true },
+  { label: 'YoY Headset Growth', value: '+42%', change: 12.4, positive: true },
+  { label: 'Avg. XR App Revenue', value: '$4.2M', change: 18.6, positive: true },
 ];
 
-// Top Stocks for Ticker
+// Top Stocks for Ticker (Updated December 2025)
 export const tickerStocks: StockData[] = [
-  { symbol: 'AAPL', name: 'Apple', price: 182.52, change: 2.34, changePercent: 1.30, volume: 52400000, marketCap: 2850000000000 },
-  { symbol: 'META', name: 'Meta', price: 485.39, change: -3.21, changePercent: -0.66, volume: 18200000, marketCap: 1250000000000 },
-  { symbol: 'MSFT', name: 'Microsoft', price: 415.28, change: 1.87, changePercent: 0.45, volume: 21500000, marketCap: 3100000000000 },
-  { symbol: 'NVDA', name: 'NVIDIA', price: 742.89, change: 15.62, changePercent: 2.15, volume: 48900000, marketCap: 1850000000000 },
-  { symbol: 'QCOM', name: 'Qualcomm', price: 171.45, change: -1.23, changePercent: -0.71, volume: 8700000, marketCap: 192000000000 },
-  { symbol: 'U', name: 'Unity', price: 28.45, change: 0.82, changePercent: 2.97, volume: 6200000, marketCap: 11200000000 },
-  { symbol: 'SONY', name: 'Sony', price: 91.23, change: 0.45, changePercent: 0.50, volume: 1800000, marketCap: 115000000000 },
-  { symbol: 'SNAP', name: 'Snap', price: 11.28, change: 0.34, changePercent: 3.11, volume: 24100000, marketCap: 18500000000 },
+  { symbol: 'AAPL', name: 'Apple', price: 248.52, change: 3.24, changePercent: 1.32, volume: 58400000, marketCap: 3850000000000 },
+  { symbol: 'META', name: 'Meta', price: 628.39, change: -4.21, changePercent: -0.67, volume: 22200000, marketCap: 1620000000000 },
+  { symbol: 'MSFT', name: 'Microsoft', price: 485.28, change: 2.87, changePercent: 0.59, volume: 24500000, marketCap: 3600000000000 },
+  { symbol: 'NVDA', name: 'NVIDIA', price: 892.89, change: 18.62, changePercent: 2.13, volume: 52900000, marketCap: 2200000000000 },
+  { symbol: 'QCOM', name: 'Qualcomm', price: 218.45, change: -1.83, changePercent: -0.83, volume: 9700000, marketCap: 245000000000 },
+  { symbol: 'U', name: 'Unity', price: 42.45, change: 1.22, changePercent: 2.96, volume: 7200000, marketCap: 16800000000 },
+  { symbol: 'SONY', name: 'Sony', price: 118.23, change: 0.85, changePercent: 0.72, volume: 2100000, marketCap: 148000000000 },
+  { symbol: 'SNAP', name: 'Snap', price: 18.28, change: 0.54, changePercent: 3.04, volume: 28100000, marketCap: 30500000000 },
 ];
 
 // Generate live-like fluctuations

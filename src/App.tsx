@@ -13,6 +13,7 @@ import SpatialUpdates from "./pages/SpatialUpdates";
 import Article from "./pages/Article";
 import CompanyProfile from "./pages/CompanyProfile";
 import RegionalIntelligence from "./pages/RegionalIntelligence";
+import StartupTracker from "./pages/StartupTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/regional-intelligence" element={<RegionalIntelligence />} />
+          <Route path="/startup-tracker" element={<StartupTracker />} />
           <Route path="/tech-explain" element={<TechExplain />} />
           <Route path="/events" element={<Events />} />
           <Route path="/companies" element={<Companies />} />

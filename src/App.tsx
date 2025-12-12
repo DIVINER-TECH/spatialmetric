@@ -14,6 +14,8 @@ import Article from "./pages/Article";
 import CompanyProfile from "./pages/CompanyProfile";
 import RegionalIntelligence from "./pages/RegionalIntelligence";
 import StartupTracker from "./pages/StartupTracker";
+import VCDirectory from "./pages/VCDirectory";
+import UnicornTracker from "./pages/UnicornTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/regional-intelligence" element={<RegionalIntelligence />} />
           <Route path="/startup-tracker" element={<StartupTracker />} />
+          <Route path="/vc-directory" element={<VCDirectory />} />
+          <Route path="/unicorn-tracker" element={<UnicornTracker />} />
           <Route path="/tech-explain" element={<TechExplain />} />
           <Route path="/events" element={<Events />} />
           <Route path="/companies" element={<Companies />} />

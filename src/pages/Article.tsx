@@ -5,10 +5,46 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ArrowLeft, Clock, Calendar, Share2, Bookmark, TrendingUp, MapPin } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Bookmark, TrendingUp, MapPin, Bot } from 'lucide-react';
 import { useArticle } from '@/hooks/useArticles';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { format } from 'date-fns';
+import { calculateReadingTime } from '@/lib/readingTime';
+
+// Parse article content - convert markdown to HTML without bold formatting
+const parseArticleContent = (content: string): string => {
+  return content
+    // Remove bold/italic markers completely
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    // Convert headers - must close them properly
+    .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
+    // Convert blockquotes
+    .replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>')
+    // Convert numbered lists
+    .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>')
+    // Convert bullet points
+    .replace(/^- (.*?)$/gm, '<li>$1</li>')
+    // Remove any orphan # characters
+    .replace(/^#\s*$/gm, '')
+    // Convert paragraphs (double newlines)
+    .replace(/\n\n/g, '</p><p>')
+    // Convert single newlines in remaining text
+    .replace(/\n/g, '<br/>')
+    // Wrap in paragraph tags
+    .replace(/^/, '<p>')
+    .replace(/$/, '</p>')
+    // Clean up empty paragraphs
+    .replace(/<p><\/p>/g, '')
+    .replace(/<p><br\/><\/p>/g, '')
+    // Clean up paragraph wrapping around headers
+    .replace(/<p>(<h[23]>)/g, '$1')
+    .replace(/(<\/h[23]>)<\/p>/g, '$1')
+    // Clean up paragraph wrapping around blockquotes
+    .replace(/<p>(<blockquote>)/g, '$1')
+    .replace(/(<\/blockquote>)<\/p>/g, '$1');
+};
 
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -73,10 +109,17 @@ const Article = () => {
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarFallback className="text-sm">{article.author.avatar}</AvatarFallback>
+                  <AvatarFallback className="text-sm">
+                    {article.author.avatar === 'AI' ? <Bot className="h-5 w-5" /> : article.author.avatar}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium text-sm">{article.author.name}</p>
+                  <p className="font-medium text-sm flex items-center gap-1.5">
+                    {article.author.name}
+                    {article.author.avatar === 'AI' && (
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">AI Generated</Badge>
+                    )}
+                  </p>
                   <p className="text-sm text-muted-foreground">{article.author.title}</p>
                 </div>
               </div>
@@ -105,14 +148,9 @@ const Article = () => {
 
           {/* Content */}
           <div 
-            className="prose prose-base prose-invert max-w-none mb-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-lg [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:text-base [&_p]:leading-7 [&_p]:mb-4 [&_p]:font-normal [&_li]:text-base [&_li]:leading-7 [&_blockquote]:text-base [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_strong]:font-normal" 
+            className="prose prose-base prose-invert max-w-none mb-8 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-4 [&_h3]:text-lg [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-3 [&_p]:text-base [&_p]:leading-7 [&_p]:mb-4 [&_p]:font-normal [&_li]:text-base [&_li]:leading-7 [&_blockquote]:text-base [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4" 
             dangerouslySetInnerHTML={{ 
-              __html: article.content
-                .replace(/\n/g, '<br/>')
-                .replace(/## /g, '<h2>')
-                .replace(/### /g, '<h3>')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/> (.*?)(<br\/>|$)/g, '<blockquote>$1</blockquote>') 
+              __html: parseArticleContent(article.content)
             }} 
           />
 

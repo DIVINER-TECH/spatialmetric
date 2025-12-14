@@ -10,6 +10,7 @@ interface GenerateRequest {
   topic?: string;
   region?: string;
   category?: string;
+  wordCount?: number;
 }
 
 serve(async (req) => {
@@ -23,60 +24,119 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { type, topic, region, category } = await req.json() as GenerateRequest;
+    const { type, topic, region, category, wordCount = 800 } = await req.json() as GenerateRequest;
 
     let systemPrompt = '';
     let userPrompt = '';
 
+    const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
     if (type === 'article') {
-      systemPrompt = `You are a senior analyst at SpatialMetrics, a leading spatial computing investment intelligence platform. It is December 2025. Generate professional, data-driven content about XR/VR/AR markets with specific metrics, statistics, and investment insights. Use a professional, analytical tone without bold or italic formatting. Include specific numbers, percentages, and market data. Focus on ${region || 'global'} markets. All text should be plain without emphasis markers. Reference recent 2025 developments including Apple Vision Pro 2, Meta Quest 4, Android XR ecosystem, and emerging AI-XR convergence.`;
+      systemPrompt = `You are a senior analyst at SpatialMetrics, a leading spatial computing investment intelligence platform. Today is ${currentDate}. You generate professional, data-driven investment research content about XR/VR/AR/spatial computing markets.
+
+CRITICAL FORMATTING RULES:
+- Write in PLAIN TEXT only - NO markdown emphasis (no ** or * for bold/italic)
+- NO numbered lists with periods (1. 2. 3.) - use prose paragraphs instead
+- NO bullet points - write in flowing paragraphs
+- Use proper section headers with ## for main sections and ### for subsections
+- Write exactly ${wordCount} words minimum
+- Include specific numbers, percentages, dollar amounts, and market data
+- Reference specific companies, deals, analysts, and events
+- Use professional, analytical investment research tone
+- Include attributed expert quotes with analyst/executive names
+
+CONTENT STRUCTURE (required sections):
+1. Executive Summary (overview paragraph)
+2. Market Analysis (detailed market dynamics with metrics)
+3. Key Players and Deals (specific companies and investment amounts)
+4. Investment Implications (actionable insights)
+5. Outlook and Projections (forward-looking analysis)`;
       
-      userPrompt = `Generate a comprehensive market intelligence article about: ${topic || 'XR market trends in Q4 2025'}
+      userPrompt = `Generate a comprehensive ${wordCount}+ word market intelligence article about: ${topic || 'XR market trends'}
 
 Category: ${category || 'market-intelligence'}
 Region focus: ${region || 'Global'}
-Current date: December 2025
+Current date: ${currentDate}
 
-Include:
-1. Key market statistics and metrics with specific numbers
-2. Investment implications and strategic recommendations  
-3. Key takeaways (4-5 detailed bullet points)
-4. Relevant companies mentioned with context
-5. Forward-looking analysis for 2026
+REQUIRED ELEMENTS:
+- At least 5 specific company mentions with context
+- At least 3 specific funding amounts or valuations
+- At least 2 attributed expert quotes (name, title, organization)
+- Specific YoY growth percentages
+- Market size projections for 2026
+- Competitive landscape analysis
+- Risk factors and opportunities
 
-Format as JSON with fields: title, excerpt (2 sentences), content (plain text markdown without bold/italic, 500-600 words), keyTakeaways (array of strings), tags (array), metrics (array of {label, value}).
+Format response as JSON:
+{
+  "title": "Clear, professional headline (no emoji)",
+  "excerpt": "2-3 sentence summary with key metric",
+  "content": "Full article content in plain text with ## headers, ${wordCount}+ words",
+  "keyTakeaways": ["5 detailed bullet points with specific data"],
+  "tags": ["5-7 relevant tags"],
+  "metrics": [{"label": "Metric Name", "value": "$X.XB or XX%"}]
+}
 
-IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
+IMPORTANT: The content field must be ${wordCount}+ words. Count carefully.`;
+
     } else if (type === 'market-brief') {
-      systemPrompt = `You are a market analyst providing real-time XR market intelligence. It is December 2025. Generate brief, actionable market updates with specific data points. Use plain text without bold or italic formatting. Reference current market conditions including Vision Pro 2 adoption, Quest 4 launch, enterprise XR growth, and AI-XR integration trends.`;
+      systemPrompt = `You are a market analyst providing real-time XR market intelligence. Today is ${currentDate}. Generate actionable market updates with specific data points. Use plain text without any bold or italic formatting.`;
       
-      userPrompt = `Generate a brief market update for ${region || 'global'} XR markets as of December 2025.
+      userPrompt = `Generate a market brief for ${region || 'global'} XR markets.
 
 Include:
-1. Top 3 market movers with specific context
-2. Key metrics with specific numbers and percentages
-3. Investment signal (bullish/bearish/neutral) with reasoning
+1. Top 3 market movers with specific context and numbers
+2. Key metrics with percentages and dollar amounts
+3. Investment signal (bullish/bearish/neutral) with detailed reasoning
+4. Notable deals or announcements from the past week
 
-Format as JSON with fields: headline (plain text, no emphasis), summary (2-3 sentences, plain text), metrics (array of {label, value, change}), signal.
+Format as JSON:
+{
+  "headline": "Brief headline (plain text)",
+  "summary": "3-4 sentence summary with specific data",
+  "metrics": [{"label": "Metric", "value": "Value", "change": "+X%"}],
+  "signal": "bullish/bearish/neutral",
+  "reasoning": "2-3 sentences explaining signal"
+}`;
 
-IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
     } else if (type === 'startup-profile') {
-      systemPrompt = `You are a venture analyst specializing in spatial computing startups. It is December 2025. Generate detailed startup profiles with investment-relevant information. Use plain text without bold or italic formatting. Consider the current funding environment and 2025 market conditions.`;
+      systemPrompt = `You are a venture analyst specializing in spatial computing startups. Today is ${currentDate}. Generate detailed startup profiles suitable for investor due diligence. Use plain text without bold or italic formatting.`;
       
-      userPrompt = `Generate a startup profile for a promising XR company in the ${region || 'NA'} region focusing on ${topic || 'enterprise XR solutions'}.
+      userPrompt = `Generate a detailed startup profile for a promising XR company in ${region || 'NA'} focusing on ${topic || 'enterprise XR solutions'}.
 
 Include:
-1. Company name and detailed description
-2. Key metrics (funding raised, employees, growth rate, revenue if applicable)
-3. Product/market fit assessment with competitive positioning
-4. Investment thesis with risk factors
+1. Company overview and founding story
+2. Product/service description with technical details
+3. Market opportunity and competitive positioning
+4. Funding history with specific amounts and investors
+5. Key metrics (ARR, growth rate, customers, employees)
+6. Investment thesis with bull and bear cases
+7. Risk factors and moat analysis
 
-Format as JSON with fields: name, description, sector, stage, metrics (object), products (array), investmentThesis.
-
-IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
+Format as JSON:
+{
+  "name": "Company Name",
+  "description": "Detailed 150+ word description",
+  "sector": "Primary sector",
+  "stage": "Seed/Series A/B/C/D",
+  "founded": 2023,
+  "headquarters": "City, Country",
+  "metrics": {
+    "funding": "$XXM",
+    "employees": XX,
+    "customers": XX,
+    "arr": "$XM",
+    "growth": "XX% YoY"
+  },
+  "investors": ["List of key investors"],
+  "products": ["Product 1", "Product 2"],
+  "investmentThesis": "Detailed thesis paragraph",
+  "risks": ["Risk 1", "Risk 2"],
+  "keyPeople": [{"name": "CEO Name", "title": "CEO", "background": "Brief bio"}]
+}`;
     }
 
-    console.log(`Generating ${type} content for topic: ${topic}, region: ${region}`);
+    console.log(`Generating ${type} content for topic: ${topic}, region: ${region}, wordCount: ${wordCount}`);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -90,8 +150,7 @@ IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        temperature: 0.7,
-        max_tokens: 3000,
+        max_tokens: 4000,
       }),
     });
 
@@ -100,13 +159,19 @@ IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
       console.error("AI gateway error:", response.status, errorText);
       
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
+        return new Response(JSON.stringify({ 
+          error: "Rate limit exceeded. Please try again in a few minutes.",
+          retryAfter: 60
+        }), {
           status: 429,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Credits required. Please add funds to continue." }), {
+        return new Response(JSON.stringify({ 
+          error: "AI credits required. Please add funds to your Lovable workspace to continue generating content.",
+          code: "CREDITS_REQUIRED"
+        }), {
           status: 402,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -118,19 +183,34 @@ IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
     const data = await response.json();
     const generatedContent = data.choices[0].message.content;
     
-    // Try to parse as JSON, otherwise return raw
+    // Parse JSON from response
     let parsedContent;
     try {
-      // Extract JSON from potential markdown code blocks
       const jsonMatch = generatedContent.match(/```json\n?([\s\S]*?)\n?```/) || 
                         generatedContent.match(/```\n?([\s\S]*?)\n?```/);
       const jsonStr = jsonMatch ? jsonMatch[1] : generatedContent;
       parsedContent = JSON.parse(jsonStr);
-    } catch {
-      parsedContent = { raw: generatedContent };
+      
+      // Add AI author attribution
+      parsedContent.author = {
+        name: "SpatialMetrics AI",
+        avatar: "AI",
+        title: "AI Research Analyst"
+      };
+      
+      // Calculate reading time from content
+      if (parsedContent.content) {
+        const wordCount = parsedContent.content.split(/\s+/).length;
+        parsedContent.readTime = Math.ceil(wordCount / 220);
+        parsedContent.wordCount = wordCount;
+      }
+      
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      parsedContent = { raw: generatedContent, parseError: true };
     }
 
-    console.log(`Successfully generated ${type} content`);
+    console.log(`Successfully generated ${type} content with ${parsedContent.wordCount || 'unknown'} words`);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -144,7 +224,8 @@ IMPORTANT: Do not use ** or * for emphasis. Write in plain text only.`;
   } catch (error) {
     console.error("Error generating content:", error);
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : "Unknown error" 
+      error: error instanceof Error ? error.message : "Unknown error",
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

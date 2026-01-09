@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { 
-  Rocket, 
-  MapPin, 
-  DollarSign, 
-  Users, 
+import {
+  Rocket,
+  MapPin,
+  DollarSign,
+  Users,
   Calendar,
   TrendingUp,
   Search,
@@ -112,8 +112,8 @@ const StartupTracker = () => {
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [discoveredStartup, setDiscoveredStartup] = useState<any>(null);
 
-  const filteredStartups = activeRegion === 'all' 
-    ? startups 
+  const filteredStartups = activeRegion === 'all'
+    ? startups
     : getStartupsByRegion(activeRegion);
 
   const searchFilteredStartups = filteredStartups.filter(s =>
@@ -131,10 +131,11 @@ const StartupTracker = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('generate-content', {
-        body: { 
-          type: 'startup-profile', 
+        body: {
+          type: 'startup-profile',
           topic: 'emerging spatial computing startup',
-          region: activeRegion === 'all' ? 'Global' : regionLabels[activeRegion]
+          region: activeRegion === 'all' ? 'Global' : regionLabels[activeRegion],
+          searchResults: undefined // Placeholder for live search data injection
         }
       });
 

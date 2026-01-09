@@ -21,11 +21,15 @@ export const AIInsightsFeed = () => {
     setIsGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-content', {
-        body: { type: 'market-brief', region: 'Global' }
+        body: {
+          type: 'market-brief',
+          region: 'Global',
+          searchResults: undefined // Placeholder for live search data injection
+        }
       });
 
       if (error) throw error;
-      
+
       if (data?.success && data?.data) {
         setInsight(data.data);
         toast.success('Fresh insight generated');
@@ -38,10 +42,10 @@ export const AIInsightsFeed = () => {
     }
   };
 
-  const SignalIcon = insight?.signal === 'bullish' ? TrendingUp : 
-                     insight?.signal === 'bearish' ? TrendingDown : Minus;
-  const signalColor = insight?.signal === 'bullish' ? 'text-success' : 
-                      insight?.signal === 'bearish' ? 'text-destructive' : 'text-muted-foreground';
+  const SignalIcon = insight?.signal === 'bullish' ? TrendingUp :
+    insight?.signal === 'bearish' ? TrendingDown : Minus;
+  const signalColor = insight?.signal === 'bullish' ? 'text-success' :
+    insight?.signal === 'bearish' ? 'text-destructive' : 'text-muted-foreground';
 
   return (
     <Card className="border-primary/30">
@@ -51,9 +55,9 @@ export const AIInsightsFeed = () => {
             <Sparkles className="h-4 w-4 text-primary" />
             AI Market Brief
           </CardTitle>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={generateInsight}
             disabled={isGenerating}
             className="h-8 text-sm"

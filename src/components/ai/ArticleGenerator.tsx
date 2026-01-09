@@ -35,7 +35,13 @@ export const ArticleGenerator = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('generate-content', {
-        body: { type: 'article', topic, category, region }
+        body: {
+          type: 'article',
+          topic,
+          category,
+          region,
+          searchResults: undefined // Placeholder for live search data injection
+        }
       });
 
       if (error) throw error;
@@ -109,8 +115,8 @@ export const ArticleGenerator = () => {
             </div>
           </div>
 
-          <Button 
-            onClick={generateArticle} 
+          <Button
+            onClick={generateArticle}
             disabled={isGenerating || !topic.trim()}
             className="w-full"
           >
@@ -171,7 +177,7 @@ export const ArticleGenerator = () => {
             </Card>
 
             <div className="prose prose-base prose-invert max-w-none [&_p]:text-base [&_p]:leading-7 [&_p]:mb-4 [&_p]:font-normal [&_h2]:text-lg [&_h2]:font-medium [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-2">
-              <div dangerouslySetInnerHTML={{ 
+              <div dangerouslySetInnerHTML={{
                 __html: generatedArticle.content
                   .replace(/\n/g, '<br/>')
                   .replace(/## /g, '<h2>')

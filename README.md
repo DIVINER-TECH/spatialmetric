@@ -71,3 +71,23 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Daily data pipeline (market + news)
+
+This repo includes daily ingestion functions and database tables for market snapshots and XR news.
+
+**Database**
+- Apply migrations in `supabase/migrations/20260206_market_and_news.sql`.
+
+**Edge functions**
+- `daily-market-snapshot` fetches daily quotes and stores an index snapshot.
+- `ingest-news` pulls XR/VR/AR news from RSS feeds into `news_items`.
+
+**Environment variables (Supabase Functions)**
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `MARKET_DATA_PROVIDER` (`stooq` or `alphavantage`)
+- `ALPHAVANTAGE_API_KEY` (required if `MARKET_DATA_PROVIDER=alphavantage`)
+
+**Scheduling**
+- Schedule both functions to run daily using Supabase scheduled functions (Dashboard or CLI).

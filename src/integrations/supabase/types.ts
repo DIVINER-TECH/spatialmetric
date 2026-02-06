@@ -14,7 +14,91 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      market_daily_snapshots: {
+        Row: {
+          id: string
+          as_of_date: string
+          data: Json
+          sources: Json | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          as_of_date: string
+          data: Json
+          sources?: Json | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          as_of_date?: string
+          data?: Json
+          sources?: Json | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      news_sources: {
+        Row: {
+          id: string
+          name: string
+          feed_url: string
+          active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          feed_url: string
+          active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          feed_url?: string
+          active?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      news_items: {
+        Row: {
+          id: string
+          source_id: string | null
+          title: string
+          url: string
+          summary: string | null
+          published_at: string | null
+          fetched_at: string
+        }
+        Insert: {
+          id?: string
+          source_id?: string | null
+          title: string
+          url: string
+          summary?: string | null
+          published_at?: string | null
+          fetched_at?: string
+        }
+        Update: {
+          id?: string
+          source_id?: string | null
+          title?: string
+          url?: string
+          summary?: string | null
+          published_at?: string | null
+          fetched_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_items_source_id_fkey"
+            columns: ["source_id"]
+            referencedRelation: "news_sources"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

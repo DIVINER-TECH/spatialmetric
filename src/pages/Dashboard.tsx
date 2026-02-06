@@ -3,15 +3,15 @@ import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useMarketSnapshot } from "@/hooks/useMarketSnapshot";
+import { useNewsItems } from "@/hooks/useNewsItems";
+import { tickerStocks } from "@/data/marketData";
 import {
   TrendingUp,
   TrendingDown,
   DollarSign,
   Users,
-  Building2,
   Glasses,
-  Smartphone,
-  Headphones,
   Activity,
   ArrowUpRight,
   ArrowDownRight,
@@ -32,20 +32,21 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { format } from "date-fns";
 
-const marketCapData = [
-  { month: "Jan", vr: 18, ar: 22, mr: 8 },
-  { month: "Feb", vr: 20, ar: 24, mr: 9 },
-  { month: "Mar", vr: 19, ar: 26, mr: 10 },
-  { month: "Apr", vr: 22, ar: 28, mr: 11 },
-  { month: "May", vr: 25, ar: 30, mr: 12 },
-  { month: "Jun", vr: 28, ar: 32, mr: 14 },
-  { month: "Jul", vr: 30, ar: 35, mr: 15 },
-  { month: "Aug", vr: 28, ar: 36, mr: 16 },
-  { month: "Sep", vr: 32, ar: 38, mr: 18 },
-  { month: "Oct", vr: 35, ar: 42, mr: 20 },
-  { month: "Nov", vr: 38, ar: 45, mr: 22 },
-  { month: "Dec", vr: 42, ar: 48, mr: 25 },
+const fallbackIndexSeries = [
+  { date: "2025-01-01", value: 100 },
+  { date: "2025-02-01", value: 103 },
+  { date: "2025-03-01", value: 101 },
+  { date: "2025-04-01", value: 106 },
+  { date: "2025-05-01", value: 110 },
+  { date: "2025-06-01", value: 114 },
+  { date: "2025-07-01", value: 118 },
+  { date: "2025-08-01", value: 115 },
+  { date: "2025-09-01", value: 121 },
+  { date: "2025-10-01", value: 126 },
+  { date: "2025-11-01", value: 130 },
+  { date: "2025-12-01", value: 134 },
 ];
 
 const segmentData = [
@@ -63,79 +64,86 @@ const fundingData = [
   { quarter: "Q4 2024", amount: 5.2 },
 ];
 
-const topCompanies = [
-  { name: "Meta Platforms", ticker: "META", marketCap: "$1.2T", change: 3.45, positive: true },
-  { name: "Apple Inc", ticker: "AAPL", marketCap: "$3.0T", change: 1.23, positive: true },
-  { name: "Microsoft", ticker: "MSFT", marketCap: "$2.8T", change: 2.18, positive: true },
-  { name: "NVIDIA", ticker: "NVDA", marketCap: "$1.1T", change: 4.56, positive: true },
-  { name: "Unity Software", ticker: "U", marketCap: "$10.8B", change: -2.34, positive: false },
-  { name: "Snap Inc", ticker: "SNAP", marketCap: "$24.2B", change: -1.89, positive: false },
-];
+const formatMarketCap = (value?: number | null) => {
+  if (!value) return "—";
+  if (value >= 1e12) return `$${(value / 1e12).toFixed(1)}T`;
+  if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
+  if (value >= 1e6) return `$${(value / 1e6).toFixed(0)}M`;
+  return `$${value.toLocaleString()}`;
+};
 
-const kpiCards = [
-  {
-    title: "Total XR Market Cap",
-    value: "$52.4B",
-    change: "+18.2%",
-    positive: true,
-    icon: DollarSign,
-    description: "vs last year",
-  },
-  {
-    title: "Monthly Active XR Users",
-    value: "384M",
-    change: "+24.5%",
-    positive: true,
-    icon: Users,
-    description: "global users",
-  },
-  {
-    title: "XR Hardware Shipments",
-    value: "12.8M",
-    change: "+32.1%",
-    positive: true,
-    icon: Glasses,
-    description: "units YTD",
-  },
-  {
-    title: "VC Funding (2024)",
-    value: "$16.3B",
-    change: "+8.7%",
-    positive: true,
-    icon: Activity,
-    description: "total raised",
-  },
-];
+const formatVolume = (value: number) => {
+  if (value >= 1e9) return `${(value / 1e9).toFixed(1)}B`;
+  if (value >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+  if (value >= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+  return value.toLocaleString();
+};
 
-const recentActivity = [
-  {
-    event: "Apple announces Vision Pro 2 development",
-    category: "Product",
-    time: "2 hours ago",
-  },
-  {
-    event: "Meta acquires spatial audio startup for $120M",
-    category: "M&A",
-    time: "5 hours ago",
-  },
-  {
-    event: "Qualcomm XR2 Gen 3 chip benchmarks leaked",
-    category: "Tech",
-    time: "8 hours ago",
-  },
-  {
-    event: "Unity announces enterprise XR partnership",
-    category: "Partnership",
-    time: "12 hours ago",
-  },
-  {
-    event: "XR developer conference dates announced",
-    category: "Event",
-    time: "1 day ago",
-  },
-];
+const formatAxisDate = (value: string) => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return format(parsed, "MMM d");
+};
+
 
 const Dashboard = () => {
+  const { data: snapshot } = useMarketSnapshot();
+  const { data: newsItems } = useNewsItems(5);
+
+  const indexSeries = snapshot?.indexSeries?.length ? snapshot.indexSeries : fallbackIndexSeries;
+  const latestIndex = indexSeries[indexSeries.length - 1];
+  const prevIndex = indexSeries[indexSeries.length - 2];
+  const indexChangePercent = latestIndex && prevIndex && prevIndex.value !== 0
+    ? ((latestIndex.value - prevIndex.value) / prevIndex.value) * 100
+    : 0;
+
+  const companies = snapshot?.topCompanies?.length ? snapshot.topCompanies : tickerStocks;
+  const avgChange = companies.length > 0
+    ? companies.reduce((sum, c) => sum + c.changePercent, 0) / companies.length
+    : 0;
+  const gainers = companies.filter((c) => c.changePercent > 0).length;
+  const losers = companies.filter((c) => c.changePercent < 0).length;
+  const totalVolume = companies.reduce((sum, c) => sum + c.volume, 0);
+
+  const kpiCards = [
+    {
+      title: "XR Market Index",
+      value: latestIndex ? latestIndex.value.toFixed(1) : "—",
+      change: `${indexChangePercent >= 0 ? "+" : ""}${indexChangePercent.toFixed(2)}%`,
+      positive: indexChangePercent >= 0,
+      icon: DollarSign,
+      description: "daily index level",
+    },
+    {
+      title: "Average Daily Move",
+      value: `${avgChange.toFixed(2)}%`,
+      change: `${avgChange >= 0 ? "+" : ""}${avgChange.toFixed(2)}%`,
+      positive: avgChange >= 0,
+      icon: Activity,
+      description: "equal-weighted move",
+    },
+    {
+      title: "Gainers / Losers",
+      value: `${gainers} / ${losers}`,
+      change: "",
+      positive: gainers >= losers,
+      icon: Users,
+      description: "today's split",
+    },
+    {
+      title: "Total Volume",
+      value: formatVolume(totalVolume),
+      change: "",
+      positive: true,
+      icon: Glasses,
+      description: "tracked tickers",
+    },
+  ];
+
+  const lastUpdatedLabel = snapshot?.asOfDate
+    ? format(new Date(snapshot.asOfDate), "MMM d, yyyy")
+    : "—";
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -146,11 +154,14 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold">Market Dashboard</h1>
             <Badge variant="outline" className="flex items-center gap-1">
               <span className="flex h-2 w-2 rounded-full bg-success animate-pulse" />
-              Live
+              Daily
             </Badge>
           </div>
           <p className="text-muted-foreground">
-            Real-time spatial computing market metrics and investment data
+            Daily spatial computing market metrics and investment data
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Last updated: {lastUpdatedLabel}
           </p>
         </div>
 
@@ -163,21 +174,26 @@ const Dashboard = () => {
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                     <kpi.icon className="h-5 w-5 text-primary" />
                   </div>
-                  <div
-                    className={`flex items-center gap-1 text-sm font-medium ${
-                      kpi.positive ? "text-success" : "text-destructive"
-                    }`}
-                  >
-                    {kpi.positive ? (
-                      <ArrowUpRight className="h-4 w-4" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4" />
-                    )}
-                    {kpi.change}
-                  </div>
+                  {kpi.change ? (
+                    <div
+                      className={`flex items-center gap-1 text-sm font-medium ${
+                        kpi.positive ? "text-success" : "text-destructive"
+                      }`}
+                    >
+                      {kpi.positive ? (
+                        <ArrowUpRight className="h-4 w-4" />
+                      ) : (
+                        <ArrowDownRight className="h-4 w-4" />
+                      )}
+                      {kpi.change}
+                    </div>
+                  ) : null}
                 </div>
                 <div className="text-2xl font-bold mb-1">{kpi.value}</div>
                 <div className="text-sm text-muted-foreground">{kpi.title}</div>
+                {kpi.description ? (
+                  <div className="text-xs text-muted-foreground">{kpi.description}</div>
+                ) : null}
               </CardContent>
             </Card>
           ))}
@@ -188,7 +204,7 @@ const Dashboard = () => {
           {/* Market Cap Trend */}
           <Card className="lg:col-span-2 bg-card/50">
             <CardHeader>
-              <CardTitle>XR Market Cap by Segment</CardTitle>
+              <CardTitle>XR Public Market Index</CardTitle>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="area">
@@ -199,32 +215,25 @@ const Dashboard = () => {
                 <TabsContent value="area">
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={marketCapData}>
+                      <AreaChart data={indexSeries}>
                         <defs>
-                          <linearGradient id="colorVr" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
-                          </linearGradient>
-                          <linearGradient id="colorAr" x1="0" y1="0" x2="0" y2="1">
+                          <linearGradient id="colorIndex" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3} />
                             <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
                           </linearGradient>
-                          <linearGradient id="colorMr" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
-                          </linearGradient>
                         </defs>
                         <XAxis
-                          dataKey="month"
+                          dataKey="date"
                           axisLine={false}
                           tickLine={false}
                           tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                          tickFormatter={formatAxisDate}
                         />
                         <YAxis
                           axisLine={false}
                           tickLine={false}
                           tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                          tickFormatter={(value) => `$${value}B`}
+                          tickFormatter={(value) => value.toFixed(1)}
                         />
                         <Tooltip
                           contentStyle={{
@@ -232,35 +241,17 @@ const Dashboard = () => {
                             border: "1px solid hsl(var(--border))",
                             borderRadius: "8px",
                           }}
-                          formatter={(value: number) => [`$${value}B`, ""]}
+                          formatter={(value: number) => [value.toFixed(2), "Index"]}
+                          labelFormatter={(label: string) => formatAxisDate(label)}
                         />
                         <Legend />
                         <Area
                           type="monotone"
-                          dataKey="ar"
-                          name="AR"
+                          dataKey="value"
+                          name="Index"
                           stroke="hsl(var(--chart-2))"
                           fillOpacity={1}
-                          fill="url(#colorAr)"
-                          stackId="1"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="vr"
-                          name="VR"
-                          stroke="hsl(var(--chart-1))"
-                          fillOpacity={1}
-                          fill="url(#colorVr)"
-                          stackId="1"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="mr"
-                          name="MR"
-                          stroke="hsl(var(--chart-3))"
-                          fillOpacity={1}
-                          fill="url(#colorMr)"
-                          stackId="1"
+                          fill="url(#colorIndex)"
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -269,18 +260,19 @@ const Dashboard = () => {
                 <TabsContent value="line">
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={marketCapData}>
+                      <LineChart data={indexSeries}>
                         <XAxis
-                          dataKey="month"
+                          dataKey="date"
                           axisLine={false}
                           tickLine={false}
                           tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                          tickFormatter={formatAxisDate}
                         />
                         <YAxis
                           axisLine={false}
                           tickLine={false}
                           tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                          tickFormatter={(value) => `$${value}B`}
+                          tickFormatter={(value) => value.toFixed(1)}
                         />
                         <Tooltip
                           contentStyle={{
@@ -288,12 +280,11 @@ const Dashboard = () => {
                             border: "1px solid hsl(var(--border))",
                             borderRadius: "8px",
                           }}
-                          formatter={(value: number) => [`$${value}B`, ""]}
+                          formatter={(value: number) => [value.toFixed(2), "Index"]}
+                          labelFormatter={(label: string) => formatAxisDate(label)}
                         />
                         <Legend />
-                        <Line type="monotone" dataKey="ar" name="AR" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="vr" name="VR" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="mr" name="MR" stroke="hsl(var(--chart-3))" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="value" name="Index" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={false} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -395,30 +386,37 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {topCompanies.map((company) => (
-                  <div key={company.ticker} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                {companies.map((company) => {
+                  const positive = company.changePercent >= 0;
+                  const capOrPrice = company.marketCap
+                    ? formatMarketCap(company.marketCap)
+                    : `$${company.price.toFixed(2)}`;
+
+                  return (
+                    <div key={company.symbol} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                     <div>
                       <div className="font-medium">{company.name}</div>
-                      <div className="text-sm text-muted-foreground">{company.ticker}</div>
+                      <div className="text-sm text-muted-foreground">{company.symbol}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono text-sm">{company.marketCap}</div>
+                      <div className="font-mono text-sm">{capOrPrice}</div>
                       <div
                         className={`flex items-center justify-end gap-1 text-sm ${
-                          company.positive ? "text-success" : "text-destructive"
+                          positive ? "text-success" : "text-destructive"
                         }`}
                       >
-                        {company.positive ? (
+                        {positive ? (
                           <TrendingUp className="h-3 w-3" />
                         ) : (
                           <TrendingDown className="h-3 w-3" />
                         )}
-                        {company.positive ? "+" : ""}
-                        {company.change}%
+                        {positive ? "+" : ""}
+                        {company.changePercent}%
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
@@ -426,24 +424,32 @@ const Dashboard = () => {
           {/* Recent Activity */}
           <Card className="bg-card/50">
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle>Latest News</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentActivity.map((item, index) => (
-                  <div key={index} className="flex gap-3">
-                    <div className="flex h-2 w-2 mt-2 rounded-full bg-primary" />
-                    <div className="flex-1">
-                      <p className="text-sm">{item.event}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="secondary" className="text-xs">
-                          {item.category}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">{item.time}</span>
+                {newsItems && newsItems.length > 0 ? (
+                  newsItems.map((item) => (
+                    <div key={item.id} className="flex gap-3">
+                      <div className="flex h-2 w-2 mt-2 rounded-full bg-primary" />
+                      <div className="flex-1">
+                        <p className="text-sm">{item.title}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {item.source && (
+                            <Badge variant="secondary" className="text-xs">
+                              {item.source}
+                            </Badge>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {item.publishedAt ? format(new Date(item.publishedAt), "MMM d") : "—"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No news ingested yet.</p>
+                )}
               </div>
             </CardContent>
           </Card>

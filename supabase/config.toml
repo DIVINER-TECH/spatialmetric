@@ -1,10 +1,1 @@
-project_id = "qxewcucclzmfnsmkndnf"
-
-[functions.generate-content]
-verify_jwt = false
-
-[functions.daily-market-snapshot]
-verify_jwt = false
-
-[functions.ingest-news]
-verify_jwt = false
+project_id = "ymlmuupqiytcwobmxzpz"

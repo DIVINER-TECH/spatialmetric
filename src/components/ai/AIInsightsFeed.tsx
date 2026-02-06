@@ -1,10 +1,7 @@
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Sparkles, RefreshCw, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { Sparkles, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useContentItems } from '@/hooks/useContentItems';
 
 interface MarketBrief {
   headline: string;
@@ -14,33 +11,9 @@ interface MarketBrief {
 }
 
 export const AIInsightsFeed = () => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [insight, setInsight] = useState<MarketBrief | null>(null);
-
-  const generateInsight = async () => {
-    setIsGenerating(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-content', {
-        body: {
-          type: 'market-brief',
-          region: 'Global',
-          searchResults: undefined // Placeholder for live search data injection
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.success && data?.data) {
-        setInsight(data.data);
-        toast.success('Fresh insight generated');
-      }
-    } catch (err) {
-      console.error('Error generating insight:', err);
-      toast.error('Failed to generate insight');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const { data: briefs } = useContentItems('market-brief', 1);
+  const brief = briefs && briefs.length > 0 ? briefs[0] : null;
+  const insight = brief?.metadata as MarketBrief | undefined;
 
   const SignalIcon = insight?.signal === 'bullish' ? TrendingUp :
     insight?.signal === 'bearish' ? TrendingDown : Minus;
@@ -55,16 +28,6 @@ export const AIInsightsFeed = () => {
             <Sparkles className="h-4 w-4 text-primary" />
             AI Market Brief
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={generateInsight}
-            disabled={isGenerating}
-            className="h-8 text-sm"
-          >
-            <RefreshCw className={`h-4 w-4 mr-1.5 ${isGenerating ? 'animate-spin' : ''}`} />
-            {isGenerating ? 'Generating...' : 'Refresh'}
-          </Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -96,11 +59,7 @@ export const AIInsightsFeed = () => {
           </div>
         ) : (
           <div className="text-center py-6">
-            <p className="text-sm text-muted-foreground mb-3">Click refresh to generate AI insights</p>
-            <Button variant="outline" size="sm" onClick={generateInsight} disabled={isGenerating}>
-              <Sparkles className="h-4 w-4 mr-1.5" />
-              Generate Insight
-            </Button>
+            <p className="text-sm text-muted-foreground">No AI market brief yet.</p>
           </div>
         )}
       </CardContent>

@@ -99,6 +99,45 @@ export type Database = {
           }
         ]
       }
+      content_items: {
+        Row: {
+          id: string
+          type: string
+          title: string
+          excerpt: string | null
+          content: string | null
+          tags: string[] | null
+          sources: Json | null
+          metadata: Json | null
+          published_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          type: string
+          title: string
+          excerpt?: string | null
+          content?: string | null
+          tags?: string[] | null
+          sources?: Json | null
+          metadata?: Json | null
+          published_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          type?: string
+          title?: string
+          excerpt?: string | null
+          content?: string | null
+          tags?: string[] | null
+          sources?: Json | null
+          metadata?: Json | null
+          published_at?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

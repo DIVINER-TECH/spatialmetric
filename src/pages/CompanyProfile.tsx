@@ -50,7 +50,7 @@ const CompanyProfile = () => {
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold">{company.name}</h1>
                 {company.ticker && <Badge variant="outline" className="text-lg">{company.ticker}</Badge>}
-                <LiveIndicator />
+                <LiveIndicator label="Snapshot" />
               </div>
               <p className="text-muted-foreground">{company.sector}</p>
             </div>

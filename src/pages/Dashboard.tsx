@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMarketSnapshot } from "@/hooks/useMarketSnapshot";
 import { useNewsItems } from "@/hooks/useNewsItems";
-import { tickerStocks } from "@/data/marketData";
 import {
   TrendingUp,
   TrendingDown,
@@ -34,35 +33,9 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 
-const fallbackIndexSeries = [
-  { date: "2025-01-01", value: 100 },
-  { date: "2025-02-01", value: 103 },
-  { date: "2025-03-01", value: 101 },
-  { date: "2025-04-01", value: 106 },
-  { date: "2025-05-01", value: 110 },
-  { date: "2025-06-01", value: 114 },
-  { date: "2025-07-01", value: 118 },
-  { date: "2025-08-01", value: 115 },
-  { date: "2025-09-01", value: 121 },
-  { date: "2025-10-01", value: 126 },
-  { date: "2025-11-01", value: 130 },
-  { date: "2025-12-01", value: 134 },
-];
+const segmentData: { name: string; value: number; color: string }[] = [];
 
-const segmentData = [
-  { name: "AR/MR Headsets", value: 35, color: "hsl(var(--chart-1))" },
-  { name: "VR Headsets", value: 28, color: "hsl(var(--chart-2))" },
-  { name: "Software/Apps", value: 20, color: "hsl(var(--chart-3))" },
-  { name: "Enterprise Solutions", value: 12, color: "hsl(var(--chart-4))" },
-  { name: "Accessories", value: 5, color: "hsl(var(--chart-5))" },
-];
-
-const fundingData = [
-  { quarter: "Q1 2024", amount: 3.2 },
-  { quarter: "Q2 2024", amount: 4.1 },
-  { quarter: "Q3 2024", amount: 3.8 },
-  { quarter: "Q4 2024", amount: 5.2 },
-];
+const fundingData = [];
 
 const formatMarketCap = (value?: number | null) => {
   if (!value) return "—";
@@ -90,55 +63,91 @@ const Dashboard = () => {
   const { data: snapshot } = useMarketSnapshot();
   const { data: newsItems } = useNewsItems(5);
 
-  const indexSeries = snapshot?.indexSeries?.length ? snapshot.indexSeries : fallbackIndexSeries;
-  const latestIndex = indexSeries[indexSeries.length - 1];
-  const prevIndex = indexSeries[indexSeries.length - 2];
+  const indexSeries = snapshot?.indexSeries ?? [];
+  const latestIndex = indexSeries.length > 0 ? indexSeries[indexSeries.length - 1] : undefined;
+  const prevIndex = indexSeries.length > 1 ? indexSeries[indexSeries.length - 2] : undefined;
   const indexChangePercent = latestIndex && prevIndex && prevIndex.value !== 0
     ? ((latestIndex.value - prevIndex.value) / prevIndex.value) * 100
     : 0;
 
-  const companies = snapshot?.topCompanies?.length ? snapshot.topCompanies : tickerStocks;
+  const companies = snapshot?.topCompanies ?? [];
   const avgChange = companies.length > 0
     ? companies.reduce((sum, c) => sum + c.changePercent, 0) / companies.length
     : 0;
   const gainers = companies.filter((c) => c.changePercent > 0).length;
   const losers = companies.filter((c) => c.changePercent < 0).length;
   const totalVolume = companies.reduce((sum, c) => sum + c.volume, 0);
+  const hasSnapshot = Boolean(indexSeries.length && companies.length);
 
-  const kpiCards = [
-    {
-      title: "XR Market Index",
-      value: latestIndex ? latestIndex.value.toFixed(1) : "—",
-      change: `${indexChangePercent >= 0 ? "+" : ""}${indexChangePercent.toFixed(2)}%`,
-      positive: indexChangePercent >= 0,
-      icon: DollarSign,
-      description: "daily index level",
-    },
-    {
-      title: "Average Daily Move",
-      value: `${avgChange.toFixed(2)}%`,
-      change: `${avgChange >= 0 ? "+" : ""}${avgChange.toFixed(2)}%`,
-      positive: avgChange >= 0,
-      icon: Activity,
-      description: "equal-weighted move",
-    },
-    {
-      title: "Gainers / Losers",
-      value: `${gainers} / ${losers}`,
-      change: "",
-      positive: gainers >= losers,
-      icon: Users,
-      description: "today's split",
-    },
-    {
-      title: "Total Volume",
-      value: formatVolume(totalVolume),
-      change: "",
-      positive: true,
-      icon: Glasses,
-      description: "tracked tickers",
-    },
-  ];
+  const kpiCards = hasSnapshot
+    ? [
+        {
+          title: "XR Market Index",
+          value: latestIndex ? latestIndex.value.toFixed(1) : "—",
+          change: `${indexChangePercent >= 0 ? "+" : ""}${indexChangePercent.toFixed(2)}%`,
+          positive: indexChangePercent >= 0,
+          icon: DollarSign,
+          description: "daily index level",
+        },
+        {
+          title: "Average Daily Move",
+          value: `${avgChange.toFixed(2)}%`,
+          change: `${avgChange >= 0 ? "+" : ""}${avgChange.toFixed(2)}%`,
+          positive: avgChange >= 0,
+          icon: Activity,
+          description: "equal-weighted move",
+        },
+        {
+          title: "Gainers / Losers",
+          value: `${gainers} / ${losers}`,
+          change: "",
+          positive: gainers >= losers,
+          icon: Users,
+          description: "today's split",
+        },
+        {
+          title: "Total Volume",
+          value: formatVolume(totalVolume),
+          change: "",
+          positive: true,
+          icon: Glasses,
+          description: "tracked tickers",
+        },
+      ]
+    : [
+        {
+          title: "XR Market Index",
+          value: "—",
+          change: "",
+          positive: true,
+          icon: DollarSign,
+          description: "no snapshot data yet",
+        },
+        {
+          title: "Average Daily Move",
+          value: "—",
+          change: "",
+          positive: true,
+          icon: Activity,
+          description: "no snapshot data yet",
+        },
+        {
+          title: "Gainers / Losers",
+          value: "—",
+          change: "",
+          positive: true,
+          icon: Users,
+          description: "no snapshot data yet",
+        },
+        {
+          title: "Total Volume",
+          value: "—",
+          change: "",
+          positive: true,
+          icon: Glasses,
+          description: "no snapshot data yet",
+        },
+      ];
 
   const lastUpdatedLabel = snapshot?.asOfDate
     ? format(new Date(snapshot.asOfDate), "MMM d, yyyy")
@@ -163,6 +172,11 @@ const Dashboard = () => {
           <p className="text-xs text-muted-foreground mt-2">
             Last updated: {lastUpdatedLabel}
           </p>
+          {!hasSnapshot ? (
+            <p className="text-xs text-muted-foreground mt-1">
+              No daily snapshot found. Deploy and run the `daily-market-snapshot` function to populate data.
+            </p>
+          ) : null}
         </div>
 
         {/* KPI Cards */}
@@ -299,44 +313,52 @@ const Dashboard = () => {
               <CardTitle>Market Segments</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[250px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={segmentData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {segmentData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`${value}%`, ""]}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="space-y-2 mt-4">
-                {segmentData.map((segment) => (
-                  <div key={segment.name} className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: segment.color }} />
-                      <span className="text-muted-foreground">{segment.name}</span>
-                    </div>
-                    <span className="font-medium">{segment.value}%</span>
+              {segmentData.length > 0 ? (
+                <>
+                  <div className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={segmentData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={90}
+                          paddingAngle={2}
+                          dataKey="value"
+                        >
+                          {segmentData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px",
+                          }}
+                          formatter={(value: number) => [`${value}%`, ""]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                ))}
-              </div>
+                  <div className="space-y-2 mt-4">
+                    {segmentData.map((segment) => (
+                      <div key={segment.name} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: segment.color }} />
+                          <span className="text-muted-foreground">{segment.name}</span>
+                        </div>
+                        <span className="font-medium">{segment.value}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Market segments feed not connected yet.
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -349,33 +371,39 @@ const Dashboard = () => {
               <CardTitle>Quarterly VC Funding</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={fundingData}>
-                    <XAxis
-                      dataKey="quarter"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                    />
-                    <YAxis
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                      tickFormatter={(value) => `$${value}B`}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(value: number) => [`$${value}B`, "Funding"]}
-                    />
-                    <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {fundingData.length > 0 ? (
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={fundingData}>
+                      <XAxis
+                        dataKey="quarter"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                        tickFormatter={(value) => `$${value}B`}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                        formatter={(value: number) => [`$${value}B`, "Funding"]}
+                      />
+                      <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Funding data pipeline not connected yet.
+                </p>
+              )}
             </CardContent>
           </Card>
 

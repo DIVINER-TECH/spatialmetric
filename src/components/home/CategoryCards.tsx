@@ -41,7 +41,7 @@ const categories = [
   },
   {
     title: "Spatial Updates",
-    description: "Real-time updates on spatial computing developments and launches",
+    description: "Daily updates on spatial computing developments and launches",
     icon: Globe,
     href: "/spatial-updates",
     color: "from-chart-2/20 to-chart-2/5",

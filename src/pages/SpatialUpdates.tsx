@@ -20,10 +20,10 @@ const SpatialUpdates = () => {
             <div className="flex items-center gap-3 mb-4">
               <Zap className="h-8 w-8 text-accent" />
               <h1 className="text-3xl md:text-4xl font-bold">Spatial Updates</h1>
-              <LiveIndicator />
+              <LiveIndicator label="Daily" />
             </div>
             <p className="text-muted-foreground max-w-2xl">
-              Breaking news, product launches, and real-time updates from the spatial computing industry.
+              Daily news, product launches, and updates from the spatial computing industry.
             </p>
           </div>
         </section>

@@ -6,7 +6,7 @@ import { LiveIndicator } from '@/components/shared/LiveIndicator';
 import { AIInsightsFeed } from '@/components/ai/AIInsightsFeed';
 import { ArticleGenerator } from '@/components/ai/ArticleGenerator';
 import { useArticles } from '@/hooks/useArticles';
-import { useLiveMetrics } from '@/hooks/useLiveMarketData';
+import { useMarketSnapshot } from '@/hooks/useMarketSnapshot';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -83,7 +83,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
 
 const MarketIntelligence = () => {
   const { articles } = useArticles('market-intelligence');
-  const { data: metrics } = useLiveMetrics();
+  const { data: snapshot } = useMarketSnapshot();
   const [activeTab, setActiveTab] = useState('overview');
   const [activeRegion, setActiveRegion] = useState('global');
 
@@ -91,6 +91,41 @@ const MarketIntelligence = () => {
   const maxGrowth = Math.max(...growthComparison.map(r => r.value));
 
   const selectedRegion = regionalData.find(r => r.regionCode === activeRegion) || regionalData[0];
+
+  const companies = snapshot?.topCompanies ?? [];
+  const avgChange = companies.length > 0
+    ? companies.reduce((sum, c) => sum + c.changePercent, 0) / companies.length
+    : 0;
+  const gainers = companies.filter((c) => c.changePercent > 0).length;
+  const losers = companies.filter((c) => c.changePercent < 0).length;
+  const totalVolume = companies.reduce((sum, c) => sum + c.volume, 0);
+
+  const dailyMetrics = [
+    {
+      label: 'Tracked Companies',
+      value: companies.length > 0 ? `${companies.length}` : '—',
+      change: '',
+      positive: true
+    },
+    {
+      label: 'Average Daily Move',
+      value: companies.length > 0 ? `${avgChange.toFixed(2)}%` : '—',
+      change: companies.length > 0 ? `${avgChange >= 0 ? '+' : ''}${avgChange.toFixed(2)}%` : '',
+      positive: avgChange >= 0
+    },
+    {
+      label: 'Gainers / Losers',
+      value: companies.length > 0 ? `${gainers} / ${losers}` : '—',
+      change: '',
+      positive: gainers >= losers
+    },
+    {
+      label: 'Total Volume',
+      value: companies.length > 0 ? `${totalVolume.toLocaleString()}` : '—',
+      change: '',
+      positive: true
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -101,27 +136,38 @@ const MarketIntelligence = () => {
             <div className="flex items-center gap-3 mb-4">
               <BarChart3 className="h-8 w-8 text-primary" />
               <h1 className="text-3xl md:text-4xl font-semibold">Market Intelligence</h1>
-              <LiveIndicator />
+              <LiveIndicator label="Daily" />
             </div>
             <p className="text-muted-foreground max-w-2xl text-base leading-relaxed">
-              Deep analysis of XR market dynamics, investment trends, valuations, and strategic insights for spatial computing investors. Data updated December 2025.
+              Deep analysis of XR market dynamics, investment trends, valuations, and strategic insights for spatial computing investors. Regional analysis is curated and may not update daily.
             </p>
+            {snapshot?.asOfDate ? (
+              <p className="text-xs text-muted-foreground mt-2">
+                Last updated: {new Date(snapshot.asOfDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-2">
+                No daily snapshot found. Deploy and run the `daily-market-snapshot` function to populate data.
+              </p>
+            )}
           </div>
         </section>
 
-        {/* Live Metrics */}
+        {/* Daily Metrics */}
         <section className="py-6 border-b border-border/50 bg-muted/20">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {metrics?.slice(0, 6).map((metric, i) => (
+              {dailyMetrics.map((metric, i) => (
                 <Card key={i} className="bg-card/50">
                   <CardContent className="p-4">
                     <p className="text-xs text-muted-foreground mb-1">{metric.label}</p>
                     <p className="text-lg font-semibold">{metric.value}</p>
-                    <div className={`flex items-center gap-1 text-xs ${metric.positive ? 'text-success' : 'text-destructive'}`}>
-                      {metric.positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                      {metric.change > 0 ? '+' : ''}{metric.change}%
-                    </div>
+                    {metric.change ? (
+                      <div className={`flex items-center gap-1 text-xs ${metric.positive ? 'text-success' : 'text-destructive'}`}>
+                        {metric.positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                        {metric.change}
+                      </div>
+                    ) : null}
                   </CardContent>
                 </Card>
               ))}

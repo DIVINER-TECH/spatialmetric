@@ -98,10 +98,10 @@ const RegionalIntelligence = () => {
             <div className="flex items-center gap-3 mb-3">
               <Globe className="h-7 w-7 text-primary" />
               <h1 className="text-2xl md:text-3xl font-bold">Regional Market Intelligence</h1>
-              <LiveIndicator />
+              <LiveIndicator label="Snapshot" />
             </div>
             <p className="text-sm text-muted-foreground max-w-2xl">
-              Investment metrics, statistics, and insights across global XR markets: North America, Europe, ASEAN, Pacific, South Asia, and MENA.
+              Curated investment metrics, statistics, and insights across global XR markets: North America, Europe, ASEAN, Pacific, South Asia, and MENA.
             </p>
           </div>
         </section>

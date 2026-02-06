@@ -1,17 +1,20 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
-
-const tickerData = [
-  { symbol: "META", name: "Meta Platforms", price: "514.28", change: 2.34, positive: true },
-  { symbol: "AAPL", name: "Apple Inc", price: "178.72", change: 0.85, positive: true },
-  { symbol: "MSFT", name: "Microsoft", price: "378.91", change: 1.23, positive: true },
-  { symbol: "SNAP", name: "Snap Inc", price: "14.56", change: -3.21, positive: false },
-  { symbol: "NVDA", name: "NVIDIA", price: "495.22", change: 4.12, positive: true },
-  { symbol: "QCOM", name: "Qualcomm", price: "142.33", change: -0.67, positive: false },
-  { symbol: "U", name: "Unity Software", price: "28.91", change: 1.87, positive: true },
-  { symbol: "RBLX", name: "Roblox", price: "41.23", change: -1.45, positive: false },
-];
+import { useMarketSnapshot } from "@/hooks/useMarketSnapshot";
 
 export function MarketTicker() {
+  const { data: snapshot } = useMarketSnapshot();
+  const tickerData = snapshot?.topCompanies?.slice(0, 8) ?? [];
+
+  if (tickerData.length === 0) {
+    return (
+      <div className="border-y border-border bg-card/50">
+        <div className="px-6 py-3 text-sm text-muted-foreground">
+          Ticker data not available yet. Run the daily snapshot to populate.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="border-y border-border bg-card/50 overflow-hidden">
       <div className="flex animate-marquee">
@@ -25,18 +28,18 @@ export function MarketTicker() {
               <span className="text-muted-foreground text-sm ml-2">{item.name}</span>
             </div>
             <div className="text-right">
-              <span className="font-mono">${item.price}</span>
+              <span className="font-mono">${item.price.toFixed(2)}</span>
               <span
                 className={`flex items-center gap-1 text-sm ml-2 ${
-                  item.positive ? "text-success" : "text-destructive"
+                  item.changePercent >= 0 ? "text-success" : "text-destructive"
                 }`}
               >
-                {item.positive ? (
+                {item.changePercent >= 0 ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
-                {item.positive ? "+" : ""}{item.change}%
+                {item.changePercent >= 0 ? "+" : ""}{item.changePercent.toFixed(2)}%
               </span>
             </div>
           </div>

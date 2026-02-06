@@ -63,6 +63,8 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const startTime = Date.now();
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -131,10 +133,45 @@ serve(async (req) => {
       }
     }
 
+    try {
+      const totalItems = Object.values(results).reduce((sum, value) => sum + value, 0);
+      await supabase.from("function_runs").insert({
+        function_name: "ingest-news",
+        status: "success",
+        duration_ms: Date.now() - startTime,
+        details: {
+          sources: results,
+          total_items: totalItems,
+        },
+      });
+    } catch {
+      // Ignore logging failures to avoid failing the main function
+    }
+
     return new Response(JSON.stringify({ success: true, results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+      if (supabaseUrl && serviceRoleKey) {
+        const supabase = createClient(supabaseUrl, serviceRoleKey, {
+          auth: { persistSession: false },
+        });
+        await supabase.from("function_runs").insert({
+          function_name: "ingest-news",
+          status: "failure",
+          duration_ms: Date.now() - startTime,
+          details: {
+            error: error instanceof Error ? error.message : "Unknown error",
+          },
+        });
+      }
+    } catch {
+      // Ignore logging failures
+    }
+
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : "Unknown error",
       timestamp: new Date().toISOString(),

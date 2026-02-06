@@ -150,6 +150,8 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const startTime = Date.now();
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -240,10 +242,46 @@ serve(async (req) => {
       throw error;
     }
 
+    try {
+      await supabase.from("function_runs").insert({
+        function_name: "daily-market-snapshot",
+        status: "success",
+        duration_ms: Date.now() - startTime,
+        details: {
+          provider,
+          as_of_date: asOfDate,
+          tickers: seriesList.length,
+          points: indexSeries.length,
+        },
+      });
+    } catch {
+      // Ignore logging failures to avoid failing the main function
+    }
+
     return new Response(JSON.stringify({ success: true, data: payload }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+      if (supabaseUrl && serviceRoleKey) {
+        const supabase = createClient(supabaseUrl, serviceRoleKey, {
+          auth: { persistSession: false },
+        });
+        await supabase.from("function_runs").insert({
+          function_name: "daily-market-snapshot",
+          status: "failure",
+          duration_ms: Date.now() - startTime,
+          details: {
+            error: error instanceof Error ? error.message : "Unknown error",
+          },
+        });
+      }
+    } catch {
+      // Ignore logging failures
+    }
+
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : "Unknown error",
       timestamp: new Date().toISOString(),

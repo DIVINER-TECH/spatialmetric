@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
-import { Building2, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
+import { Building2, TrendingUp, TrendingDown } from 'lucide-react';
 import { companies } from '@/data/companies';
 
 const Companies = () => {
@@ -23,10 +23,10 @@ const Companies = () => {
             <div className="flex items-center gap-3 mb-4">
               <Building2 className="h-8 w-8 text-primary" />
               <h1 className="text-3xl md:text-4xl font-bold">Company Structure</h1>
-              <LiveIndicator />
+              <LiveIndicator label="Snapshot" />
             </div>
             <p className="text-muted-foreground max-w-2xl">
-              Profiles and analysis of key players in the spatial computing ecosystem—from hardware giants to XR-native startups.
+              Curated profiles and analysis of key players in the spatial computing ecosystem - from hardware giants to XR-native startups.
             </p>
           </div>
         </section>
@@ -46,7 +46,7 @@ const Companies = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{company.description}</p>
-                      
+
                       {company.ticker && (
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>

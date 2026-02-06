@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { ArticleCard } from '@/components/articles/ArticleCard';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
 import { AIInsightsFeed } from '@/components/ai/AIInsightsFeed';
-import { ArticleGenerator } from '@/components/ai/ArticleGenerator';
-import { useArticles } from '@/hooks/useArticles';
+import { useContentItems } from '@/hooks/useContentItems';
+import { ContentCard } from '@/components/content/ContentCard';
 import { useMarketSnapshot } from '@/hooks/useMarketSnapshot';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, BarChart3, Globe, DollarSign, Building2, Users, MapPin } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Globe, MapPin } from 'lucide-react';
 import { regionalData, getRegionalComparison } from '@/data/regions';
 
 const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
@@ -82,7 +81,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
 };
 
 const MarketIntelligence = () => {
-  const { articles } = useArticles('market-intelligence');
+  const { data: contentItems } = useContentItems('article', 9);
   const { data: snapshot } = useMarketSnapshot();
   const [activeTab, setActiveTab] = useState('overview');
   const [activeRegion, setActiveRegion] = useState('global');
@@ -182,7 +181,6 @@ const MarketIntelligence = () => {
               <TabsList className="mb-8">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="regional">Regional Analysis</TabsTrigger>
-                <TabsTrigger value="generate">Generate Content</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="mt-0">
@@ -190,9 +188,13 @@ const MarketIntelligence = () => {
                   <div className="lg:col-span-3">
                     <h2 className="text-xl font-medium mb-6">Latest Insights</h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {articles.map(article => (
-                        <ArticleCard key={article.id} article={article} />
-                      ))}
+                      {contentItems && contentItems.length > 0 ? (
+                        contentItems.map(item => (
+                          <ContentCard key={item.id} item={item} />
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No AI insights published yet.</p>
+                      )}
                     </div>
                   </div>
                   <div className="space-y-6">
@@ -295,11 +297,6 @@ const MarketIntelligence = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="generate" className="mt-0">
-                <div className="max-w-3xl mx-auto">
-                  <ArticleGenerator />
-                </div>
-              </TabsContent>
             </Tabs>
           </div>
         </section>

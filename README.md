@@ -82,6 +82,7 @@ This repo includes daily ingestion functions and database tables for market snap
 **Edge functions**
 - `daily-market-snapshot` fetches daily quotes and stores an index snapshot.
 - `ingest-news` pulls XR/VR/AR news from RSS feeds into `news_items`.
+- `auto-content` generates daily AI briefs and articles from recent news.
 
 **Environment variables (Supabase Functions)**
 - `SUPABASE_URL`
@@ -90,4 +91,5 @@ This repo includes daily ingestion functions and database tables for market snap
 - `ALPHAVANTAGE_API_KEY` (required if `MARKET_DATA_PROVIDER=alphavantage`)
 
 **Scheduling**
-- Schedule both functions to run daily using Supabase scheduled functions (Dashboard or CLI).
+- Schedule `ingest-news` hourly and `daily-market-snapshot` daily.
+- Schedule `auto-content` daily (and weekly with `mode=weekly` if you want startup profiles).

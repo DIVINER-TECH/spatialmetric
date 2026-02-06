@@ -3,7 +3,6 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,18 +11,14 @@ import {
   DollarSign,
   Users,
   Calendar,
-  TrendingUp,
   Search,
   Sparkles,
-  Loader2,
   Globe,
-  Building2,
-  ExternalLink
+  Building2
 } from 'lucide-react';
 import { startups, getStartupsByRegion, type Startup } from '@/data/startups';
 import { format } from 'date-fns';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useContentItems } from '@/hooks/useContentItems';
 
 const regionLabels: Record<string, string> = {
   'all': 'All Regions',
@@ -109,8 +104,8 @@ const StartupCard = ({ startup }: { startup: Startup }) => {
 const StartupTracker = () => {
   const [activeRegion, setActiveRegion] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDiscovering, setIsDiscovering] = useState(false);
-  const [discoveredStartup, setDiscoveredStartup] = useState<any>(null);
+  const { data: aiStartups } = useContentItems('startup-profile', 1);
+  const discoveredStartup = aiStartups && aiStartups.length > 0 ? aiStartups[0].metadata : null;
 
   const filteredStartups = activeRegion === 'all'
     ? startups
@@ -124,34 +119,6 @@ const StartupTracker = () => {
 
   const totalFunding = filteredStartups.reduce((sum, s) => sum + s.totalFunding, 0);
   const avgDealSize = totalFunding / filteredStartups.length;
-
-  const discoverStartup = async () => {
-    setIsDiscovering(true);
-    setDiscoveredStartup(null);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-content', {
-        body: {
-          type: 'startup-profile',
-          topic: 'emerging spatial computing startup',
-          region: activeRegion === 'all' ? 'Global' : regionLabels[activeRegion],
-          searchResults: undefined // Placeholder for live search data injection
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.success && data?.data) {
-        setDiscoveredStartup(data.data);
-        toast.success('New startup discovered');
-      }
-    } catch (err) {
-      console.error('Error discovering startup:', err);
-      toast.error('Failed to discover startup');
-    } finally {
-      setIsDiscovering(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -226,19 +193,6 @@ const StartupTracker = () => {
                   className="pl-10 text-sm"
                 />
               </div>
-              <Button onClick={discoverStartup} disabled={isDiscovering}>
-                {isDiscovering ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Discovering...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Discover New Startup
-                  </>
-                )}
-              </Button>
             </div>
           </div>
         </section>
@@ -249,7 +203,7 @@ const StartupTracker = () => {
             <div className="container mx-auto px-4">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-medium">AI Discovered Startup</h3>
+                <h3 className="text-lg font-medium">Latest AI Startup</h3>
               </div>
               <Card className="border-primary/30">
                 <CardContent className="pt-6">

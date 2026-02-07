@@ -42,7 +42,7 @@ export const useMarketSnapshot = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("market_daily_snapshots")
-        .select("as_of_date,data,created_at")
+        .select("id,as_of_date,data,sources,created_at")
         .order("as_of_date", { ascending: false })
         .limit(1)
         .maybeSingle();

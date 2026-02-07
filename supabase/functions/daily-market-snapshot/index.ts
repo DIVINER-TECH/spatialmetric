@@ -100,8 +100,9 @@ const fetchAlphaVantageSeries = async (symbol: string, apiKey: string): Promise<
   if (!series) return [];
 
   const points = Object.entries(series).map(([date, values]) => {
-    const close = Number(values["4. close"]);
-    const volume = Number(values["5. volume"] ?? 0);
+    const v = values as Record<string, string>;
+    const close = Number(v["4. close"]);
+    const volume = Number(v["5. volume"] ?? 0);
     return { date, close, volume };
   });
 

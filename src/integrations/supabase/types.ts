@@ -10,131 +10,93 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
       market_daily_snapshots: {
         Row: {
-          id: string
           as_of_date: string
+          created_at: string
           data: Json
+          id: string
           sources: Json | null
-          created_at: string
         }
         Insert: {
-          id?: string
           as_of_date: string
+          created_at?: string
           data: Json
+          id?: string
           sources?: Json | null
-          created_at?: string
         }
         Update: {
-          id?: string
           as_of_date?: string
+          created_at?: string
           data?: Json
+          id?: string
           sources?: Json | null
-          created_at?: string
-        }
-        Relationships: []
-      }
-      news_sources: {
-        Row: {
-          id: string
-          name: string
-          feed_url: string
-          active: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          feed_url: string
-          active?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          feed_url?: string
-          active?: boolean
-          created_at?: string
         }
         Relationships: []
       }
       news_items: {
         Row: {
+          fetched_at: string
           id: string
+          published_at: string | null
           source_id: string | null
+          summary: string | null
           title: string
           url: string
-          summary: string | null
-          published_at: string | null
-          fetched_at: string
         }
         Insert: {
+          fetched_at?: string
           id?: string
+          published_at?: string | null
           source_id?: string | null
+          summary?: string | null
           title: string
           url: string
-          summary?: string | null
-          published_at?: string | null
-          fetched_at?: string
         }
         Update: {
+          fetched_at?: string
           id?: string
+          published_at?: string | null
           source_id?: string | null
+          summary?: string | null
           title?: string
           url?: string
-          summary?: string | null
-          published_at?: string | null
-          fetched_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "news_items_source_id_fkey"
             columns: ["source_id"]
+            isOneToOne: false
             referencedRelation: "news_sources"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
-      content_items: {
+      news_sources: {
         Row: {
-          id: string
-          type: string
-          title: string
-          excerpt: string | null
-          content: string | null
-          tags: string[] | null
-          sources: Json | null
-          metadata: Json | null
-          published_at: string
+          active: boolean
           created_at: string
+          feed_url: string
+          id: string
+          name: string
         }
         Insert: {
-          id?: string
-          type: string
-          title: string
-          excerpt?: string | null
-          content?: string | null
-          tags?: string[] | null
-          sources?: Json | null
-          metadata?: Json | null
-          published_at?: string
+          active?: boolean
           created_at?: string
+          feed_url: string
+          id?: string
+          name: string
         }
         Update: {
-          id?: string
-          type?: string
-          title?: string
-          excerpt?: string | null
-          content?: string | null
-          tags?: string[] | null
-          sources?: Json | null
-          metadata?: Json | null
-          published_at?: string
+          active?: boolean
           created_at?: string
+          feed_url?: string
+          id?: string
+          name?: string
         }
         Relationships: []
       }

@@ -14,7 +14,8 @@ import {
   Search,
   Sparkles,
   Globe,
-  Building2
+  Building2,
+  TrendingUp
 } from 'lucide-react';
 import { startups, getStartupsByRegion, type Startup } from '@/data/startups';
 import { format } from 'date-fns';

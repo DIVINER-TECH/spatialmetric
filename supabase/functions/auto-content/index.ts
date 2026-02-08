@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 type NewsItem = {
@@ -23,34 +23,50 @@ const buildSourceContext = (items: NewsItem[]) => {
   }).join("\n");
 };
 
-const groqRequest = async (apiKey: string, systemPrompt: string, userPrompt: string) => {
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+const lovableAIRequest = async (apiKey: string, systemPrompt: string, userPrompt: string, toolName: string, toolDescription: string, toolParameters: Record<string, unknown>) => {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
+      model: "google/gemini-3-flash-preview",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.6,
-      max_tokens: 2000,
-      response_format: { type: "json_object" }
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: toolName,
+            description: toolDescription,
+            parameters: toolParameters
+          }
+        }
+      ],
+      tool_choice: { type: "function", function: { name: toolName } }
     }),
   });
 
   if (!response.ok) {
+    if (response.status === 429) {
+      throw new Error("Rate limit exceeded. Please try again later.");
+    }
+    if (response.status === 402) {
+      throw new Error("Payment required. Please add credits to your Lovable AI workspace.");
+    }
     const errorText = await response.text();
-    throw new Error(`Groq API error: ${response.status} ${errorText}`);
+    throw new Error(`Lovable AI error: ${response.status} ${errorText}`);
   }
 
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content ?? "";
-  const cleanContent = content.replace(/```json\n?|\n?```/g, "");
-  return JSON.parse(cleanContent);
+  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+  if (!toolCall?.function?.arguments) {
+    throw new Error("No tool call response from AI");
+  }
+  return JSON.parse(toolCall.function.arguments);
 };
 
 serve(async (req) => {
@@ -63,13 +79,13 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    const groqKey = Deno.env.get("GROQ_API_KEY") ?? "";
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY") ?? "";
 
     if (!supabaseUrl || !serviceRoleKey) {
       throw new Error("Supabase service role not configured");
     }
-    if (!groqKey) {
-      throw new Error("GROQ_API_KEY is not configured");
+    if (!lovableKey) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
@@ -88,11 +104,11 @@ serve(async (req) => {
       .limit(20);
 
     if (newsError) throw newsError;
-    const newsItems = (news ?? []).map((item: any) => ({
-      title: item.title,
-      url: item.url,
-      summary: item.summary ?? null,
-      published_at: item.published_at ?? null,
+    const newsItems = (news ?? []).map((item: Record<string, unknown>) => ({
+      title: item.title as string,
+      url: item.url as string,
+      summary: (item.summary as string) ?? null,
+      published_at: (item.published_at as string) ?? null,
       source: item.news_sources ?? null,
     })) as NewsItem[];
 
@@ -102,28 +118,71 @@ serve(async (req) => {
 
     const sourceContext = buildSourceContext(newsItems);
 
-    const briefSystem = `You are an analyst producing a concise daily market brief for XR/VR/AR investors. Use the sources provided. Output JSON only.`;
-    const briefUser = `Create a market brief using these sources:\n${sourceContext}\n\nReturn JSON with:
-{
-  "headline": "Short headline",
-  "summary": "3-4 sentences",
-  "metrics": [{"label":"Metric","value":"Value","change":"+X%"}],
-  "signal": "bullish|bearish|neutral",
-  "reasoning": "2-3 sentences"
-}`;
+    // Generate market brief
+    const briefSystem = `You are a senior financial analyst producing a concise daily market brief for XR/VR/AR/Spatial Computing investors. Use the sources provided. Focus on investment implications, market movements, and actionable insights.`;
+    const briefUser = `Analyze these recent XR/VR/AR industry news items and create a professional market brief:\n\n${sourceContext}\n\nGenerate a market brief with headline, summary, key metrics, and market signal.`;
 
-    const brief = await groqRequest(groqKey, briefSystem, briefUser);
+    const brief = await lovableAIRequest(
+      lovableKey,
+      briefSystem,
+      briefUser,
+      "create_market_brief",
+      "Create a structured market brief for XR investors",
+      {
+        type: "object",
+        properties: {
+          headline: { type: "string", description: "Compelling headline under 80 characters" },
+          summary: { type: "string", description: "3-4 sentence market summary" },
+          metrics: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                label: { type: "string" },
+                value: { type: "string" },
+                change: { type: "string" }
+              },
+              required: ["label", "value"]
+            },
+            description: "2-3 key market metrics"
+          },
+          signal: { type: "string", enum: ["bullish", "bearish", "neutral"], description: "Overall market sentiment" },
+          reasoning: { type: "string", description: "2-3 sentences explaining the signal" }
+        },
+        required: ["headline", "summary", "metrics", "signal", "reasoning"]
+      }
+    );
 
-    const articleSystem = `You are a senior analyst writing a daily XR/VR/AR market article. Use the sources provided. Output JSON only.`;
-    const articleUser = `Write a 600-900 word article using these sources:\n${sourceContext}\n\nReturn JSON with:
-{
-  "title": "Headline",
-  "excerpt": "2-3 sentence summary",
-  "content": "Full article content",
-  "tags": ["tag1","tag2","tag3"]
-}`;
+    // Generate article
+    const articleSystem = `You are a senior analyst at SpatialMetrics writing a professional XR/VR/AR market article. Write in a formal, data-driven style suitable for institutional investors and industry professionals. Use the sources provided. Include specific numbers, company names, and investment implications.`;
+    const articleUser = `Write a comprehensive 600-900 word market intelligence article using these sources:\n\n${sourceContext}\n\nFocus on: market trends, company developments, investment implications, and future outlook. Include executive summary, analysis sections, and key takeaways.`;
 
-    const article = await groqRequest(groqKey, articleSystem, articleUser);
+    const article = await lovableAIRequest(
+      lovableKey,
+      articleSystem,
+      articleUser,
+      "create_article",
+      "Create a structured market intelligence article",
+      {
+        type: "object",
+        properties: {
+          title: { type: "string", description: "Professional headline under 100 characters" },
+          excerpt: { type: "string", description: "2-3 sentence summary" },
+          content: { type: "string", description: "Full article content 600-900 words" },
+          tags: {
+            type: "array",
+            items: { type: "string" },
+            description: "4-6 relevant tags"
+          },
+          keyTakeaways: {
+            type: "array",
+            items: { type: "string" },
+            description: "3-5 key takeaways for investors"
+          }
+        },
+        required: ["title", "excerpt", "content", "tags", "keyTakeaways"]
+      }
+    );
 
     const inserts = [
       {
@@ -142,7 +201,10 @@ serve(async (req) => {
         content: article.content ?? null,
         tags: article.tags ?? ["xr", "market"],
         sources: newsItems,
-        metadata: { cadence: mode },
+        metadata: { 
+          cadence: mode,
+          keyTakeaways: article.keyTakeaways ?? []
+        },
       }
     ];
 
@@ -150,28 +212,60 @@ serve(async (req) => {
     if (insertError) throw insertError;
 
     if (mode === "weekly") {
-      const startupSystem = `You are a venture analyst. Use the sources provided to draft a startup profile. Output JSON only.`;
-      const startupUser = `Create a startup profile based on recent XR/VR/AR news:\n${sourceContext}\n\nReturn JSON with:
-{
-  "name": "Company Name",
-  "description": "150+ words",
-  "sector": "Sector",
-  "stage": "Seed/Series A/B/C/D",
-  "headquarters": "City, Country",
-  "metrics": {"funding":"$XXM","employees":XX,"customers":XX,"arr":"$XM","growth":"XX% YoY"},
-  "investors": ["Investor 1","Investor 2"],
-  "products": ["Product 1","Product 2"],
-  "investmentThesis": "Paragraph",
-  "risks": ["Risk 1","Risk 2"]
-}`;
+      const startupSystem = `You are a venture capital analyst at SpatialMetrics. Use the sources provided to draft a detailed startup profile for an emerging XR company mentioned in the news.`;
+      const startupUser = `Based on these XR/VR/AR industry news items, identify and profile a promising startup:\n\n${sourceContext}\n\nCreate a comprehensive startup profile suitable for investor due diligence.`;
 
-      const startup = await groqRequest(groqKey, startupSystem, startupUser);
+      const startup = await lovableAIRequest(
+        lovableKey,
+        startupSystem,
+        startupUser,
+        "create_startup_profile",
+        "Create a detailed startup profile for investor analysis",
+        {
+          type: "object",
+          properties: {
+            name: { type: "string", description: "Company name" },
+            description: { type: "string", description: "150+ word company description" },
+            sector: { type: "string", description: "Primary sector (e.g., Hardware, Software, Enterprise, Gaming)" },
+            stage: { type: "string", enum: ["Pre-Seed", "Seed", "Series A", "Series B", "Series C", "Series D+"], description: "Funding stage" },
+            headquarters: { type: "string", description: "City, Country" },
+            metrics: {
+              type: "object",
+              properties: {
+                funding: { type: "string" },
+                employees: { type: "string" },
+                customers: { type: "string" },
+                arr: { type: "string" },
+                growth: { type: "string" }
+              }
+            },
+            investors: {
+              type: "array",
+              items: { type: "string" },
+              description: "List of notable investors"
+            },
+            products: {
+              type: "array",
+              items: { type: "string" },
+              description: "Key products or solutions"
+            },
+            investmentThesis: { type: "string", description: "Investment thesis paragraph" },
+            risks: {
+              type: "array",
+              items: { type: "string" },
+              description: "Key investment risks"
+            }
+          },
+          required: ["name", "description", "sector", "stage", "headquarters", "investmentThesis"]
+        }
+      );
+
       await supabase.from("content_items").insert({
         type: "startup-profile",
         title: startup.name ?? "Startup Profile",
         excerpt: startup.description ?? null,
         content: startup.description ?? null,
-        tags: ["startup"],
+        tags: ["startup", startup.sector ?? "xr"],
         sources: newsItems,
         metadata: startup,
       });

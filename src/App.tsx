@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import MarketIntelligence from "./pages/MarketIntelligence";
@@ -16,6 +16,7 @@ import RegionalIntelligence from "./pages/RegionalIntelligence";
 import StartupTracker from "./pages/StartupTracker";
 import VCDirectory from "./pages/VCDirectory";
 import UnicornTracker from "./pages/UnicornTracker";
+import CompanyTracker from "./pages/CompanyTracker";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,9 +32,10 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/market-intelligence" element={<MarketIntelligence />} />
           <Route path="/regional-intelligence" element={<RegionalIntelligence />} />
-          <Route path="/startup-tracker" element={<StartupTracker />} />
+          <Route path="/company-tracker" element={<CompanyTracker />} />
+          <Route path="/startup-tracker" element={<Navigate to="/company-tracker" replace />} />
+          <Route path="/unicorn-tracker" element={<Navigate to="/company-tracker" replace />} />
           <Route path="/vc-directory" element={<VCDirectory />} />
-          <Route path="/unicorn-tracker" element={<UnicornTracker />} />
           <Route path="/tech-explain" element={<TechExplain />} />
           <Route path="/events" element={<Events />} />
           <Route path="/companies" element={<Companies />} />

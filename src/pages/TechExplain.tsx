@@ -1,11 +1,11 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ArticleCard } from '@/components/articles/ArticleCard';
-import { useArticles } from '@/hooks/useArticles';
+import { useHybridArticles } from '@/hooks/useHybridArticles';
 import { Cpu } from 'lucide-react';
 
 const TechExplain = () => {
-  const { articles } = useArticles('tech-explain');
+  const { articles } = useHybridArticles('tech-explain');
 
   return (
     <div className="min-h-screen flex flex-col">

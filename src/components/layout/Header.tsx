@@ -1,26 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  BarChart3, 
-  Menu, 
-  X, 
-  TrendingUp, 
-  Cpu, 
-  Calendar, 
-  Building2, 
+import {
+  BarChart3,
+  Menu,
+  X,
+  TrendingUp,
+  Cpu,
+  Calendar,
+  Building2,
   Globe,
   Search,
   Rocket,
-  Landmark,
-  Gem
+  Landmark
 } from "lucide-react";
 
 const navItems = [
   { label: "Market Intelligence", href: "/market-intelligence", icon: TrendingUp },
-  { label: "Startup Tracker", href: "/startup-tracker", icon: Rocket },
+  { label: "Company Tracker", href: "/company-tracker", icon: Rocket },
   { label: "VC Directory", href: "/vc-directory", icon: Landmark },
-  { label: "Unicorns", href: "/unicorn-tracker", icon: Gem },
   { label: "Companies", href: "/companies", icon: Building2 },
   { label: "Tech Explain", href: "/tech-explain", icon: Cpu },
 ];

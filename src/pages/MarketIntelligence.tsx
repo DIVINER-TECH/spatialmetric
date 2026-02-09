@@ -3,8 +3,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
 import { AIInsightsFeed } from '@/components/ai/AIInsightsFeed';
-import { useContentItems } from '@/hooks/useContentItems';
-import { ContentCard } from '@/components/content/ContentCard';
+import { useHybridArticles } from '@/hooks/useHybridArticles';
+import { ArticleCard } from '@/components/articles/ArticleCard';
 import { useMarketSnapshot } from '@/hooks/useMarketSnapshot';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -81,7 +81,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
 };
 
 const MarketIntelligence = () => {
-  const { data: contentItems } = useContentItems('article', 9);
+  const { articles: contentItems } = useHybridArticles('market-intelligence', 9);
   const { data: snapshot } = useMarketSnapshot();
   const [activeTab, setActiveTab] = useState('overview');
   const [activeRegion, setActiveRegion] = useState('global');
@@ -190,7 +190,7 @@ const MarketIntelligence = () => {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {contentItems && contentItems.length > 0 ? (
                         contentItems.map(item => (
-                          <ContentCard key={item.id} item={item} />
+                          <ArticleCard key={item.id} article={item} />
                         ))
                       ) : (
                         <p className="text-sm text-muted-foreground">No AI insights published yet.</p>
@@ -199,7 +199,7 @@ const MarketIntelligence = () => {
                   </div>
                   <div className="space-y-6">
                     <AIInsightsFeed />
-                    
+
                     <Card>
                       <CardHeader className="pb-3">
                         <CardTitle className="text-base font-medium flex items-center gap-2">
@@ -254,9 +254,9 @@ const MarketIntelligence = () => {
                                 <span>{q.quarter}</span>
                                 <span className="text-muted-foreground">${q.investment}M / {q.deals} deals</span>
                               </div>
-                              <Progress 
-                                value={(q.investment / Math.max(...selectedRegion.quarterlyData.map(d => d.investment))) * 100} 
-                                className="h-2" 
+                              <Progress
+                                value={(q.investment / Math.max(...selectedRegion.quarterlyData.map(d => d.investment))) * 100}
+                                className="h-2"
                               />
                             </div>
                           ))}
@@ -274,8 +274,8 @@ const MarketIntelligence = () => {
                       </CardHeader>
                       <CardContent className="space-y-3">
                         {regionalData.filter(r => r.regionCode !== 'global').map((region, i) => (
-                          <div 
-                            key={i} 
+                          <div
+                            key={i}
                             className="flex items-center justify-between p-2 rounded hover:bg-muted/50 cursor-pointer transition-colors"
                             onClick={() => setActiveRegion(region.regionCode)}
                           >

@@ -1,0 +1,77 @@
+import { useMemo } from 'react';
+import { useContentItems, type ContentItem } from '@/hooks/useContentItems';
+import { articles, type Article } from '@/data/articles';
+
+// Transform ContentItem from database to Article type
+const transformContentItem = (item: ContentItem): Article => ({
+    id: item.id,
+    slug: item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    title: item.title,
+    excerpt: item.excerpt || '',
+    content: item.content || '',
+    category: (item.type as Article['category']) || 'market-intelligence',
+    subcategory: item.metadata?.subcategory || 'AI Generated',
+    region: item.metadata?.region,
+    author: {
+        name: 'SpatialMetrics AI',
+        avatar: 'AI',
+        title: 'AI Research Analyst',
+    },
+    publishedAt: new Date(item.publishedAt),
+    updatedAt: new Date(item.publishedAt),
+    readTime: Math.ceil((item.content?.length || 0) / 1000), // Rough estimate
+    trending: false,
+    featured: false,
+    tags: item.tags || [],
+    imageUrl: item.metadata?.imageUrl || '/placeholder.svg',
+    keyTakeaways: item.metadata?.keyTakeaways || [],
+    metrics: item.metadata?.metrics,
+});
+
+export const useHybridArticles = (category?: Article['category'], limit?: number) => {
+    // Get AI-generated content from database
+    const { data: contentItems, isLoading } = useContentItems('article', limit);
+
+    const hybridArticles = useMemo(() => {
+        // Transform database content items to Article type
+        const dbArticles = (contentItems || []).map(transformContentItem);
+
+        // Get static articles
+        const staticArticles = articles;
+
+        // Merge both sources
+        let merged = [...staticArticles, ...dbArticles];
+
+        // Deduplicate by slug (prefer database version)
+        const seen = new Set<string>();
+        merged = merged.filter((article) => {
+            const key = article.slug || article.title.toLowerCase();
+            if (seen.has(key)) {
+                return false;
+            }
+            seen.add(key);
+            return true;
+        });
+
+        // Filter by category if provided
+        if (category) {
+            merged = merged.filter((a) => a.category === category);
+        }
+
+        // Sort by publishedAt descending
+        merged.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+
+        // Apply limit if provided
+        if (limit) {
+            merged = merged.slice(0, limit);
+        }
+
+        return merged;
+    }, [contentItems, category, limit]);
+
+    return {
+        articles: hybridArticles,
+        isLoading,
+        total: hybridArticles.length,
+    };
+};

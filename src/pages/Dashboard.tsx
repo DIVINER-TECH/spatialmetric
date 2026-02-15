@@ -35,6 +35,14 @@ import {
   ScatterChart,
   Scatter,
   ZAxis,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  FunnelChart,
+  Funnel,
+  LabelList,
 } from "recharts";
 import { format } from "date-fns";
 
@@ -96,6 +104,26 @@ const growthProjections = [
   { year: "2026", hardware: 25, software: 31, services: 38, content: 48 },
   { year: "2027", hardware: 28, software: 36, services: 44, content: 55 },
   { year: "2028", hardware: 32, software: 42, services: 52, content: 62 },
+];
+
+// Funding funnel: XR companies by stage
+const fundingFunnelData = [
+  { name: 'Seed', value: 850, fill: 'hsl(var(--chart-1))' },
+  { name: 'Series A', value: 420, fill: 'hsl(var(--chart-2))' },
+  { name: 'Series B', value: 185, fill: 'hsl(var(--chart-3))' },
+  { name: 'Series C', value: 72, fill: 'hsl(var(--chart-4))' },
+  { name: 'Series D+', value: 28, fill: 'hsl(var(--chart-5))' },
+  { name: 'Unicorn', value: 20, fill: 'hsl(210, 70%, 50%)' },
+];
+
+// Competitive radar: top 5 companies
+const competitiveRadarData = [
+  { subject: 'Market Cap', Apple: 95, Meta: 55, Microsoft: 90, Google: 80, NVIDIA: 70 },
+  { subject: 'R&D Spend', Apple: 65, Meta: 85, Microsoft: 60, Google: 95, NVIDIA: 50 },
+  { subject: 'XR Revenue', Apple: 40, Meta: 90, Microsoft: 50, Google: 30, NVIDIA: 60 },
+  { subject: 'Ecosystem', Apple: 85, Meta: 75, Microsoft: 70, Google: 90, NVIDIA: 55 },
+  { subject: 'Growth', Apple: 50, Meta: 70, Microsoft: 45, Google: 60, NVIDIA: 95 },
+  { subject: 'Hardware', Apple: 90, Meta: 80, Microsoft: 40, Google: 35, NVIDIA: 85 },
 ];
 
 const formatMarketCap = (value?: number | null) => {
@@ -494,6 +522,76 @@ const Dashboard = () => {
                     <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Competitive Radar + Funding Funnel */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-8">
+          {/* Competitive Radar */}
+          <Card className="bg-card/50">
+            <CardHeader>
+              <CardTitle>Top 5 XR Companies – Competitive Radar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[320px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={competitiveRadarData} cx="50%" cy="50%" outerRadius="70%">
+                    <PolarGrid stroke="hsl(var(--border))" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+                    <PolarRadiusAxis tick={false} axisLine={false} />
+                    <Radar name="Apple" dataKey="Apple" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1))" fillOpacity={0.15} strokeWidth={2} />
+                    <Radar name="Meta" dataKey="Meta" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.1} strokeWidth={2} />
+                    <Radar name="NVIDIA" dataKey="NVIDIA" stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3))" fillOpacity={0.1} strokeWidth={2} />
+                    <Radar name="Google" dataKey="Google" stroke="hsl(var(--chart-4))" fill="hsl(var(--chart-4))" fillOpacity={0.1} strokeWidth={2} />
+                    <Radar name="Microsoft" dataKey="Microsoft" stroke="hsl(var(--chart-5))" fill="hsl(var(--chart-5))" fillOpacity={0.1} strokeWidth={2} />
+                    <Legend />
+                    <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Funding Funnel */}
+          <Card className="bg-card/50">
+            <CardHeader>
+              <CardTitle>XR Startup Funding Funnel</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {fundingFunnelData.map((stage, idx) => {
+                  const maxVal = fundingFunnelData[0].value;
+                  const widthPercent = (stage.value / maxVal) * 100;
+                  return (
+                    <div key={stage.name} className="flex items-center gap-3">
+                      <span className="text-sm text-muted-foreground w-20 text-right shrink-0">{stage.name}</span>
+                      <div className="flex-1 relative h-9">
+                        <div
+                          className="absolute inset-y-0 left-0 rounded-r-md flex items-center justify-end pr-3"
+                          style={{ width: `${widthPercent}%`, backgroundColor: stage.fill, minWidth: '60px' }}
+                        >
+                          <span className="text-xs font-bold text-primary-foreground">{stage.value}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-lg font-bold text-primary">850+</p>
+                  <p className="text-xs text-muted-foreground">Seed Stage</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-lg font-bold text-primary">20</p>
+                  <p className="text-xs text-muted-foreground">Unicorns</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-muted/30">
+                  <p className="text-lg font-bold text-primary">2.4%</p>
+                  <p className="text-xs text-muted-foreground">Unicorn Rate</p>
+                </div>
               </div>
             </CardContent>
           </Card>

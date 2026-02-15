@@ -21,6 +21,8 @@ const navItems = [
   { label: "VC Directory", href: "/vc-directory", icon: Landmark },
   { label: "Companies", href: "/companies", icon: Building2 },
   { label: "Tech Explain", href: "/tech-explain", icon: Cpu },
+  { label: "Events", href: "/events", icon: Calendar },
+  { label: "Spatial Updates", href: "/spatial-updates", icon: Globe },
 ];
 
 export function Header() {

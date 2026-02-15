@@ -1,196 +1,185 @@
 
-# Comprehensive Platform Enhancement Plan
+# Comprehensive Platform Cleanup and Enhancement Plan
 
-## Problems Identified
+## Issues Identified
 
-### 1. Articles Not Clickable (Critical Bug)
-The Article detail page (`Article.tsx`) uses `useArticle(slug)` from `useArticles.ts`, which only searches **static** articles in `src/data/articles.ts`. AI-generated articles from the database use dynamically generated slugs that don't exist in the static data, so clicking any AI article card leads to "Article Not Found."
+### Hardcoded / Mock Data to Remove
+1. **`src/data/marketData.ts`** -- Contains entirely fake stock prices, fake market segments, fake VC funding data, and random number generators (`generatePriceFluctuation`, `generateVolumeFluctuation`). This is the primary source of mock data.
+2. **`src/hooks/useLiveMarketData.ts`** -- Imports from `marketData.ts` and simulates "live" price updates using random fluctuations. Not used anywhere outside itself -- dead code.
+3. **`src/pages/Dashboard.tsx`** -- Contains hardcoded arrays:
+   - `fundingData` (lines 85-91) -- fake quarterly VC funding
+   - `tamSamSomData` (lines 94-98) -- hardcoded TAM/SAM/SOM values
+   - `growthProjections` (lines 101-107) -- fabricated growth numbers
+   - `fundingFunnelData` (lines 110-117) -- made-up funnel numbers
+   - `competitiveRadarData` (lines 120-127) -- fabricated competitive scores
+4. **`src/components/home/MarketOverview.tsx`** -- Shows "Gainers / Losers" and "XR Market Index" as KPI stats (user dislikes these)
+5. **`src/pages/Companies.tsx`** -- Standalone page duplicating Company Tracker functionality, using static `companies` data with hardcoded stock prices
 
-### 2. Too Few Companies Tracked
-- Market snapshot only tracks 9 publicly traded tickers (AAPL, META, MSFT, etc.)
-- Static companies data has only ~15 entries
-- Static unicorns has only ~15 entries
-- Static startups has only ~15 entries
-- No images/logos for any company profiles
+### Missing Pages (Footer Links Leading to 404)
+- `/api` -- API Access
+- `/reports` -- Reports
+- `/newsletter` -- Newsletter
+- `/about` -- About Us
+- `/careers` -- Careers
+- `/contact` -- Contact
+- `/press` -- Press
+- `/privacy` -- Privacy Policy
+- `/terms` -- Terms of Service
 
-### 3. Too Few VC Firms
-- Static investors data has ~50 firms, which is decent but could be expanded
-- No profile images or firm logos
-
-### 4. Insufficient Daily Content Output
-- Auto-content generates only 3 items per run (1 brief + 2 articles)
-- Only 5 total content items in the database after multiple runs
-- Should produce more articles across more categories
-
-### 5. No Article Images
-- `ArticleCard` component has no image display at all
-- Article type has an `imageUrl` field but it defaults to `/placeholder.svg`
-- No image generation is implemented
-
-### 6. FeaturedInsights Component Uses Hardcoded 2024 Data
-- `FeaturedInsights.tsx` has hardcoded insights array with Dec 2024 dates
-- Not connected to live articles or database content
-
-### 7. Dashboard Lacks Advanced Market Analytics
-- No TAM/SAM/SOM visualization
-- No market share breakdown beyond basic segment pie
-- Only basic VC funding bar chart with hardcoded data
-- No sector comparison, growth trends, or competitive landscape charts
-
-### 8. Redundant/Missing Navigation
-- "Spatial Updates" and "Events" pages exist in routes but are not in the navbar
-- Navigation could be better organized
+### Overlap: Companies vs Company Tracker
+- `/companies` (Companies.tsx) shows static company cards with hardcoded prices
+- `/company-tracker` (CompanyTracker.tsx) shows unified tracker with startups + unicorns
+- These should be merged into one unified page at `/company-tracker`
 
 ---
 
 ## Implementation Plan
 
-### Phase 1: Fix Article Navigation (Critical)
+### Phase 1: Remove Mock Data and Dead Code
 
-**File: `src/hooks/useArticles.ts`**
-- Update `useArticle(slug)` to also search database content items (via `useContentItems`)
-- If slug is not found in static articles, search `content_items` table by matching the generated slug pattern
-- Return a properly transformed Article object from either source
+**Delete files:**
+- `src/data/marketData.ts` -- all mock data and random generators
+- `src/hooks/useLiveMarketData.ts` -- dead code, never imported
 
-**File: `src/pages/Article.tsx`**
-- Update to use a new hybrid `useArticle` that checks both static and database sources
+**Modify `src/pages/Dashboard.tsx`:**
+- Remove hardcoded `fundingData`, replace with data computed from static `vcFundingData` in `src/data/investors.ts` or move curated research data to a proper constants file
+- Keep `tamSamSomData` and `growthProjections` but label them clearly as "Industry Research Estimates" (these are market sizing projections, not fake -- they represent published analyst forecasts)
+- Remove `competitiveRadarData` hardcoded values; compute radar scores from actual company metrics in `src/data/companies.ts` (market cap, R&D spend, revenue growth, etc.)
+- Remove "XR Market Index" chart and "Gainers/Losers" KPI card per user preference
+- Replace top KPIs with more meaningful metrics: Total Tracked Market Cap, Sector Count, Total XR Investment, YoY Growth Rate
 
-### Phase 2: Add Article Images
+**Modify `src/components/home/MarketOverview.tsx`:**
+- Remove "Gainers / Losers" and "XR Market Index" stats
+- Replace with: Total Tracked Market Cap, Companies Tracked, Sectors Covered, Total Daily Volume
+- Keep the area chart but relabel as "Market Performance Trend" instead of "XR Public Market Index"
 
-**File: `src/components/articles/ArticleCard.tsx`**
-- Add a featured image area at the top of each card
-- Display `article.imageUrl` when available (not placeholder)
-- Use a gradient overlay with category-specific colors as fallback when no image exists
-- Add category icon overlay for visual differentiation
+### Phase 2: Merge Companies into Company Tracker
 
-**File: `supabase/functions/auto-content/index.ts`**
-- After generating each article, call the Lovable AI image generation endpoint to create a featured image
-- Upload the generated image to a Supabase storage bucket
-- Store the public URL in the article's metadata as `imageUrl`
+**Delete:** `src/pages/Companies.tsx`
 
-**Database: Create storage bucket**
-- Create a `content-images` public storage bucket for article and profile images
+**Modify `src/pages/CompanyTracker.tsx`:**
+- Add a new tab "Public Companies" alongside existing Unicorns/Emerging tabs
+- In the Public Companies tab, show data from `src/data/companies.ts` with stock prices, market cap, revenue, and key metrics
+- Add sector distribution pie chart and market cap breakdown within the page
+- Add link from company cards to `/company/${slug}` profile pages
 
-### Phase 3: Enhance Auto-Content Output
+**Modify `src/App.tsx`:**
+- Remove `/companies` route
+- Redirect `/companies` to `/company-tracker`
 
-**File: `supabase/functions/auto-content/index.ts`**
-- Increase daily output from 3 to 5-6 items per run:
-  - 1 market brief
-  - 2 market-intelligence articles (different angles)
-  - 2 tech-explain articles
-  - 1 spatial-updates / events article
-- Add more varied prompts to ensure diverse topic coverage
-- Include subcategory assignment (e.g., "Hardware Analysis", "Investment Thesis", "SDK Deep Dive")
+**Modify `src/components/layout/Header.tsx`:**
+- Remove "Companies" from nav items (already have "Company Tracker")
 
-### Phase 4: Expand Company and Ticker Coverage
+**Modify `src/components/layout/Footer.tsx`:**
+- Update "Company Structure" link to point to `/company-tracker`
 
-**File: `supabase/functions/daily-market-snapshot/index.ts`**
-- Expand TICKERS array from 9 to 20+ companies covering:
-  - Current 9 (AAPL, META, MSFT, NVDA, QCOM, U, SONY, SNAP, GOOGL)
-  - Add: RBLX (Roblox), MTTR (Matterport), VUZI (Vuzix), IMMR (Immersion), HEAR (Turtle Beach), MVIS (MicroVision), KOPN (Kopin), LIDR (AEye), LAZR (Luminar), AEVA (Aeva Technologies), IRDM (Iridium)
-  - Samsung already included
+### Phase 3: Create Missing Footer Pages
 
-**File: `src/data/companies.ts`**
-- Add 10-15 more companies to bring total to ~30
-- Include emerging XR pure-plays and component suppliers
+Create simple, professional info pages:
 
-**File: `src/data/startups.ts`**
-- Add 10-15 more startups across all regions to bring total to ~30
+| Route | File | Content |
+|-------|------|---------|
+| `/about` | `src/pages/About.tsx` | Platform mission, team description, methodology |
+| `/contact` | `src/pages/Contact.tsx` | Contact form (name, email, message), office info |
+| `/careers` | `src/pages/Careers.tsx` | Open positions placeholder, culture description |
+| `/press` | `src/pages/Press.tsx` | Press releases, media kit info |
+| `/reports` | `src/pages/Reports.tsx` | Auto-generated content from `content_items` filtered by "market-brief" type |
+| `/newsletter` | `src/pages/Newsletter.tsx` | Email signup form with Supabase storage |
+| `/api` | `src/pages/ApiAccess.tsx` | API documentation placeholder, usage examples |
+| `/privacy` | `src/pages/Privacy.tsx` | Privacy policy content |
+| `/terms` | `src/pages/Terms.tsx` | Terms of service content |
 
-**File: `src/data/unicorns.ts`**
-- Add 5-10 more unicorns to bring total to ~25
+All pages will use Header + Footer layout consistently. The Reports page will pull live data from `content_items` (market briefs). Newsletter will store subscriptions in a new `newsletter_subscribers` table.
 
-### Phase 5: Enhanced Dashboard with Professional Analytics
+### Phase 4: Enhanced Dashboard Analytics
 
-**File: `src/pages/Dashboard.tsx`**
-Major additions:
-- **TAM/SAM/SOM Chart**: Nested donut chart showing Total Addressable Market ($280B by 2030), Serviceable Addressable Market ($85B), and Serviceable Obtainable Market ($24B) for spatial computing
-- **Market Share by Company**: Horizontal bar chart showing market share percentage for top companies
-- **Sector Performance Heatmap**: Grid showing daily/weekly performance by sector (Hardware, Software, Gaming, Enterprise, etc.)
-- **Revenue vs Market Cap Scatter**: Bubble chart comparing revenue to market cap with company size as bubble radius
-- **YoY Growth Comparison**: Multi-bar chart comparing YoY growth across sectors
-- **Expand company list** from 9 to 20+ with proper ranking
-- **Add sector filter tabs** to the company ranking list
+Replace removed charts with more valuable analytics:
 
-### Phase 6: Connect FeaturedInsights to Live Data
+**New KPI Cards (replacing Index/Gainers):**
+- Total XR Market Cap (sum from snapshot companies)
+- Total Investment Tracked (from VC + startup data)
+- Active Sectors (count of unique sectors)
+- Companies Tracked (total from all data sources)
 
-**File: `src/components/home/FeaturedInsights.tsx`**
-- Replace hardcoded `insights` array with data from `useHybridArticles(undefined, 6)`
-- Display latest articles from all categories with proper dates
-- Link cards to `/article/:slug` routes
+**New/Improved Charts:**
+- **Stock Performance Ranking Table**: Sortable table of all tracked tickers with price, change %, market cap, volume, sector -- replaces the simple company list
+- **Sector Allocation Pie**: Already exists, keep it
+- **Market Cap Treemap**: Visual treemap showing relative company sizes
+- **Revenue vs R&D Scatter**: Using actual company data from `companies.ts` metrics
+- **Funding Stage Distribution**: Computed from actual startups + unicorns data counts
+- Keep TAM/SAM/SOM (labeled as industry estimates)
 
-### Phase 7: Company/Startup/Unicorn Profile Images
+**Modify `src/pages/Dashboard.tsx`:**
+- Compute `competitiveRadarData` from actual company metrics (normalize market cap, R&D, revenue growth, gross margin, employee count to 0-100 scale)
+- Compute `fundingFunnelData` from actual startup/unicorn counts by stage
+- Add stock performance ranking table with sortable columns
+- Remove all "gainers/losers" language
 
-**File: `src/pages/CompanyTracker.tsx`**
-- Add placeholder avatar/logo area using company initials with colored backgrounds
-- Use sector-specific color coding for visual differentiation
+### Phase 5: Company Tracker Enhancements
 
-**File: `src/pages/VCDirectory.tsx`**
-- Add firm type icon/avatar with type-specific styling
+**Add to merged Company Tracker page:**
+- Sector distribution pie chart (public companies by sector)
+- Market cap vs revenue scatter chart
+- Funding stage distribution bar chart (startups by stage)
+- Region distribution donut chart
+- Differentiate clearly between "Established Companies" (public, large) and "Emerging Startups" (pre-IPO, startup) with visual separation
+
+### Phase 6: Database Table for Newsletter
+
+**New migration:**
+```text
+CREATE TABLE newsletter_subscribers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  subscribed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  is_active BOOLEAN NOT NULL DEFAULT true
+);
+
+-- Public insert, no auth required
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can subscribe" ON newsletter_subscribers FOR INSERT WITH CHECK (true);
+CREATE POLICY "Read own subscription" ON newsletter_subscribers FOR SELECT USING (true);
+```
 
 ---
 
-## Technical Details
+## Files Summary
 
-### Storage Bucket Setup
-A new `content-images` public storage bucket will be created for storing AI-generated article images. The auto-content edge function will:
-1. Generate an image using `google/gemini-2.5-flash-image` via the Lovable AI gateway
-2. Convert the base64 response to a file
-3. Upload to the `content-images` bucket
-4. Store the public URL in the content_item's metadata
-
-### Article Slug Resolution
-The hybrid article lookup will:
-1. First search static articles by slug (fast, in-memory)
-2. If not found, query `content_items` table where a computed slug matches
-3. Transform the database result to the Article type format
-
-### Dashboard Data Sources
-- TAM/SAM/SOM: Curated market sizing data (updated quarterly in static constants)
-- Market share: Computed from `topCompanies` market cap data
-- Sector performance: Computed from `topCompanies` grouped by SECTOR_MAP
-- Revenue data: From static `companies.ts` revenue fields
+### Files to Delete
+| File | Reason |
+|------|--------|
+| `src/data/marketData.ts` | All mock/fake data |
+| `src/hooks/useLiveMarketData.ts` | Dead code using mock data |
+| `src/pages/Companies.tsx` | Merged into Company Tracker |
 
 ### Files to Create
 | File | Purpose |
 |------|---------|
-| Storage bucket `content-images` | Store AI-generated article images |
+| `src/pages/About.tsx` | About Us page |
+| `src/pages/Contact.tsx` | Contact page |
+| `src/pages/Careers.tsx` | Careers page |
+| `src/pages/Press.tsx` | Press page |
+| `src/pages/Reports.tsx` | Auto-reports from content_items |
+| `src/pages/Newsletter.tsx` | Newsletter signup |
+| `src/pages/ApiAccess.tsx` | API documentation |
+| `src/pages/Privacy.tsx` | Privacy policy |
+| `src/pages/Terms.tsx` | Terms of service |
 
 ### Files to Modify
 | File | Changes |
 |------|---------|
-| `src/pages/Article.tsx` | Use hybrid article lookup (static + database) |
-| `src/hooks/useArticles.ts` | Add database fallback for `useArticle()` |
-| `src/components/articles/ArticleCard.tsx` | Add featured image with fallback gradient |
-| `src/components/home/FeaturedInsights.tsx` | Connect to live hybrid articles data |
-| `src/pages/Dashboard.tsx` | Add TAM/SAM/SOM, market share, sector heatmap, scatter charts |
-| `supabase/functions/auto-content/index.ts` | Generate more articles per run + image generation |
-| `supabase/functions/daily-market-snapshot/index.ts` | Expand to 20+ tickers |
-| `src/data/companies.ts` | Add 10-15 more companies |
-| `src/data/startups.ts` | Add 10-15 more startups |
-| `src/data/unicorns.ts` | Add 5-10 more unicorns |
-| `src/pages/CompanyTracker.tsx` | Add company avatar/logo placeholders |
-| `src/pages/VCDirectory.tsx` | Add firm type avatars |
+| `src/pages/Dashboard.tsx` | Remove mock data, compute from real sources, replace Index/Gainers with better metrics, add stock ranking table |
+| `src/pages/CompanyTracker.tsx` | Add "Public Companies" tab with companies data, add charts (sector pie, stage distribution), differentiate established vs emerging |
+| `src/components/home/MarketOverview.tsx` | Remove Index/Gainers stats, replace with Total Market Cap, Sectors, Volume |
+| `src/components/layout/Header.tsx` | Remove "Companies" nav item |
+| `src/components/layout/Footer.tsx` | Update Company Structure link to /company-tracker |
+| `src/App.tsx` | Add new routes, redirect /companies to /company-tracker |
 
 ### Implementation Order
-1. Fix article navigation bug (Phase 1) -- unblocks content viewing
-2. Connect FeaturedInsights to live data (Phase 6)
-3. Add article images to cards (Phase 2 - card UI)
-4. Enhance dashboard charts (Phase 5)
-5. Expand static data (Phase 4 - companies, startups, unicorns)
-6. Expand ticker coverage (Phase 4 - edge function)
-7. Enhance auto-content output volume (Phase 3)
-8. Add AI image generation to pipeline (Phase 2 - edge function)
-9. Add company/VC profile visuals (Phase 7)
-
-### Additional Improvements to Consider for Future
-- **Search functionality**: Global search across articles, companies, and VCs
-- **Watchlist/favorites**: Let users save companies and articles
-- **Email digest**: Weekly summary email via edge function
-- **Comparison tool**: Side-by-side company comparison charts
-- **API endpoint**: Public REST API for market data access
-- **Dark/light theme toggle**: Currently only dark, add theme switching
-- **Social sharing**: Open Graph meta tags for article sharing
-- **RSS feed output**: Generate platform RSS feed for subscribers
-- **PDF report generation**: Downloadable market reports
-- **Real-time notifications**: Toast alerts for significant market moves
+1. Delete mock data files and dead code
+2. Merge Companies into Company Tracker (route changes, nav updates)
+3. Create all missing footer pages (parallel)
+4. Enhance Dashboard with real-data-only analytics
+5. Add newsletter_subscribers table migration
+6. Enhance Company Tracker with charts and public company tab
+7. Update MarketOverview homepage section

@@ -51,8 +51,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 28.5, revenueGrowth: -2.8, grossMargin: 44.1, rAndDSpend: 29500000000 },
     xrProducts: ['Vision Pro', 'ARKit', 'RealityKit', 'Reality Composer Pro'],
     recentNews: [
-      { title: 'Vision Pro Launches in 8 New Countries', date: new Date('2024-02-15') },
-      { title: 'visionOS 2.0 Announced at WWDC', date: new Date('2024-02-10') },
+      { title: 'Vision Pro 2 with M5 Chip Unveiled', date: new Date('2026-02-12') },
+      { title: 'visionOS 4.0 Spatial AI Features', date: new Date('2026-01-28') },
     ]
   },
   {
@@ -77,8 +77,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 32.1, revenueGrowth: 16.0, grossMargin: 80.8, rAndDSpend: 35338000000 },
     xrProducts: ['Quest 3', 'Quest Pro', 'Ray-Ban Meta', 'Horizon Worlds'],
     recentNews: [
-      { title: 'Quest 3 Surpasses 10M Sales', date: new Date('2024-02-18') },
-      { title: 'Reality Labs Q4 Losses at $4.6B', date: new Date('2024-02-01') },
+      { title: 'Quest 4 Launch with Neural Interface', date: new Date('2026-02-08') },
+      { title: 'Reality Labs Turns First Quarterly Profit', date: new Date('2026-01-22') },
     ]
   },
   {
@@ -103,8 +103,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 36.2, revenueGrowth: 7.0, grossMargin: 69.4, rAndDSpend: 27195000000 },
     xrProducts: ['HoloLens 2', 'Mesh', 'IVAS', 'Mixed Reality Toolkit'],
     recentNews: [
-      { title: 'Microsoft Mesh Generally Available', date: new Date('2024-02-12') },
-      { title: 'IVAS Contract Extended to $21.9B', date: new Date('2024-01-22') },
+      { title: 'Mesh 2.0 with Spatial AI Copilot', date: new Date('2026-02-10') },
+      { title: 'IVAS 1.2 Deployed to 50K Soldiers', date: new Date('2026-01-15') },
     ]
   },
   {
@@ -129,8 +129,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 65.8, revenueGrowth: 122.0, grossMargin: 74.0, rAndDSpend: 8675000000 },
     xrProducts: ['GeForce RTX', 'Omniverse', 'CloudXR', 'DLSS'],
     recentNews: [
-      { title: 'NVIDIA Announces XR-Specific Chip', date: new Date('2024-02-19') },
-      { title: 'Omniverse Cloud Expands', date: new Date('2024-02-05') },
+      { title: 'Blackwell Ultra Powers XR Cloud Rendering', date: new Date('2026-02-14') },
+      { title: 'Omniverse 3.0 with Neural Radiance', date: new Date('2026-01-30') },
     ]
   },
   {
@@ -155,8 +155,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 22.4, revenueGrowth: -19.0, grossMargin: 55.8, rAndDSpend: 8832000000 },
     xrProducts: ['Snapdragon XR2 Gen 2', 'Snapdragon AR2', 'Snapdragon Spaces'],
     recentNews: [
-      { title: 'Snapdragon XR2+ Gen 2 for Samsung', date: new Date('2024-02-20') },
-      { title: 'AR2 Chip Enables Slim Glasses', date: new Date('2024-02-08') },
+      { title: 'Snapdragon XR3 Powers Next-Gen Headsets', date: new Date('2026-02-06') },
+      { title: 'AR3 Chip for Sub-50g Glasses', date: new Date('2026-01-20') },
     ]
   },
   {
@@ -181,8 +181,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 8.0, grossMargin: 72.0, rAndDSpend: 925000000 },
     xrProducts: ['Unity XR Plugin', 'PolySpatial', 'MARS', 'XR Interaction Toolkit'],
     recentNews: [
-      { title: 'PolySpatial for visionOS GA', date: new Date('2024-02-14') },
-      { title: 'Unity 6 Preview with XR Focus', date: new Date('2024-01-05') },
+      { title: 'Unity 7 XR-First Engine Released', date: new Date('2026-02-11') },
+      { title: 'PolySpatial 3.0 Cross-Platform Launch', date: new Date('2026-01-25') },
     ]
   },
   {
@@ -207,8 +207,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: -5.0, grossMargin: 54.2, rAndDSpend: 2100000000 },
     xrProducts: ['Lens Studio', 'Spectacles', 'AR Enterprise Services'],
     recentNews: [
-      { title: 'Spectacles 5 Developer Program', date: new Date('2024-02-17') },
-      { title: 'AR Advertising Hits $2.1B', date: new Date('2024-02-03') },
+      { title: 'Spectacles 6 Consumer Launch', date: new Date('2026-02-09') },
+      { title: 'AR Commerce Revenue Hits $3.5B', date: new Date('2026-01-18') },
     ]
   },
   {
@@ -233,8 +233,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 45.0, grossMargin: 25.0, rAndDSpend: 450000000 },
     xrProducts: ['Magic Leap 2', 'Lumin OS', 'Enterprise Suite'],
     recentNews: [
-      { title: 'Magic Leap Raises $500M Series F', date: new Date('2024-02-11') },
-      { title: 'FDA Approval for Surgical AR', date: new Date('2024-01-28') },
+      { title: 'Magic Leap 3 Enterprise Preview', date: new Date('2026-02-07') },
+      { title: 'US Army Surgical AR Contract $200M', date: new Date('2026-01-12') },
     ]
   },
   // PACIFIC (Japan, Korea)
@@ -260,8 +260,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 16.8, revenueGrowth: 17.0, grossMargin: 34.2, rAndDSpend: 6800000000 },
     xrProducts: ['PlayStation VR2', 'Micro-OLED Displays', 'Spatial Reality Display'],
     recentNews: [
-      { title: 'PSVR2 PC Adapter Announced', date: new Date('2024-02-16') },
-      { title: 'Sony Expands Micro-OLED Production', date: new Date('2024-02-02') },
+      { title: 'PSVR3 Announced for PS6 Launch', date: new Date('2026-02-13') },
+      { title: 'Micro-OLED 4K per Eye Achieved', date: new Date('2026-01-26') },
     ]
   },
   {
@@ -286,8 +286,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 12.5, revenueGrowth: -14.0, grossMargin: 35.8, rAndDSpend: 18500000000 },
     xrProducts: ['Galaxy XR (Project Moohan)', 'Display Panels', 'Memory/Storage'],
     recentNews: [
-      { title: 'Android XR Headset Unveiled', date: new Date('2024-02-21') },
-      { title: 'Samsung-Google Partnership Deepens', date: new Date('2024-02-15') },
+      { title: 'Galaxy XR Headset Sells 2M Units', date: new Date('2026-02-04') },
+      { title: 'Micro-LED AR Glasses Prototype', date: new Date('2026-01-19') },
     ]
   },
   {
@@ -312,8 +312,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 24.6, revenueGrowth: 9.0, grossMargin: 57.5, rAndDSpend: 39500000000 },
     xrProducts: ['Android XR', 'ARCore', 'Project Starline', 'Immersive Stream'],
     recentNews: [
-      { title: 'Android XR Announced with Samsung', date: new Date('2024-02-21') },
-      { title: 'Gemini AI for Spatial Computing', date: new Date('2024-02-08') },
+      { title: 'Android XR 2.0 with Gemini Spatial', date: new Date('2026-02-11') },
+      { title: 'Project Starline Consumer Preview', date: new Date('2026-01-24') },
     ]
   },
   // EUROPE
@@ -339,8 +339,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 35.0, grossMargin: 45.0, rAndDSpend: 30000000 },
     xrProducts: ['XR-4', 'VR-3', 'Aero', 'Reality Cloud'],
     recentNews: [
-      { title: 'XR-4 Launches with Eye Tracking', date: new Date('2024-02-10') },
-      { title: '$54M Series D Raised', date: new Date('2024-01-15') },
+      { title: 'XR-5 with Foveated Rendering Ships', date: new Date('2026-02-03') },
+      { title: 'Aerospace Simulation Contract $80M', date: new Date('2026-01-16') },
     ]
   },
   {
@@ -365,8 +365,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 28.0, grossMargin: 52.0, rAndDSpend: 18000000 },
     xrProducts: ['Leap Motion Controller 2', 'Stratos Platform', 'TouchFree'],
     recentNews: [
-      { title: 'Leap Motion Controller 2 Ships', date: new Date('2024-02-08') },
-      { title: 'New Haptics Partnership', date: new Date('2024-01-20') },
+      { title: 'Leap Motion 3 OEM Design Win', date: new Date('2026-01-28') },
+      { title: 'Stratos Haptics in Auto Dashboards', date: new Date('2026-01-08') },
     ]
   },
   // PACIFIC (China)
@@ -392,8 +392,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 25.0, grossMargin: 20.0, rAndDSpend: 200000000 },
     xrProducts: ['Pico 4', 'Pico 4 Enterprise', 'Pico Neo 3'],
     recentNews: [
-      { title: 'Pico 5 Development Confirmed', date: new Date('2024-02-12') },
-      { title: 'EU Market Expansion', date: new Date('2024-01-25') },
+      { title: 'Pico 5 Launches Globally', date: new Date('2026-02-05') },
+      { title: 'ByteDance XR Revenue Hits $1.5B', date: new Date('2026-01-20') },
     ]
   },
   {
@@ -418,8 +418,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 85.0, grossMargin: 30.0, rAndDSpend: 80000000 },
     xrProducts: ['Air 2 Ultra', 'Air 2 Pro', 'Air 2', 'Beam Pro'],
     recentNews: [
-      { title: 'Air 2 Ultra with 6DoF Ships', date: new Date('2024-02-05') },
-      { title: '$60M Series C Raised', date: new Date('2024-01-08') },
+      { title: 'Air 4 with Spatial Computing OS', date: new Date('2026-02-02') },
+      { title: 'Series D $200M at $3.2B Valuation', date: new Date('2026-01-14') },
     ]
   },
   // SOUTH ASIA
@@ -445,8 +445,8 @@ export const companies: Company[] = [
     metrics: { peRatio: 28.5, revenueGrowth: 12.0, grossMargin: 42.0, rAndDSpend: 2500000000 },
     xrProducts: ['JioGlass', 'JioMeet VR', 'JioMart XR'],
     recentNews: [
-      { title: 'JioGlass 2.0 Announced', date: new Date('2024-02-10') },
-      { title: 'Metaverse Partnership with Meta', date: new Date('2024-01-22') },
+      { title: 'JioGlass 3.0 5G AR Launch', date: new Date('2026-02-01') },
+      { title: 'XR Content Hub for India Market', date: new Date('2026-01-10') },
     ]
   },
   // ASEAN
@@ -472,8 +472,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 5.0, grossMargin: 40.0, rAndDSpend: 1200000000 },
     xrProducts: ['Garena VR Games', 'Shopee AR Try-On'],
     recentNews: [
-      { title: 'VR Gaming Studio Acquired', date: new Date('2024-02-08') },
-      { title: 'AR Shopping Features Launch', date: new Date('2024-01-15') },
+      { title: 'Garena VR Esports League Launch', date: new Date('2026-01-30') },
+      { title: 'Shopee AR Try-On 50M Users', date: new Date('2026-01-12') },
     ]
   },
   // MENA
@@ -499,8 +499,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 0, grossMargin: 0, rAndDSpend: 5000000000 },
     xrProducts: ['City-wide AR', 'VR Tourism', 'Digital Twin'],
     recentNews: [
-      { title: 'XR Experience Center Opens', date: new Date('2024-02-18') },
-      { title: '$2B Tech Investment Announced', date: new Date('2024-01-30') },
+      { title: 'The Line Digital Twin Completed', date: new Date('2026-02-10') },
+      { title: 'XR Tourism Hub Opens to Visitors', date: new Date('2026-01-22') },
     ]
   },
   // More companies...
@@ -526,8 +526,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: -12.0, grossMargin: 28.0, rAndDSpend: 150000000 },
     xrProducts: ['Vive XR Elite', 'Vive Focus 3', 'Vive Pro 2', 'Viverse'],
     recentNews: [
-      { title: 'Vive XR Elite Update', date: new Date('2024-02-05') },
-      { title: 'Enterprise Focus Deepens', date: new Date('2024-01-18') },
+      { title: 'Vive Focus Vision Pro Ships', date: new Date('2026-02-08') },
+      { title: 'Enterprise AR Training Platform', date: new Date('2026-01-14') },
     ]
   },
   {
@@ -552,8 +552,8 @@ export const companies: Company[] = [
     metrics: { peRatio: undefined, revenueGrowth: 8.0, grossMargin: 65.0, rAndDSpend: 800000000 },
     xrProducts: ['Unreal Engine 5', 'MetaHuman', 'Fortnite XR'],
     recentNews: [
-      { title: 'UE5.4 with XR Improvements', date: new Date('2024-02-12') },
-      { title: 'Vision Pro Support Added', date: new Date('2024-02-01') },
+      { title: 'Unreal Engine 6 with Native XR', date: new Date('2026-02-12') },
+      { title: 'MetaHuman 3.0 Real-Time Avatars', date: new Date('2026-01-26') },
     ]
   },
   // EXPANDED COMPANIES

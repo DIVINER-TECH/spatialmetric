@@ -31,6 +31,23 @@ const regionLabels: Record<string, string> = {
     mena: 'MENA',
 };
 
+const SECTOR_COLORS: Record<string, string> = {
+    'Defense': 'bg-red-900/30 text-red-400',
+    'Healthcare': 'bg-emerald-900/30 text-emerald-400',
+    'Hardware': 'bg-blue-900/30 text-blue-400',
+    'Enterprise': 'bg-violet-900/30 text-violet-400',
+    'Gaming': 'bg-orange-900/30 text-orange-400',
+    'Consumer': 'bg-cyan-900/30 text-cyan-400',
+    'Software': 'bg-indigo-900/30 text-indigo-400',
+    'AI': 'bg-pink-900/30 text-pink-400',
+    'Infrastructure': 'bg-amber-900/30 text-amber-400',
+};
+
+const getSectorColor = (sector: string) => {
+    const key = Object.keys(SECTOR_COLORS).find(k => sector.toLowerCase().includes(k.toLowerCase()));
+    return SECTOR_COLORS[key || ''] || 'bg-primary/10 text-primary';
+};
+
 const CompanyCard = ({ company }: { company: TrackedCompany }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -39,25 +56,33 @@ const CompanyCard = ({ company }: { company: TrackedCompany }) => {
         return `$${amount}M`;
     };
 
+    const sectorColor = getSectorColor(company.sector);
+    const initials = company.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
     return (
         <Card className="hover:border-primary/50 transition-colors h-full">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                            <CardTitle className="text-base font-medium">{company.name}</CardTitle>
-                            {company.type === 'unicorn' && (
-                                <Badge variant="default" className="text-xs bg-primary/20 text-primary">
-                                    Unicorn
-                                </Badge>
-                            )}
+                    <div className="flex items-center gap-3 flex-1">
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold shrink-0 ${sectorColor}`}>
+                            {initials}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            {company.headquarters}
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                                <CardTitle className="text-base font-medium truncate">{company.name}</CardTitle>
+                                {company.type === 'unicorn' && (
+                                    <Badge variant="default" className="text-xs bg-primary/20 text-primary shrink-0">
+                                        🦄
+                                    </Badge>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <MapPin className="h-3 w-3" />
+                                <span className="truncate">{company.headquarters}</span>
+                            </div>
                         </div>
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs shrink-0">
                         {company.stage}
                     </Badge>
                 </div>

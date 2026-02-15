@@ -119,13 +119,30 @@ const VCDirectory = () => {
 
           {/* Investor Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredInvestors.map(vc => (
+            {filteredInvestors.map(vc => {
+              const typeColors: Record<string, string> = {
+                'VC': 'bg-primary/10 text-primary',
+                'Corporate VC': 'bg-chart-2/20 text-chart-2',
+                'PE': 'bg-chart-3/20 text-chart-3',
+                'Sovereign': 'bg-chart-4/20 text-chart-4',
+                'Angel': 'bg-chart-5/20 text-chart-5',
+              };
+              const typeKey = Object.keys(typeColors).find(k => vc.type.toLowerCase().includes(k.toLowerCase()));
+              const avatarColor = typeColors[typeKey || ''] || 'bg-muted text-muted-foreground';
+              const initials = vc.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
+              return (
               <Card key={vc.id} className="hover:border-primary/50 transition-colors">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-base">{vc.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{vc.headquarters}</p>
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold shrink-0 ${avatarColor}`}>
+                        {initials}
+                      </div>
+                      <div>
+                        <CardTitle className="text-base">{vc.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{vc.headquarters}</p>
+                      </div>
                     </div>
                     <Badge variant="secondary" className="text-xs">{vc.type}</Badge>
                   </div>
@@ -168,7 +185,8 @@ const VCDirectory = () => {
                   </Button>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         </div>
       </main>

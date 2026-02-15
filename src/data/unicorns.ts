@@ -336,30 +336,199 @@ export const unicorns: Unicorn[] = [
     ]
   },
   {
-    id: 'u12',
-    slug: 'metaverse-arabia',
-    name: 'Metaverse Arabia',
-    valuation: 1.0,
-    sector: 'Social/Events',
-    region: 'mena',
-    foundedYear: 2022,
-    totalRaised: 180,
-    headquarters: 'Riyadh, Saudi Arabia',
-    investors: ['Saudi Venture Capital', 'Sanabil Investments', 'PIF', 'STV'],
-    employees: 120,
+    id: 'u13',
+    slug: 'rokid',
+    name: 'Rokid',
+    valuation: 1.5,
+    sector: 'AR Hardware',
+    region: 'pacific',
+    foundedYear: 2014,
+    totalRaised: 320,
+    headquarters: 'Hangzhou, China',
+    investors: ['Temasek', 'IDG Capital', 'CDH Investments', 'Alibaba'],
+    employees: 450,
     fundingRounds: [
-      { date: new Date('2022-09-01'), amount: 8, round: 'Seed', valuation: 0.02 },
-      { date: new Date('2024-03-01'), amount: 18, round: 'Series A', valuation: 0.15 },
-      { date: new Date('2025-08-01'), amount: 150, round: 'Series B', valuation: 1.0 }
+      { date: new Date('2016-01-01'), amount: 10, round: 'Series A', valuation: 0.05 },
+      { date: new Date('2018-06-01'), amount: 50, round: 'Series B', valuation: 0.3 },
+      { date: new Date('2021-03-01'), amount: 100, round: 'Series C', valuation: 0.8 },
+      { date: new Date('2025-11-01'), amount: 80, round: 'Series D', valuation: 1.5 }
     ],
     status: 'private',
-    description: 'Building Arabic-first metaverse experiences and virtual event platforms. Strategic alignment with Vision 2030.',
-    ceo: 'Mohammed Al-Rashid',
-    products: ['Arabia Worlds', 'Virtual Majlis Pro', 'Event Platform', 'Hajj VR Experience'],
+    description: 'Chinese AR glasses pioneer with strong enterprise and consumer lines. AI-powered spatial computing devices sold in 30+ countries.',
+    ceo: 'Misa Zhu',
+    products: ['Rokid Max 2', 'Rokid AR Studio', 'Rokid Station Pro', 'Rokid Glass 3'],
     keyMetrics: [
-      { label: 'Virtual Events', value: '500+' },
-      { label: 'Active Users', value: '250K+' },
-      { label: 'Government Contracts', value: '15+' }
+      { label: 'Units Shipped', value: '600K+' },
+      { label: 'Enterprise Clients', value: '500+' },
+      { label: 'Countries', value: '30+' }
+    ]
+  },
+  {
+    id: 'u14',
+    slug: 'inworld-ai',
+    name: 'Inworld AI',
+    valuation: 1.5,
+    sector: 'AI/NPCs',
+    region: 'na',
+    foundedYear: 2021,
+    totalRaised: 185,
+    headquarters: 'Mountain View, CA',
+    investors: ['Lightspeed Venture Partners', 'Section 32', 'Intel Capital', 'Microsoft M12', 'Disney'],
+    employees: 180,
+    fundingRounds: [
+      { date: new Date('2022-02-01'), amount: 12, round: 'Seed', valuation: 0.05 },
+      { date: new Date('2022-08-01'), amount: 50, round: 'Series A', valuation: 0.5 },
+      { date: new Date('2023-08-01'), amount: 50, round: 'Series B', valuation: 0.9 },
+      { date: new Date('2025-08-01'), amount: 80, round: 'Series C', valuation: 1.5 }
+    ],
+    status: 'private',
+    description: 'AI-powered NPC engine creating intelligent characters for XR and gaming. Used by major game studios and virtual world platforms.',
+    ceo: 'Ilya Gelfenbeyn',
+    products: ['Inworld Engine', 'Character Brain', 'NPC Studio', 'Origin SDK'],
+    keyMetrics: [
+      { label: 'Developer Studios', value: '3,500+' },
+      { label: 'Characters Created', value: '1M+' },
+      { label: 'Interactions/Day', value: '50M+' }
+    ]
+  },
+  {
+    id: 'u15',
+    slug: 'spatial',
+    name: 'Spatial',
+    valuation: 1.0,
+    sector: 'Social/Metaverse',
+    region: 'na',
+    foundedYear: 2016,
+    totalRaised: 110,
+    headquarters: 'New York, NY',
+    investors: ['iNovia Capital', 'White Star Capital', 'Lerer Hippeau'],
+    employees: 120,
+    fundingRounds: [
+      { date: new Date('2018-06-01'), amount: 8, round: 'Series A', valuation: 0.04 },
+      { date: new Date('2020-10-01'), amount: 22, round: 'Series B', valuation: 0.2 },
+      { date: new Date('2022-01-01'), amount: 25, round: 'Series C', valuation: 0.5 },
+      { date: new Date('2025-05-01'), amount: 40, round: 'Series D', valuation: 1.0 }
+    ],
+    status: 'private',
+    description: 'Social metaverse platform enabling 3D galleries, virtual events, and interactive spaces accessible across VR, AR, and web.',
+    ceo: 'Anand Agarawala',
+    products: ['Spatial Worlds', 'Creator Studio', 'NFT Galleries', 'Virtual Events'],
+    keyMetrics: [
+      { label: 'Active Worlds', value: '250K+' },
+      { label: 'Monthly Users', value: '5M+' },
+      { label: 'Events Hosted', value: '100K+' }
+    ]
+  },
+  {
+    id: 'u16',
+    slug: 'within',
+    name: 'Within',
+    valuation: 1.0,
+    sector: 'Health/Fitness VR',
+    region: 'na',
+    foundedYear: 2014,
+    totalRaised: 95,
+    headquarters: 'Los Angeles, CA',
+    investors: ['Andreessen Horowitz', 'Raine Ventures', 'Meta', 'Emerson Collective'],
+    employees: 150,
+    fundingRounds: [
+      { date: new Date('2016-03-01'), amount: 12, round: 'Series A', valuation: 0.06 },
+      { date: new Date('2018-11-01'), amount: 30, round: 'Series B', valuation: 0.3 },
+      { date: new Date('2022-05-01'), amount: 40, round: 'Acquisition', valuation: 0.8 },
+      { date: new Date('2025-09-01'), amount: 15, round: 'Growth', valuation: 1.0 }
+    ],
+    status: 'private',
+    description: 'Immersive fitness and wellness platform with Supernatural VR. Making VR workouts mainstream with 500K+ active subscribers.',
+    ceo: 'Chris Milk',
+    products: ['Supernatural VR', 'Within Fitness', 'Meditation XR', 'Coach AI'],
+    keyMetrics: [
+      { label: 'Active Subscribers', value: '500K+' },
+      { label: 'Workouts Completed', value: '25M+' },
+      { label: 'Calories Burned', value: '5B+' }
+    ]
+  },
+  {
+    id: 'u17',
+    slug: 'pixie-dust-tech',
+    name: 'Pixie Dust Technologies',
+    valuation: 1.0,
+    sector: 'Holographic Display',
+    region: 'pacific',
+    foundedYear: 2017,
+    totalRaised: 85,
+    headquarters: 'Tokyo, Japan',
+    investors: ['SBI Investment', 'DBJ Capital', 'SMBC Venture Capital'],
+    employees: 110,
+    fundingRounds: [
+      { date: new Date('2018-04-01'), amount: 5, round: 'Seed', valuation: 0.02 },
+      { date: new Date('2019-12-01'), amount: 15, round: 'Series A', valuation: 0.1 },
+      { date: new Date('2022-06-01'), amount: 25, round: 'Series B', valuation: 0.4 },
+      { date: new Date('2025-03-01'), amount: 40, round: 'Series C', valuation: 1.0 }
+    ],
+    status: 'private',
+    description: 'Japanese holographic display and spatial audio technology company. Creating volumetric displays without headsets.',
+    ceo: 'Yoichi Ochiai',
+    products: ['Holographic Display', 'Spatial Audio System', 'Digital Signage XR'],
+    keyMetrics: [
+      { label: 'Display Installations', value: '2,000+' },
+      { label: 'Patents', value: '120+' },
+      { label: 'Enterprise Clients', value: '150+' }
+    ]
+  },
+  {
+    id: 'u18',
+    slug: 'hadean',
+    name: 'Hadean',
+    valuation: 1.2,
+    sector: 'Cloud Infrastructure',
+    region: 'eu',
+    foundedYear: 2018,
+    totalRaised: 95,
+    headquarters: 'London, UK',
+    investors: ['2050 Capital', 'Inaré', 'Draper Esprit', 'Epic Games'],
+    employees: 85,
+    fundingRounds: [
+      { date: new Date('2019-03-01'), amount: 5, round: 'Seed', valuation: 0.02 },
+      { date: new Date('2021-05-01'), amount: 15, round: 'Series A', valuation: 0.1 },
+      { date: new Date('2022-11-01'), amount: 30, round: 'Series B', valuation: 0.5 },
+      { date: new Date('2025-07-01'), amount: 45, round: 'Series C', valuation: 1.2 }
+    ],
+    status: 'private',
+    description: 'Distributed cloud platform for massive-scale virtual worlds and simulations. Powers metaverse infrastructure for defense and enterprise.',
+    ceo: 'Craig Sherla',
+    products: ['Hadean Platform', 'Aether Engine', 'SimSpace', 'Defense Cloud'],
+    keyMetrics: [
+      { label: 'Concurrent Users', value: '50K+' },
+      { label: 'Defense Contracts', value: '8' },
+      { label: 'Simulation Scale', value: '100km²' }
+    ]
+  },
+  {
+    id: 'u19',
+    slug: 'mirra',
+    name: 'Mirra',
+    valuation: 1.0,
+    sector: 'Enterprise AR',
+    region: 'south-asia',
+    foundedYear: 2018,
+    totalRaised: 65,
+    headquarters: 'Bangalore, India',
+    investors: ['Accel India', 'Chiratae Ventures', 'Qualcomm Ventures'],
+    employees: 200,
+    fundingRounds: [
+      { date: new Date('2019-06-01'), amount: 3, round: 'Seed', valuation: 0.01 },
+      { date: new Date('2021-02-01'), amount: 12, round: 'Series A', valuation: 0.08 },
+      { date: new Date('2023-05-01'), amount: 20, round: 'Series B', valuation: 0.4 },
+      { date: new Date('2025-10-01'), amount: 30, round: 'Series C', valuation: 1.0 }
+    ],
+    status: 'private',
+    description: 'Indian enterprise AR platform for manufacturing, warehouse operations, and remote assistance. Largest AR deployment in South Asia.',
+    ceo: 'Vikram Sharma',
+    products: ['Mirra Assist', 'Mirra Inspect', 'Mirra Train', 'Warehouse AR'],
+    keyMetrics: [
+      { label: 'Factory Deployments', value: '800+' },
+      { label: 'Workers Using AR', value: '150K+' },
+      { label: 'Error Reduction', value: '45%' }
     ]
   }
 ];

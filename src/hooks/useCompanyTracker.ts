@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react';
 import { unicorns, type Unicorn } from '@/data/unicorns';
 import { startups, type Startup } from '@/data/startups';
+import { companies as publicCompanies, type Company } from '@/data/companies';
 import { TrackedCompany, CompanyType, CompanyRegion } from '@/types/company';
 
-// Transform unicorn to TrackedCompany
 const transformUnicorn = (unicorn: Unicorn): TrackedCompany => ({
     id: unicorn.id,
     slug: unicorn.slug,
     name: unicorn.name,
     type: 'unicorn',
-    valuation: unicorn.valuation * 1000, // Convert to millions for consistency
+    valuation: unicorn.valuation * 1000,
     totalFunding: unicorn.totalRaised,
     stage: unicorn.status === 'public' ? 'Public' : 'Unicorn',
     sector: unicorn.sector,
@@ -25,7 +25,6 @@ const transformUnicorn = (unicorn: Unicorn): TrackedCompany => ({
     keyMetrics: unicorn.keyMetrics,
 });
 
-// Transform startup to TrackedCompany
 const transformStartup = (startup: Startup): TrackedCompany => ({
     id: startup.id,
     slug: startup.slug,
@@ -53,6 +52,38 @@ const transformStartup = (startup: Startup): TrackedCompany => ({
     traction: startup.traction,
 });
 
+const transformPublicCompany = (company: Company): TrackedCompany => ({
+    id: company.id,
+    slug: company.slug,
+    name: company.name,
+    type: 'public',
+    valuation: company.marketCap / 1e6, // to millions
+    totalFunding: 0,
+    stage: 'Public',
+    sector: company.sector,
+    region: company.region,
+    headquarters: company.headquarters,
+    founded: company.founded,
+    employees: company.employees,
+    investors: [],
+    fundingRounds: [],
+    products: company.xrProducts,
+    description: company.description,
+    ceo: company.ceo,
+    ticker: company.ticker,
+    marketCap: company.marketCap,
+    stockPrice: company.stockPrice,
+    priceChangePercent: company.priceChangePercent,
+    revenue: company.revenue,
+    metrics: company.metrics,
+    tags: company.tags,
+    keyMetrics: [
+        { label: 'Revenue', value: company.revenue >= 1e9 ? `$${(company.revenue / 1e9).toFixed(1)}B` : `$${(company.revenue / 1e6).toFixed(0)}M` },
+        { label: 'Gross Margin', value: `${company.metrics.grossMargin}%` },
+        { label: 'Rev Growth', value: `${company.metrics.revenueGrowth > 0 ? '+' : ''}${company.metrics.revenueGrowth}%` },
+    ],
+});
+
 export const useCompanyTracker = () => {
     const [companyType, setCompanyType] = useState<CompanyType>('all');
     const [selectedRegion, setSelectedRegion] = useState<CompanyRegion>('all');
@@ -62,41 +93,39 @@ export const useCompanyTracker = () => {
     const allCompanies = useMemo(() => {
         const unicornCompanies = unicorns.map(transformUnicorn);
         const startupCompanies = startups.map(transformStartup);
-        return [...unicornCompanies, ...startupCompanies];
+        const pubCompanies = publicCompanies.map(transformPublicCompany);
+        return [...pubCompanies, ...unicornCompanies, ...startupCompanies];
     }, []);
 
     const filteredCompanies = useMemo(() => {
         let filtered = allCompanies;
 
-        // Filter by type
         if (companyType !== 'all') {
             filtered = filtered.filter(c => c.type === companyType);
         }
 
-        // Filter by region
         if (selectedRegion !== 'all') {
             filtered = filtered.filter(c => c.region === selectedRegion);
         }
 
-        // Filter by search query
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(c =>
                 c.name.toLowerCase().includes(query) ||
                 c.sector.toLowerCase().includes(query) ||
                 c.tags?.some(t => t.toLowerCase().includes(query)) ||
-                c.description.toLowerCase().includes(query)
+                c.description.toLowerCase().includes(query) ||
+                c.ticker?.toLowerCase().includes(query)
             );
         }
 
-        // Sort
         filtered.sort((a, b) => {
             switch (sortBy) {
                 case 'name':
                     return a.name.localeCompare(b.name);
                 case 'valuation':
-                    // Unicorns first, then by valuation/funding
-                    if (a.type !== b.type) return a.type === 'unicorn' ? -1 : 1;
+                    const typeOrder = { public: 0, unicorn: 1, startup: 2 };
+                    if (a.type !== b.type) return typeOrder[a.type] - typeOrder[b.type];
                     return (b.valuation || b.totalFunding) - (a.valuation || a.totalFunding);
                 case 'funding':
                     return b.totalFunding - a.totalFunding;
@@ -111,21 +140,25 @@ export const useCompanyTracker = () => {
     }, [allCompanies, companyType, selectedRegion, searchQuery, sortBy]);
 
     const stats = useMemo(() => {
-        const unicornCount = filteredCompanies.filter(c => c.type === 'unicorn').length;
-        const startupCount = filteredCompanies.filter(c => c.type === 'startup').length;
-        const totalValuation = filteredCompanies
-            .filter(c => c.valuation)
-            .reduce((sum, c) => sum + (c.valuation || 0), 0);
-        const totalFunding = filteredCompanies.reduce((sum, c) => sum + c.totalFunding, 0);
+        const publicCount = allCompanies.filter(c => c.type === 'public').length;
+        const unicornCount = allCompanies.filter(c => c.type === 'unicorn').length;
+        const startupCount = allCompanies.filter(c => c.type === 'startup').length;
+        const totalMarketCap = allCompanies
+            .filter(c => c.marketCap)
+            .reduce((sum, c) => sum + (c.marketCap || 0), 0);
+        const totalFunding = allCompanies
+            .filter(c => c.type !== 'public')
+            .reduce((sum, c) => sum + c.totalFunding, 0);
 
         return {
             total: filteredCompanies.length,
+            publicCount,
             unicornCount,
             startupCount,
-            totalValuation,
+            totalMarketCap,
             totalFunding,
         };
-    }, [filteredCompanies]);
+    }, [allCompanies, filteredCompanies]);
 
     return {
         companies: filteredCompanies,

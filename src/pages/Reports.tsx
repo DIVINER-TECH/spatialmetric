@@ -41,9 +41,9 @@ const Reports = () => {
                           {report.excerpt && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{report.excerpt}</p>}
                           <div className="flex items-center gap-2 mt-2">
                             <Badge variant="secondary" className="text-xs">{report.type}</Badge>
-                            {report.published_at && (
+                            {report.publishedAt && (
                               <span className="text-xs text-muted-foreground">
-                                {format(new Date(report.published_at), 'MMM d, yyyy')}
+                                {format(new Date(report.publishedAt), 'MMM d, yyyy')}
                               </span>
                             )}
                           </div>

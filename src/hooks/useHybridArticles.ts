@@ -2,6 +2,17 @@ import { useMemo } from 'react';
 import { useContentItems, type ContentItem } from '@/hooks/useContentItems';
 import { articles, type Article } from '@/data/articles';
 
+// Infer category from tags for AI-generated content
+const inferCategory = (item: ContentItem): Article['category'] => {
+    const tags = item.tags ?? [];
+    if (tags.includes('market-intelligence')) return 'market-intelligence';
+    if (tags.includes('tech-explain')) return 'tech-explain';
+    if (tags.includes('spatial-updates')) return 'spatial-updates';
+    if (tags.includes('companies')) return 'companies';
+    if (tags.includes('events')) return 'events';
+    return 'market-intelligence'; // default for generic articles
+};
+
 // Transform ContentItem from database to Article type
 const transformContentItem = (item: ContentItem): Article => ({
     id: item.id,
@@ -9,7 +20,7 @@ const transformContentItem = (item: ContentItem): Article => ({
     title: item.title,
     excerpt: item.excerpt || '',
     content: item.content || '',
-    category: (item.type as Article['category']) || 'market-intelligence',
+    category: inferCategory(item),
     subcategory: item.metadata?.subcategory || 'AI Generated',
     region: item.metadata?.region,
     author: {
@@ -19,7 +30,7 @@ const transformContentItem = (item: ContentItem): Article => ({
     },
     publishedAt: new Date(item.publishedAt),
     updatedAt: new Date(item.publishedAt),
-    readTime: Math.ceil((item.content?.length || 0) / 1000), // Rough estimate
+    readTime: Math.ceil((item.content?.length || 0) / 1000),
     trending: false,
     featured: false,
     tags: item.tags || [],
@@ -29,8 +40,8 @@ const transformContentItem = (item: ContentItem): Article => ({
 });
 
 export const useHybridArticles = (category?: Article['category'], limit?: number) => {
-    // Get AI-generated content from database
-    const { data: contentItems, isLoading } = useContentItems('article', limit);
+    // Get ALL AI-generated articles (not filtered by type) so tag-based filtering works
+    const { data: contentItems, isLoading } = useContentItems('article', 50);
 
     const hybridArticles = useMemo(() => {
         // Transform database content items to Article type
@@ -46,16 +57,16 @@ export const useHybridArticles = (category?: Article['category'], limit?: number
         const seen = new Set<string>();
         merged = merged.filter((article) => {
             const key = article.slug || article.title.toLowerCase();
-            if (seen.has(key)) {
-                return false;
-            }
+            if (seen.has(key)) return false;
             seen.add(key);
             return true;
         });
 
-        // Filter by category if provided
+        // Filter by category if provided — match both inferred category AND tags
         if (category) {
-            merged = merged.filter((a) => a.category === category);
+            merged = merged.filter((a) =>
+                a.category === category || (a.tags && a.tags.includes(category))
+            );
         }
 
         // Sort by publishedAt descending

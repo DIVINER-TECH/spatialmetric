@@ -4,9 +4,9 @@ import { BarChart3, Twitter, Linkedin, Github } from "lucide-react";
 const footerLinks = {
   content: [
     { label: "Market Intelligence", href: "/market-intelligence" },
+    { label: "Company Tracker", href: "/company-tracker" },
     { label: "Tech Explain", href: "/tech-explain" },
     { label: "Events & Ecosystem", href: "/events" },
-    { label: "Company Structure", href: "/companies" },
   ],
   resources: [
     { label: "Dashboard", href: "/dashboard" },

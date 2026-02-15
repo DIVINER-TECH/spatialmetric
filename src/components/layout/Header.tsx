@@ -19,7 +19,6 @@ const navItems = [
   { label: "Market Intelligence", href: "/market-intelligence", icon: TrendingUp },
   { label: "Company Tracker", href: "/company-tracker", icon: Rocket },
   { label: "VC Directory", href: "/vc-directory", icon: Landmark },
-  { label: "Companies", href: "/companies", icon: Building2 },
   { label: "Tech Explain", href: "/tech-explain", icon: Cpu },
   { label: "Events", href: "/events", icon: Calendar },
   { label: "Spatial Updates", href: "/spatial-updates", icon: Globe },

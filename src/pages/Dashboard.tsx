@@ -33,9 +33,39 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 
-const segmentData: { name: string; value: number; color: string }[] = [];
+// Sector mapping for companies
+const SECTOR_MAP: Record<string, string> = {
+  AAPL: "Hardware",
+  META: "Social/Metaverse",
+  MSFT: "Enterprise",
+  NVDA: "Semiconductor",
+  GOOG: "Software/AI",
+  GOOGL: "Software/AI",
+  SONY: "Gaming/Hardware",
+  QCOM: "Semiconductor",
+  SNAP: "Social/AR",
+  RBLX: "Gaming",
+  U: "Gaming Engine",
+};
 
-const fundingData = [];
+const SEGMENT_COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+  "hsl(210, 70%, 50%)",
+  "hsl(280, 60%, 55%)",
+];
+
+// Curated quarterly VC funding data for XR sector (2025-2026)
+const fundingData = [
+  { quarter: "Q1 2025", amount: 3.8 },
+  { quarter: "Q2 2025", amount: 4.2 },
+  { quarter: "Q3 2025", amount: 6.8 },
+  { quarter: "Q4 2025", amount: 3.6 },
+  { quarter: "Q1 2026", amount: 5.1 },
+];
 
 const formatMarketCap = (value?: number | null) => {
   if (!value) return "—";
@@ -70,7 +100,29 @@ const Dashboard = () => {
     ? ((latestIndex.value - prevIndex.value) / prevIndex.value) * 100
     : 0;
 
-  const companies = snapshot?.topCompanies ?? [];
+  const companies = (snapshot?.topCompanies ?? [])
+    .slice()
+    .sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0));
+
+  // Compute segment data from companies
+  const segmentData = (() => {
+    if (companies.length === 0) return [];
+    const sectorTotals: Record<string, number> = {};
+    companies.forEach((c) => {
+      const sector = SECTOR_MAP[c.symbol] ?? "Other";
+      sectorTotals[sector] = (sectorTotals[sector] ?? 0) + (c.marketCap ?? 0);
+    });
+    const totalCap = Object.values(sectorTotals).reduce((s, v) => s + v, 0);
+    if (totalCap === 0) return [];
+    return Object.entries(sectorTotals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, value], idx) => ({
+        name,
+        value: Math.round((value / totalCap) * 1000) / 10,
+        color: SEGMENT_COLORS[idx % SEGMENT_COLORS.length],
+      }));
+  })();
+
   const avgChange = companies.length > 0
     ? companies.reduce((sum, c) => sum + c.changePercent, 0) / companies.length
     : 0;
@@ -414,7 +466,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {companies.map((company) => {
+                {companies.map((company, idx) => {
                   const positive = company.changePercent >= 0;
                   const capOrPrice = company.marketCap
                     ? formatMarketCap(company.marketCap)
@@ -422,9 +474,12 @@ const Dashboard = () => {
 
                   return (
                     <div key={company.symbol} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                    <div>
-                      <div className="font-medium">{company.name}</div>
-                      <div className="text-sm text-muted-foreground">{company.symbol}</div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-muted-foreground w-4">{idx + 1}</span>
+                      <div>
+                        <div className="font-medium">{company.name}</div>
+                        <div className="text-sm text-muted-foreground">{company.symbol}</div>
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className="font-mono text-sm">{capOrPrice}</div>

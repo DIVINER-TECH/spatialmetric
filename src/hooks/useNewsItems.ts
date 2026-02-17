@@ -30,6 +30,7 @@ export const useNewsItems = (limit = 30) => {
         source: item.news_sources?.name ?? null,
       })) as NewsItem[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 2,
+    refetchInterval: 1000 * 60,
   });
 };

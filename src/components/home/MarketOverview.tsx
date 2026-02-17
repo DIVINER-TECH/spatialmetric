@@ -73,9 +73,7 @@ export function MarketOverview() {
             Last updated: {format(new Date(snapshot.asOfDate), "MMM d, yyyy")}
           </p>
         ) : (
-          <p className="text-xs text-muted-foreground mt-2">
-            No daily snapshot found. Deploy and run the daily snapshot function to populate data.
-          </p>
+          <p className="text-xs text-muted-foreground mt-2">Loading market data…</p>
         )}
       </div>
 

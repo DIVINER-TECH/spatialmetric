@@ -75,6 +75,13 @@ export function Hero() {
               <div className="text-xs md:text-sm text-muted-foreground">Update Cadence</div>
             </div>
           </div>
+
+          {/* Data freshness */}
+          {snapshot?.asOfDate && (
+            <p className="text-xs text-muted-foreground mt-4 animate-fade-in" style={{ animationDelay: "0.5s" }}>
+              Data as of {new Date(snapshot.asOfDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </p>
+          )}
         </div>
       </div>
 

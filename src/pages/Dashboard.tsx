@@ -20,6 +20,7 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 import { useMemo } from "react";
+import { PipelineStatus } from "@/components/dashboard/PipelineStatus";
 
 const SECTOR_MAP: Record<string, string> = {
   AAPL: "Hardware", META: "Social/Metaverse", MSFT: "Enterprise", NVDA: "Semiconductor",
@@ -509,6 +510,11 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Pipeline Status */}
+        <div className="mb-8">
+          <PipelineStatus />
         </div>
 
         {/* Bottom: News */}

@@ -42,6 +42,7 @@ const transformContentItem = (item: ContentItem): Article => ({
 export const useHybridArticles = (category?: Article['category'], limit?: number) => {
     // Get ALL AI-generated articles (not filtered by type) so tag-based filtering works
     const { data: contentItems, isLoading } = useContentItems('article', 50);
+    // refetchInterval inherited from useContentItems
 
     const hybridArticles = useMemo(() => {
         // Transform database content items to Article type

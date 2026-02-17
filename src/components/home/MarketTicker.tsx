@@ -16,7 +16,12 @@ export function MarketTicker() {
   }
 
   return (
-    <div className="border-y border-border bg-card/50 overflow-hidden">
+    <div className="border-y border-border bg-card/50 overflow-hidden relative">
+      {snapshot?.asOfDate && (
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground/60 z-10 hidden md:block">
+          as of {new Date(snapshot.asOfDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        </span>
+      )}
       <div className="flex animate-marquee">
         {[...tickerData, ...tickerData].map((item, index) => (
           <div

@@ -42,6 +42,7 @@ export const useContentItems = (type?: string, limit = 12) => {
         publishedAt: item.published_at,
       })) as ContentItem[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 5,
   });
 };

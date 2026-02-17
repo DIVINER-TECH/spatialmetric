@@ -34,7 +34,7 @@ const categories = [
     title: "Company Structure",
     description: "In-depth analysis of XR companies, financials, and corporate strategy",
     icon: Building2,
-    href: "/companies",
+    href: "/company-tracker",
     color: "from-warning/20 to-warning/5",
     iconBg: "bg-warning/10",
     iconColor: "text-warning",

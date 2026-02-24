@@ -10,6 +10,7 @@ import TechExplain from "./pages/TechExplain";
 import Events from "./pages/Events";
 import SpatialUpdates from "./pages/SpatialUpdates";
 import Article from "./pages/Article";
+import Content from "./pages/Content";
 import CompanyProfile from "./pages/CompanyProfile";
 import RegionalIntelligence from "./pages/RegionalIntelligence";
 import VCDirectory from "./pages/VCDirectory";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/events" element={<Events />} />
           <Route path="/spatial-updates" element={<SpatialUpdates />} />
           <Route path="/article/:slug" element={<Article />} />
+          <Route path="/content/:id" element={<Content />} />
           <Route path="/company/:slug" element={<CompanyProfile />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

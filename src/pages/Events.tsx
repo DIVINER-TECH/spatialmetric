@@ -38,40 +38,77 @@ const Events = () => {
         {/* Upcoming Events */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-6">Upcoming Events</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
+              Upcoming Industry Milestones
+              <Badge variant="secondary" className="text-sm">2026-2027</Badge>
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {upcoming.map(event => (
-                <Card key={event.id} className="hover:border-primary/50 transition-colors">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge className={typeColors[event.type]}>{event.type.replace('-', ' ')}</Badge>
-                      {event.featured && <Badge variant="outline">Featured</Badge>}
+                <Card key={event.id} className="group hover:border-primary/50 transition-all shadow-md hover:shadow-primary/5 overflow-hidden flex flex-col">
+                  {event.thumbnailUrl && (
+                    <div className="h-48 overflow-hidden bg-muted">
+                      <img src={event.thumbnailUrl} alt={event.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                     </div>
-                    <CardTitle className="text-lg">{event.title}</CardTitle>
+                  )}
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge className={typeColors[event.type]}>{event.type.replace('-', ' ')}</Badge>
+                      {event.featured && (
+                        <Badge variant="outline" className="border-primary/50 text-primary">Featured</Badge>
+                      )}
+                    </div>
+                    <CardTitle className="text-xl leading-tight group-hover:text-primary transition-colors">{event.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{event.description}</p>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span>{format(event.date, 'MMM d, yyyy')}</span>
+                  <CardContent className="flex-1 flex flex-col">
+                    <p className="text-muted-foreground mb-6 line-clamp-3 text-sm flex-1">{event.description}</p>
+                    
+                    <div className="space-y-3 mb-6 p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center gap-3 text-sm">
+                        <Calendar className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{format(event.date, 'MMMM d, yyyy')}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-3 text-sm">
+                        <MapPin className="h-4 w-4 text-primary" />
                         <span>{event.location}</span>
                       </div>
                       {event.attendees && (
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span>{event.attendees.toLocaleString()} expected</span>
+                        <div className="flex items-center gap-3 text-sm">
+                          <Users className="h-4 w-4 text-primary" />
+                          <span>{event.attendees.toLocaleString()} Ecosystem Partners</span>
                         </div>
                       )}
                     </div>
-                    {event.registrationUrl && (
-                      <Button variant="outline" size="sm" className="mt-4 w-full">
-                        <ExternalLink className="h-4 w-4 mr-2" />Register
-                      </Button>
+
+                    {event.speakers && event.speakers.length > 0 && (
+                      <div className="mb-6">
+                        <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3 leading-none">Featured Speakers</h4>
+                        <div className="flex -space-x-2">
+                          {event.speakers.map((s, idx) => (
+                            <div key={idx} className="h-8 w-8 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[10px] font-bold overflow-hidden" title={`${s.name} (${s.company})`}>
+                              {s.avatar ? <img src={s.avatar} alt={s.name} className="w-full h-full object-cover" /> : s.name.charAt(0)}
+                            </div>
+                          ))}
+                          {event.speakers.length > 3 && (
+                            <div className="h-8 w-8 rounded-full border-2 border-background bg-primary text-primary-foreground flex items-center justify-center text-[10px] font-bold">
+                              +{event.speakers.length - 3}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     )}
+
+                    <div className="flex gap-2">
+                      {event.registrationUrl && (
+                        <Button className="flex-1 shadow-sm" asChild>
+                          <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4 mr-2" />Register
+                          </a>
+                        </Button>
+                      )}
+                      <Button variant="outline" size="icon" className="shrink-0">
+                        <Calendar className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -79,19 +116,50 @@ const Events = () => {
           </div>
         </section>
 
-        {/* Past Events */}
-        <section className="py-12 bg-muted/20">
+        {/* Ecosystem Resources */}
+        <section className="py-16 bg-muted/20 border-y border-border/50">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-6">Recent Events</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {past.slice(0, 4).map(event => (
-                <Card key={event.id} className="bg-card/50">
-                  <CardContent className="p-4">
-                    <Badge className={`${typeColors[event.type]} mb-2`} variant="outline">{event.type.replace('-', ' ')}</Badge>
-                    <h3 className="font-semibold text-sm mb-2">{event.title}</h3>
-                    <p className="text-xs text-muted-foreground">{format(event.date, 'MMM d, yyyy')}</p>
-                  </CardContent>
-                </Card>
+            <h2 className="text-2xl font-bold mb-8">Ecosystem & Intelligence Resources</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {past.map(event => (
+                event.resources && event.resources.length > 0 ? (
+                  <Card key={event.id} className="bg-card/50 hover:bg-card transition-colors">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">{event.type}</Badge>
+                        <span className="text-[10px] text-muted-foreground font-mono">{format(event.date, 'yyyy')}</span>
+                      </div>
+                      <CardTitle className="text-base line-clamp-1">{event.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {event.resources.map((res, i) => (
+                          <li key={i}>
+                            <a href={res.url} className="text-sm text-primary hover:underline flex items-center gap-2 group">
+                              <ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100" />
+                              {res.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                ) : null
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Past Events Recap */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-bold mb-6">Recent Industry Highlights</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {past.slice(0, 12).map(event => (
+                <div key={event.id} className="p-3 bg-card border border-border/50 rounded-lg hover:border-primary/30 transition-all cursor-default text-center group">
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase mb-1">{format(event.date, 'MMM yyyy')}</div>
+                  <div className="text-xs font-semibold group-hover:text-primary transition-colors leading-snug">{event.title}</div>
+                </div>
               ))}
             </div>
           </div>

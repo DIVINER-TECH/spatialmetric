@@ -35,6 +35,10 @@ export interface TrackedCompany {
         grossMargin: number;
         rAndDSpend: number;
     };
+    logoUrl?: string;
+    tagline?: string;
+    detailedProducts?: Array<{ name: string; description: string; impact: string }>;
+    breakthroughs?: Array<{ year: number; title: string; description: string }>;
 }
 
 export type CompanyType = 'all' | 'unicorn' | 'startup' | 'public';

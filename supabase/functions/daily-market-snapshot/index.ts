@@ -10,32 +10,31 @@ type TickerConfig = {
   symbol: string;
   name: string;
   marketCap?: number;
-  providerSymbol?: { stooq?: string; alphavantage?: string };
+  providerSymbol?: { stooq?: string; alphavantage?: string; yahoo?: string };
 };
 
 type DailyPoint = { date: string; close: number; volume: number };
 type TickerSeries = { symbol: string; name: string; marketCap?: number; series: DailyPoint[] };
 
 const TICKERS: TickerConfig[] = [
-  { symbol: "AAPL", name: "Apple", marketCap: 2850000000000, providerSymbol: { stooq: "aapl.us" } },
-  { symbol: "META", name: "Meta Platforms", marketCap: 1250000000000, providerSymbol: { stooq: "meta.us" } },
-  { symbol: "MSFT", name: "Microsoft", marketCap: 3100000000000, providerSymbol: { stooq: "msft.us" } },
-  { symbol: "NVDA", name: "NVIDIA", marketCap: 1850000000000, providerSymbol: { stooq: "nvda.us" } },
-  { symbol: "QCOM", name: "Qualcomm", marketCap: 192000000000, providerSymbol: { stooq: "qcom.us" } },
-  { symbol: "U", name: "Unity", marketCap: 11200000000, providerSymbol: { stooq: "u.us" } },
-  { symbol: "SONY", name: "Sony", marketCap: 115000000000, providerSymbol: { stooq: "sony.us" } },
-  { symbol: "SNAP", name: "Snap", marketCap: 18500000000, providerSymbol: { stooq: "snap.us" } },
-  { symbol: "GOOGL", name: "Alphabet", marketCap: 1950000000000, providerSymbol: { stooq: "googl.us" } },
-  { symbol: "005930.KS", name: "Samsung Electronics", marketCap: 320000000000, providerSymbol: { stooq: "005930.ks" } },
-  // Expanded tickers
-  { symbol: "RBLX", name: "Roblox", marketCap: 32000000000, providerSymbol: { stooq: "rblx.us" } },
-  { symbol: "MTTR", name: "Matterport", marketCap: 1800000000, providerSymbol: { stooq: "mttr.us" } },
-  { symbol: "VUZI", name: "Vuzix", marketCap: 350000000, providerSymbol: { stooq: "vuzi.us" } },
-  { symbol: "IMMR", name: "Immersion", marketCap: 350000000, providerSymbol: { stooq: "immr.us" } },
-  { symbol: "MVIS", name: "MicroVision", marketCap: 260000000, providerSymbol: { stooq: "mvis.us" } },
-  { symbol: "KOPN", name: "Kopin", marketCap: 180000000, providerSymbol: { stooq: "kopn.us" } },
-  { symbol: "LAZR", name: "Luminar", marketCap: 1100000000, providerSymbol: { stooq: "lazr.us" } },
-  { symbol: "AEVA", name: "Aeva Technologies", marketCap: 600000000, providerSymbol: { stooq: "aeva.us" } },
+  { symbol: "AAPL", name: "Apple", marketCap: 2850000000000, providerSymbol: { stooq: "aapl.us", yahoo: "AAPL" } },
+  { symbol: "META", name: "Meta Platforms", marketCap: 1250000000000, providerSymbol: { stooq: "meta.us", yahoo: "META" } },
+  { symbol: "MSFT", name: "Microsoft", marketCap: 3100000000000, providerSymbol: { stooq: "msft.us", yahoo: "MSFT" } },
+  { symbol: "NVDA", name: "NVIDIA", marketCap: 1850000000000, providerSymbol: { stooq: "nvda.us", yahoo: "NVDA" } },
+  { symbol: "QCOM", name: "Qualcomm", marketCap: 192000000000, providerSymbol: { stooq: "qcom.us", yahoo: "QCOM" } },
+  { symbol: "U", name: "Unity", marketCap: 11200000000, providerSymbol: { stooq: "u.us", yahoo: "U" } },
+  { symbol: "SONY", name: "Sony", marketCap: 115000000000, providerSymbol: { stooq: "sony.us", yahoo: "SONY" } },
+  { symbol: "SNAP", name: "Snap", marketCap: 18500000000, providerSymbol: { stooq: "snap.us", yahoo: "SNAP" } },
+  { symbol: "GOOGL", name: "Alphabet", marketCap: 1950000000000, providerSymbol: { stooq: "googl.us", yahoo: "GOOGL" } },
+  { symbol: "005930.KS", name: "Samsung Electronics", marketCap: 320000000000, providerSymbol: { stooq: "005930.ks", yahoo: "005930.KS" } },
+  { symbol: "RBLX", name: "Roblox", marketCap: 32000000000, providerSymbol: { stooq: "rblx.us", yahoo: "RBLX" } },
+  { symbol: "MTTR", name: "Matterport", marketCap: 1800000000, providerSymbol: { stooq: "mttr.us", yahoo: "MTTR" } },
+  { symbol: "VUZI", name: "Vuzix", marketCap: 350000000, providerSymbol: { stooq: "vuzi.us", yahoo: "VUZI" } },
+  { symbol: "IMMR", name: "Immersion", marketCap: 350000000, providerSymbol: { stooq: "immr.us", yahoo: "IMMR" } },
+  { symbol: "MVIS", name: "MicroVision", marketCap: 260000000, providerSymbol: { stooq: "mvis.us", yahoo: "MVIS" } },
+  { symbol: "KOPN", name: "Kopin", marketCap: 180000000, providerSymbol: { stooq: "kopn.us", yahoo: "KOPN" } },
+  { symbol: "LAZR", name: "Luminar", marketCap: 1100000000, providerSymbol: { stooq: "lazr.us", yahoo: "LAZR" } },
+  { symbol: "AEVA", name: "Aeva Technologies", marketCap: 600000000, providerSymbol: { stooq: "aeva.us", yahoo: "AEVA" } },
 ];
 
 const toYYYYMMDD = (date: Date) => {
@@ -63,6 +62,22 @@ const fetchStooqSeries = async (symbol: string): Promise<DailyPoint[]> => {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Stooq fetch failed for ${symbol}: ${res.status}`);
   return parseCsvSeries(await res.text());
+};
+
+const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=6mo`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Yahoo fetch failed for ${symbol}: ${res.status}`);
+  const data = await res.json();
+  const result = data.chart.result[0];
+  const timestamps = result.timestamp;
+  const quotes = result.indicators.quote[0];
+  
+  return timestamps.map((ts: number, i: number) => ({
+    date: new Date(ts * 1000).toISOString().split('T')[0],
+    close: Number(quotes.close[i]),
+    volume: Number(quotes.volume[i] ?? 0)
+  })).filter((p: any) => p.close !== null && !Number.isNaN(p.close));
 };
 
 const fetchAlphaVantageSeries = async (symbol: string, apiKey: string): Promise<DailyPoint[]> => {
@@ -128,17 +143,19 @@ serve(async (req) => {
     const seriesList: TickerSeries[] = [];
     for (const ticker of TICKERS) {
       try {
-        const symbol = provider === "alphavantage"
-          ? (ticker.providerSymbol?.alphavantage ?? ticker.symbol)
-          : (ticker.providerSymbol?.stooq ?? ticker.symbol.toLowerCase());
-        const series = provider === "alphavantage"
-          ? await fetchAlphaVantageSeries(symbol, alphaKey)
-          : await fetchStooqSeries(symbol);
+        let series: DailyPoint[] = [];
+        if (provider === "yahoo") {
+          series = await fetchYahooSeries(ticker.providerSymbol?.yahoo ?? ticker.symbol);
+        } else if (provider === "alphavantage") {
+          series = await fetchAlphaVantageSeries(ticker.providerSymbol?.alphavantage ?? ticker.symbol, alphaKey);
+        } else {
+          series = await fetchStooqSeries(ticker.providerSymbol?.stooq ?? ticker.symbol.toLowerCase());
+        }
+        
         if (series.length === 0) continue;
         seriesList.push({ symbol: ticker.symbol, name: ticker.name, marketCap: ticker.marketCap, series });
       } catch (e) {
         console.error(`Failed to fetch ${ticker.symbol}:`, e);
-        // Continue with other tickers
       }
     }
     if (seriesList.length === 0) throw new Error("No market data returned from provider");

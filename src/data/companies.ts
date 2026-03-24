@@ -25,6 +25,10 @@ export interface Company {
   };
   xrProducts: string[];
   recentNews: { title: string; date: Date }[];
+  logoUrl?: string;
+  tagline?: string;
+  detailedProducts?: { name: string; description: string; impact: string }[];
+  breakthroughs?: { year: number; title: string; description: string }[];
 }
 
 export const companies: Company[] = [
@@ -53,6 +57,16 @@ export const companies: Company[] = [
     recentNews: [
       { title: 'Vision Pro 2 with M5 Chip Unveiled', date: new Date('2026-02-12') },
       { title: 'visionOS 4.0 Spatial AI Features', date: new Date('2026-01-28') },
+    ],
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
+    tagline: 'Design the Future of Spatial Computing',
+    detailedProducts: [
+      { name: 'Vision Pro 2', description: 'Premium standalone spatial computer with 8K micro-OLED displays.', impact: 'Defined high-end consumer XR market.' },
+      { name: 'ARKit 8', description: 'World-leading mobile AR framework with spatial mesh understanding.', impact: 'Enabled AR for 1B+ devices.' }
+    ],
+    breakthroughs: [
+      { year: 2024, title: 'Vision Pro Launch', description: 'First entry into spatial computing hardware.' },
+      { year: 2025, title: 'EyeSight Precision', description: 'Advanced external display rendering for human connection.' }
     ]
   },
   {
@@ -79,6 +93,16 @@ export const companies: Company[] = [
     recentNews: [
       { title: 'Quest 4 Launch with Neural Interface', date: new Date('2026-02-08') },
       { title: 'Reality Labs Turns First Quarterly Profit', date: new Date('2026-01-22') },
+    ],
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg',
+    tagline: 'Building the Future of Connection',
+    detailedProducts: [
+      { name: 'Quest 4', description: 'Next-gen mixed reality headset with neural interface controllers.', impact: 'Mainstreamed high-fidelity MR.' },
+      { name: 'Horizon OS', description: 'Open operating system for spatial computing partners.', impact: 'Established Android-like ecosystem for XR.' }
+    ],
+    breakthroughs: [
+      { year: 2014, title: 'Oculus Acquisition', description: 'Began the modern VR era.' },
+      { year: 2021, title: 'Rebrand to Meta', description: 'Explicit shift toward the Metaverse.' }
     ]
   },
   {

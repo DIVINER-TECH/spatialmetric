@@ -1,95 +1,59 @@
-# Welcome to your Lovable project
+# SpatialMetric
 
-## Project info
+**SpatialMetric** is a professional investment intelligence platform dedicated to the Spatial Computing (XR/VR/AR) industry. It provides real-time market data, company valuations, news analysis, and ecosystem insights to help investors and developers stay ahead in the spatial computing era.
 
-**URL**: https://lovable.dev/projects/a8bf9358-cdfa-4cbc-92fc-4552adb7718f
+## Key Features
 
-## How can I edit this code?
+- **Market Ticker**: Real-time tracking of top spatial computing stocks and metrics using the Yahoo Finance API.
+- **Spatial Index**: A proprietary metric tracking the overall health and growth of the spatial computing market.
+- **Company Intelligence**: Detailed profiles and performance metrics for leading public and private XR companies.
+- **Ecocysem Events**: A comprehensive resource hub for industry conferences, product launches, and ecosystem milestones.
+- **AI-Powered Insights**: Automated daily briefs and deep-dive articles on market trends and technical innovations.
 
-There are several ways of editing your application.
+## Technology Stack
 
-**Use Lovable**
+- **Frontend**: React, Vite, TypeScript, Tailwind CSS, shadcn/ui.
+- **Backend**: Supabase (Database & Edge Functions).
+- **Data Sources**: Yahoo Finance API (Market Data), curated XR RSS feeds (News).
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a8bf9358-cdfa-4cbc-92fc-4552adb7718f) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v18+)
+- npm or bun
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/spatialmetric.git
+   cd spatialmetric
+   ```
 
-Follow these steps:
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. Configure environment variables in `.env`:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `MARKET_DATA_PROVIDER=yahoo`
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. Start the development server:
+   ```sh
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Daily Data Pipeline
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+The platform includes automated Supabase Edge Functions for data ingestion:
+- `daily-market-snapshot`: Fetches daily quotes and updates the Spatial Metric index.
+- `ingest-news`: Pulls recent XR/VR/AR news items into the database.
+- `auto-content`: Generates AI-driven insights from the latest market data and news.
 
-**Edit a file directly in GitHub**
+## License
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/a8bf9358-cdfa-4cbc-92fc-4552adb7718f) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-
-## Daily data pipeline (market + news)
-
-This repo includes daily ingestion functions and database tables for market snapshots and XR news.
-
-**Database**
-- Apply migrations in `supabase/migrations/20260206_market_and_news.sql`.
-
-**Edge functions**
-- `daily-market-snapshot` fetches daily quotes and stores an index snapshot.
-- `ingest-news` pulls XR/VR/AR news from RSS feeds into `news_items`.
-- `auto-content` generates daily AI briefs and articles from recent news.
-
-**Environment variables (Supabase Functions)**
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `MARKET_DATA_PROVIDER` (`stooq` or `alphavantage`)
-- `ALPHAVANTAGE_API_KEY` (required if `MARKET_DATA_PROVIDER=alphavantage`)
-
-**Scheduling**
-- Schedule `ingest-news` hourly and `daily-market-snapshot` daily.
-- Schedule `auto-content` daily (and weekly with `mode=weekly` if you want startup profiles).
+MIT License - see [LICENSE](LICENSE) for details.

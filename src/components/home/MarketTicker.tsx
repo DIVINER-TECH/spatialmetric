@@ -33,18 +33,18 @@ export function MarketTicker() {
               <span className="text-muted-foreground text-sm ml-2">{item.name}</span>
             </div>
             <div className="text-right">
-              <span className="font-mono">${item.price.toFixed(2)}</span>
+              <span className="font-mono">${(item.price ?? 0).toFixed(2)}</span>
               <span
                 className={`flex items-center gap-1 text-sm ml-2 ${
-                  item.changePercent >= 0 ? "text-success" : "text-destructive"
+                  (item.changePercent ?? 0) >= 0 ? "text-success" : "text-destructive"
                 }`}
               >
-                {item.changePercent >= 0 ? (
+                {(item.changePercent ?? 0) >= 0 ? (
                   <TrendingUp className="h-3 w-3" />
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
-                {item.changePercent >= 0 ? "+" : ""}{item.changePercent.toFixed(2)}%
+                {(item.changePercent ?? 0) >= 0 ? "+" : ""}{(item.changePercent ?? 0).toFixed(2)}%
               </span>
             </div>
           </div>

@@ -21,8 +21,8 @@ const transformContentItem = (item: ContentItem): Article => ({
     excerpt: item.excerpt || '',
     content: item.content || '',
     category: inferCategory(item),
-    subcategory: item.metadata?.subcategory || 'AI Generated',
-    region: item.metadata?.region,
+    subcategory: (item.metadata as any)?.subcategory || 'AI Generated',
+    region: (item.metadata as any)?.region,
     author: {
         name: 'SpatialMetrics AI',
         avatar: 'AI',
@@ -34,9 +34,9 @@ const transformContentItem = (item: ContentItem): Article => ({
     trending: false,
     featured: false,
     tags: item.tags || [],
-    imageUrl: item.metadata?.imageUrl || '/placeholder.svg',
-    keyTakeaways: item.metadata?.keyTakeaways || [],
-    metrics: item.metadata?.metrics,
+    imageUrl: (item.metadata as any)?.imageUrl || '/placeholder.svg',
+    keyTakeaways: (item.metadata as any)?.keyTakeaways || [],
+    metrics: (item.metadata as any)?.metrics,
 });
 
 export const useHybridArticles = (category?: Article['category'], limit?: number) => {
@@ -51,8 +51,8 @@ export const useHybridArticles = (category?: Article['category'], limit?: number
         // Get static articles
         const staticArticles = articles;
 
-        // Merge both sources
-        let merged = [...staticArticles, ...dbArticles];
+        // Merge both sources (DB first to prioritize live content during deduplication)
+        let merged = [...dbArticles, ...staticArticles];
 
         // Deduplicate by slug (prefer database version)
         const seen = new Set<string>();

@@ -51,6 +51,28 @@ const groqAIRequest = async (apiKey: string, systemPrompt: string, userPrompt: s
   return JSON.parse(content);
 };
 
+const generateAndUploadImage = async (supabase: any, prompt: string): Promise<string | null> => {
+  try {
+    const enhancedPrompt = `${prompt}. High quality, cinematic digital art, futuristic technology, spatial computing, minimal corporate aesthetic`;
+    const tempUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&nologo=true`;
+    
+    // Pollinations generates the image on the fly during the GET request
+    const imgResponse = await fetch(tempUrl);
+    if (!imgResponse.ok) return null;
+    
+    const blob = await imgResponse.blob();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
+    
+    const { data, error } = await supabase.storage.from("article_images").upload(fileName, blob, { contentType: "image/jpeg" });
+    if (error) return null;
+    
+    const { data: publicData } = supabase.storage.from("article_images").getPublicUrl(fileName);
+    return publicData.publicUrl;
+  } catch {
+    return null;
+  }
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   const startTime = Date.now();
@@ -87,29 +109,25 @@ serve(async (req) => {
 
     const jsonInstructions = "Return the response as a JSON object matching the requested schema. Use plain text, no markdown bold/italic.";
 
-    // 1. Market brief
+    // Text Generation (Sequential to avoid Groq rate limits)
     const brief = await groqAIRequest(groqKey,
       `You are a senior financial analyst producing a concise daily market brief for XR/VR/AR/Spatial Computing investors. ${jsonInstructions}`,
-      `Analyze these recent XR news items and create a market brief:
+      `Analyze these recent XR news items and create a market brief. Focus on tracking the ENTIRE industry landscape—including emerging startups, B2B enterprise adoption, and niche hardware/software players—rather than just the top tech giants (Apple, Meta, etc):
       
       ${sourceContext}
       
       Format: { "headline": "string", "summary": "string", "metrics": [{"label": "string", "value": "string", "change": "string"}], "signal": "bullish|bearish|neutral", "reasoning": "string" }`
     );
-    inserts.push({ type: "market-brief", title: brief.headline ?? "Daily Market Brief", excerpt: brief.summary ?? null, content: brief.summary ?? null, tags: ["market-brief"], sources: newsItems, metadata: brief });
 
-    // 2. Market Intelligence article #1
     const mi1 = await groqAIRequest(groqKey,
       `You are a senior analyst at SpatialMetrics writing for institutional investors. ${jsonInstructions}`,
-      `Write a 600-word market intelligence article about investment trends using these sources:
+      `Write a 600-word market intelligence article about investment trends using these sources. Crucially, your analysis must cover the wide market ecosystem. Do not limit your insights to top players; identify promising startups, funding trends, and diverse sector growth:
       
       ${sourceContext}
       
       Format: { "title": "string", "excerpt": "string", "content": "600 words text", "tags": ["string"], "keyTakeaways": ["string"], "subcategory": "string" }`
     );
-    inserts.push({ type: "article", title: mi1.title, excerpt: mi1.excerpt, content: mi1.content, tags: [...(mi1.tags ?? []), "market-intelligence"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: mi1.keyTakeaways ?? [], subcategory: mi1.subcategory ?? "Market Analysis" } });
 
-    // 3. Tech Explain article
     const tech1 = await groqAIRequest(groqKey,
       `You are a technology analyst at SpatialMetrics. ${jsonInstructions}`,
       `Write a 600-word technology deep-dive explainer about current XR innovations using these sources:
@@ -118,9 +136,7 @@ serve(async (req) => {
       
       Format: { "title": "string", "excerpt": "string", "content": "600 words text", "tags": ["string"], "keyTakeaways": ["string"], "subcategory": "string" }`
     );
-    inserts.push({ type: "article", title: tech1.title, excerpt: tech1.excerpt, content: tech1.content, tags: [...(tech1.tags ?? []), "tech-explain"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: tech1.keyTakeaways ?? [], subcategory: tech1.subcategory ?? "Technology Deep Dive" } });
 
-    // 4. Spatial Updates article
     const spatial = await groqAIRequest(groqKey,
       `You are a journalist at SpatialMetrics covering XR industry news. ${jsonInstructions}`,
       `Write a 600-word industry update article using these sources:
@@ -129,7 +145,20 @@ serve(async (req) => {
       
       Format: { "title": "string", "excerpt": "string", "content": "600 words text", "tags": ["string"], "keyTakeaways": ["string"], "subcategory": "string" }`
     );
-    inserts.push({ type: "article", title: spatial.title, excerpt: spatial.excerpt, content: spatial.content, tags: [...(spatial.tags ?? []), "spatial-updates"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: spatial.keyTakeaways ?? [], subcategory: spatial.subcategory ?? "Industry Update" } });
+
+    // Image Generation (Concurrent to prevent Edge Function timeout)
+    const [imgBrief, imgMi1, imgTech1, imgSpatial] = await Promise.all([
+      generateAndUploadImage(supabase, brief.headline ?? "Daily Market Brief"),
+      generateAndUploadImage(supabase, mi1.title),
+      generateAndUploadImage(supabase, tech1.title),
+      generateAndUploadImage(supabase, spatial.title)
+    ]);
+
+    // Build the Inserts Array
+    inserts.push({ type: "market-brief", title: brief.headline ?? "Daily Market Brief", excerpt: brief.summary ?? null, content: brief.summary ?? null, tags: ["market-brief"], sources: newsItems, metadata: { ...brief, imageUrl: imgBrief } });
+    inserts.push({ type: "article", title: mi1.title, excerpt: mi1.excerpt, content: mi1.content, tags: [...(mi1.tags ?? []), "market-intelligence"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: mi1.keyTakeaways ?? [], subcategory: mi1.subcategory ?? "Market Analysis", imageUrl: imgMi1 } });
+    inserts.push({ type: "article", title: tech1.title, excerpt: tech1.excerpt, content: tech1.content, tags: [...(tech1.tags ?? []), "tech-explain"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: tech1.keyTakeaways ?? [], subcategory: tech1.subcategory ?? "Technology Deep Dive", imageUrl: imgTech1 } });
+    inserts.push({ type: "article", title: spatial.title, excerpt: spatial.excerpt, content: spatial.content, tags: [...(spatial.tags ?? []), "spatial-updates"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: spatial.keyTakeaways ?? [], subcategory: spatial.subcategory ?? "Industry Update", imageUrl: imgSpatial } });
 
     const { error: insertError } = await supabase.from("content_items").insert(inserts);
     if (insertError) throw insertError;

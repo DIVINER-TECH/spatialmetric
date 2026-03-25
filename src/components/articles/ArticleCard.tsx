@@ -42,7 +42,7 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
   if (variant === 'compact') {
     return (
       <Link to={`/article/${article.slug}`}>
-        <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
+        <Card className="border border-black hover:border-primary/50 transition-colors cursor-pointer h-full">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="outline" className="text-xs px-2 py-0.5">{categoryLabels[article.category]}</Badge>
@@ -62,7 +62,7 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
 
   return (
     <Link to={`/article/${article.slug}`}>
-      <Card className="hover:border-primary/50 transition-all duration-500 cursor-pointer h-full group overflow-hidden bg-card/30 border-border/50 backdrop-blur-sm flex flex-col">
+      <Card className="border border-black hover:border-primary/50 transition-all duration-500 cursor-pointer h-full group overflow-hidden bg-card/30 backdrop-blur-sm flex flex-col">
         {/* Featured image or gradient fallback */}
         <div className={`relative h-48 w-full bg-muted/20 overflow-hidden`}>
           {hasImage ? (

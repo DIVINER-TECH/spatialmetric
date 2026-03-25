@@ -213,7 +213,7 @@ const MarketIntelligence = () => {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
               {dailyMetrics.map((metric, i) => (
-                <Card key={i} className="bg-card/30 border-border/50 hover:border-primary/50 transition-colors group">
+                <Card key={i} className="bg-card/30 hover:border-primary/50 transition-colors group">
                   <CardContent className="p-4">
                     <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] mb-2">{metric.label}</p>
                     <p className="text-2xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">{metric.value}</p>
@@ -262,7 +262,7 @@ const MarketIntelligence = () => {
                   <div className="space-y-8">
                     <AIInsightsFeed />
 
-                    <Card className="bg-card/30 border-border/50">
+                    <Card className="bg-card/30">
                       <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
                         <CardTitle className="text-[10px] font-mono uppercase tracking-widest flex items-center gap-2">
                           <Globe className="h-3 w-3 text-primary" />
@@ -304,7 +304,7 @@ const MarketIntelligence = () => {
                     <RegionalCard region={selectedRegion} />
 
                     {/* Quarterly Data */}
-                    <Card className="mt-8 bg-card/30 border-border/50">
+                    <Card className="mt-8 bg-card/30">
                       <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
                         <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Quarterly Investment Trend (2025)</CardTitle>
                       </CardHeader>
@@ -330,7 +330,7 @@ const MarketIntelligence = () => {
                   <div className="space-y-8">
                     <AIInsightsFeed />
 
-                    <Card className="bg-card/30 border-border/50">
+                    <Card className="bg-card/30">
                       <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
                         <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Global Market Matrix</CardTitle>
                       </CardHeader>

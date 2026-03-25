@@ -16,23 +16,31 @@ If you don't have the Supabase CLI installed, you can follow these steps:
 If you have GitHub Actions set up with the `SUPABASE_ACCESS_TOKEN`, pushing to the `main` branch might already trigger deployment if configured in your workflow.
 
 ## 2. Configure Secrets
-
-The following secrets **MUST** be set in your Supabase project for the functions to work:
+### Edge Function Secrets
+You must set the following environment variables in your Supabase dashboard (`Project Settings > Edge Functions > Secrets`) or via CLI:
 
 ```bash
-# AI Engine (Used for article generation and intelligence)
-supabase secrets set GROQ_API_KEY="your_groq_key"
+# Core APIs
+supabase secrets set GROQ_API_KEY=your_groq_key_here
 
-# Market Data Provider (Set to 'yahoo' for reliability)
-supabase secrets set MARKET_DATA_PROVIDER=yahoo
-
-# Optional: Live Search Integration
-supabase secrets set TAVILY_API_KEY="your_tavily_key"
+# These are usually set automatically, but verify they exist:
+supabase secrets set SUPABASE_URL=your_project_url
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-## 3. Database Schema & RLS
+## 2. Table & Storage Schemas
 
-You must initialize the database tables and Row Level Security (RLS) policies. Run the following migration files in the **Supabase SQL Editor**:
+### Create Article Images Storage Bucket (New)
+```sql
+insert into storage.buckets (id, name, public)
+values ('article_images', 'article_images', true);
+
+create policy "Images are publicly accessible"
+  on storage.objects for select
+  using ( bucket_id = 'article_images' );
+```
+
+### Create Core Tables and Row Level Security (RLS) policies. Run the following migration files in the **Supabase SQL Editor**:
 
 1.  [`20260206_market_and_news.sql`](file:///c:/diviner%20code/spatialmetric/supabase/migrations/20260206_market_and_news.sql) — Creates market snapshots, news sources, and news items tables.
 2.  [`20260206_content_items.sql`](file:///c:/diviner%20code/spatialmetric/supabase/migrations/20260206_content_items.sql) — Creates the AI-generated content table.

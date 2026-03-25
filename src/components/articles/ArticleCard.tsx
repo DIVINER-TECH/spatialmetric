@@ -62,56 +62,68 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
 
   return (
     <Link to={`/article/${article.slug}`}>
-      <Card className="hover:border-primary/50 transition-all cursor-pointer h-full group overflow-hidden">
+      <Card className="hover:border-primary/50 transition-all duration-500 cursor-pointer h-full group overflow-hidden bg-card/30 border-border/50 backdrop-blur-sm flex flex-col">
         {/* Featured image or gradient fallback */}
-        <div className={`relative h-36 w-full bg-gradient-to-br ${gradient} overflow-hidden`}>
+        <div className={`relative h-48 w-full bg-muted/20 overflow-hidden`}>
           {hasImage ? (
             <img
               src={article.imageUrl}
               alt={article.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
               loading="lazy"
+              referrerPolicy="no-referrer"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <CategoryIcon className="h-12 w-12 text-muted-foreground/30" />
+            <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-40 flex items-center justify-center`}>
+              <CategoryIcon className="h-16 w-16 text-primary/20" />
             </div>
           )}
-          <div className="absolute top-2 left-2 flex items-center gap-1.5">
-            <Badge variant="secondary" className="text-xs backdrop-blur-sm bg-background/70">
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
+
+          <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-widest bg-background/80 backdrop-blur-md border-primary/30 text-primary px-2 py-0.5 font-bold">
               {categoryLabels[article.category]}
             </Badge>
             {article.trending && (
-              <Badge className="bg-primary/80 text-primary-foreground text-xs backdrop-blur-sm">
+              <Badge className="bg-primary text-primary-foreground text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 font-bold animate-pulse">
                 <TrendingUp className="h-3 w-3 mr-1" /> Hot
               </Badge>
             )}
           </div>
         </div>
 
-        <CardHeader className="pb-2 pt-3 px-4">
-          <div className="flex items-center gap-2">
+        <CardHeader className="pb-2 pt-6 px-6">
+          <div className="flex items-center gap-3">
             {article.region && (
-              <Badge variant="outline" className="text-xs px-2 py-0.5">
-                <MapPin className="h-3 w-3 mr-1" />{article.region}
-              </Badge>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-primary uppercase tracking-widest font-bold">
+                <MapPin className="h-3 w-3" />
+                {article.region}
+              </div>
             )}
+            <div className="h-1 w-1 rounded-full bg-muted-foreground/30" />
+            <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+              {article.readTime}m read
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="pb-2 px-4">
-          <h3 className="font-medium text-base mb-2 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+        <CardContent className="pb-6 px-6 flex-1">
+          <h3 className="text-xl font-bold font-mono tracking-tighter uppercase mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
             {article.title}
           </h3>
-          <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">{article.excerpt}</p>
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest line-clamp-3 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+            {article.excerpt}
+          </p>
         </CardContent>
-        <CardFooter className="pt-2 pb-4 px-4 flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
-            <span>{article.readTime} min read</span>
+        <CardFooter className="pt-0 pb-6 px-6 flex items-center justify-between border-t border-border/30 bg-muted/5">
+          <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
+            <Calendar className="h-3.5 w-3.5 text-primary/50" />
+            <span>{format(article.publishedAt, 'MMM d, yyyy')}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5" />
-            <span>{format(article.publishedAt, 'MMM d')}</span>
+          <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest">Analyze</span>
+            <TrendingUp className="h-3 w-3" />
           </div>
         </CardFooter>
       </Card>

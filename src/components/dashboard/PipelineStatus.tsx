@@ -79,44 +79,46 @@ export function PipelineStatus() {
   });
 
   return (
-    <Card className="bg-card/50">
-      <CardHeader className="pb-3">
+    <Card className="bg-card/30 border-border/50 backdrop-blur-sm overflow-hidden group">
+      <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-medium">Pipeline Status</CardTitle>
+          <CardTitle className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground flex items-center gap-2">
+            <RefreshCw className={`h-3 w-3 ${running ? "animate-spin text-primary" : "text-muted-foreground"}`} />
+            System Pipeline Status
+          </CardTitle>
           <Button
             size="sm"
             variant="outline"
             onClick={() => triggerPipeline.mutate()}
             disabled={running}
-            className="gap-2"
+            className="h-7 gap-2 font-mono text-[9px] uppercase tracking-widest bg-muted/30 border-border/50 hover:bg-primary hover:text-primary-foreground transition-all px-4"
           >
-            <RefreshCw className={`h-3 w-3 ${running ? "animate-spin" : ""}`} />
-            {running ? "Running…" : "Run Now"}
+            {running ? "Processing…" : "Force Sync"}
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+      <CardContent className="pt-6">
+        <div className="space-y-5">
           {PIPELINE_FUNCTIONS.map((fn) => {
             const run = runs?.[fn];
             return (
-              <div key={fn} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div key={fn} className="flex items-center justify-between group/item">
+                <div className="flex items-center gap-3">
                   <HealthIcon run={run} />
-                  <span className="text-sm font-mono">{fn}</span>
+                  <span className="text-[10px] font-mono uppercase tracking-tight text-muted-foreground group-hover/item:text-primary transition-colors">{fn}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   {run ? (
                     <>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className={`text-[8px] font-mono uppercase tracking-tighter px-2 py-0 h-4 leading-none ${run.status === 'success' ? 'bg-success/10 text-success border-success/30' : 'bg-destructive/10 text-destructive border-destructive/30'}`}>
                         {run.status}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-widest">
                         {formatDistanceToNow(new Date(run.created_at), { addSuffix: true })}
                       </span>
                     </>
                   ) : (
-                    <span className="text-xs text-muted-foreground">Never run</span>
+                    <span className="text-[9px] font-mono text-muted-foreground/30 uppercase tracking-widest italic">No data</span>
                   )}
                 </div>
               </div>

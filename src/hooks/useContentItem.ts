@@ -8,8 +8,8 @@ export type ContentItem = {
   excerpt: string | null;
   content: string | null;
   tags: string[] | null;
-  sources: any | null;
-  metadata: any | null;
+  sources: unknown | null;
+  metadata: Record<string, unknown> | null;
   publishedAt: string;
 };
 

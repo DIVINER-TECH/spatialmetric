@@ -64,69 +64,108 @@ export function MarketOverview() {
   ];
 
   return (
-    <section className="container py-16 md:py-24">
-      <div className="mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">Market Overview</h2>
-        <p className="text-muted-foreground">Spatial computing market metrics and performance</p>
+    <section className="container py-20 md:py-28">
+      <div className="mb-12">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px w-12 bg-primary" />
+          <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-primary font-bold">Market Intelligence</span>
+        </div>
+        <h2 className="text-4xl md:text-5xl font-bold font-mono tracking-tighter uppercase mb-2">Market Overview</h2>
+        <p className="text-sm font-mono text-muted-foreground uppercase tracking-widest">Spatial computing market metrics and performance analytics</p>
         {snapshot?.asOfDate ? (
-          <p className="text-xs text-muted-foreground mt-2">
-            Last updated: {format(new Date(snapshot.asOfDate), "MMM d, yyyy")}
-          </p>
+          <div className="flex items-center gap-2 mt-4 text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+            <Activity className="h-3 w-3 text-success" />
+            <span>Last Sync: {format(new Date(snapshot.asOfDate), "MMM d, yyyy HH:mm")} UTC</span>
+          </div>
         ) : (
-          <p className="text-xs text-muted-foreground mt-2">Loading market data…</p>
+          <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-4 animate-pulse">Initializing data streams…</p>
         )}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 bg-card/50">
-          <CardHeader>
+      <div className="grid lg:grid-cols-3 gap-8">
+        <Card className="lg:col-span-2 bg-card/30 border-border/50 backdrop-blur-sm overflow-hidden">
+          <CardHeader className="border-b border-border/50 bg-muted/5">
             <CardTitle className="flex items-center justify-between">
-              <span>Market Performance Trend</span>
-              <div className={`flex items-center gap-2 text-sm font-normal ${indexChangePercent >= 0 ? "text-success" : "text-destructive"}`}>
-                {indexChangePercent >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+              <span className="text-xs font-mono uppercase tracking-widest font-bold">Market Performance Trend</span>
+              <div className={`flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest ${indexChangePercent >= 0 ? "text-success" : "text-destructive"}`}>
+                {indexChangePercent >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                 {latestIndex ? `${indexChangePercent >= 0 ? "+" : ""}${indexChangePercent.toFixed(2)}%` : "—"}
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
+          <CardContent className="pt-8">
+            <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={indexSeries}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
                       <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={formatAxisDate} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={value => value.toFixed(1)} />
-                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }} labelStyle={{ color: "hsl(var(--foreground))" }} formatter={(value: number) => [value.toFixed(2), "Index"]} labelFormatter={formatAxisDate} />
-                  <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorValue)" />
+                  <XAxis 
+                    dataKey="date" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "var(--font-mono)" }} 
+                    tickFormatter={formatAxisDate} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontFamily: "var(--font-mono)" }} 
+                    tickFormatter={value => value.toFixed(0)} 
+                    dx={-10}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "rgba(var(--card-rgb), 0.9)", 
+                      border: "1px solid rgba(var(--border-rgb), 0.5)", 
+                      borderRadius: "12px",
+                      backdropFilter: "blur(8px)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "10px",
+                      textTransform: "uppercase"
+                    }} 
+                    labelStyle={{ color: "hsl(var(--foreground))", fontWeight: "bold", marginBottom: "4px" }} 
+                    formatter={(value: number) => [value.toFixed(2), "Index"]} 
+                    labelFormatter={formatAxisDate} 
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2} 
+                    fillOpacity={1} 
+                    fill="url(#colorValue)" 
+                    animationDuration={2000}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
           {stats.map(stat => (
-            <Card key={stat.title} className="bg-card/50">
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Card key={stat.title} className="bg-card/30 border-border/50 backdrop-blur-sm group hover:border-primary/50 transition-colors">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors">
                     <stat.icon className="h-5 w-5 text-primary" />
                   </div>
+                  {stat.change ? (
+                    <div className={`flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest ${stat.positive ? "text-success" : "text-destructive"}`}>
+                      {stat.positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                      {stat.change}
+                    </div>
+                  ) : null}
                 </div>
-                {stat.change ? (
-                  <div className={`flex items-center gap-1 mt-2 text-sm ${stat.positive ? "text-success" : "text-destructive"}`}>
-                    {stat.positive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-                    {stat.change} vs prior day
-                  </div>
-                ) : null}
+                <div>
+                  <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] mb-1">{stat.title}</p>
+                  <p className="text-3xl font-bold font-mono tracking-tighter text-primary">{stat.value}</p>
+                </div>
               </CardContent>
             </Card>
           ))}

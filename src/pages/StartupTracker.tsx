@@ -38,61 +38,61 @@ const StartupCard = ({ startup }: { startup: Startup }) => {
   };
 
   return (
-    <Card className="hover:border-primary/50 transition-colors h-full">
-      <CardHeader className="pb-3">
+    <Card className="bg-card/30 border-border/50 hover:border-primary/50 transition-all h-full group">
+      <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-base font-medium mb-1">{startup.name}</CardTitle>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-sm font-mono uppercase tracking-widest mb-1 truncate">{startup.name}</CardTitle>
+            <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">
               <MapPin className="h-3 w-3" />
-              {startup.headquarters}
+              <span className="truncate">{startup.headquarters}</span>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs">{startup.stage}</Badge>
+          <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-tighter bg-muted/30 shrink-0 ml-2">{startup.stage}</Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+      <CardContent className="space-y-4 pt-4">
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
           {startup.description}
         </p>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-primary" />
+          <div className="flex items-center gap-2 p-2 rounded bg-muted/20 border border-border/30">
+            <DollarSign className="h-3 w-3 text-primary" />
             <div>
-              <p className="text-xs text-muted-foreground">Total Raised</p>
-              <p className="text-sm font-medium">{formatFunding(startup.totalFunding)}</p>
+              <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">Raised</p>
+              <p className="text-xs font-mono font-bold tracking-tighter">{formatFunding(startup.totalFunding)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-primary" />
+          <div className="flex items-center gap-2 p-2 rounded bg-muted/20 border border-border/30">
+            <Users className="h-3 w-3 text-primary" />
             <div>
-              <p className="text-xs text-muted-foreground">Employees</p>
-              <p className="text-sm font-medium">{startup.employees}</p>
+              <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">Employees</p>
+              <p className="text-xs font-mono font-bold tracking-tighter">{startup.employees}</p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">
-            Last round: {formatFunding(startup.lastRoundSize)} ({format(startup.lastRoundDate, 'MMM yyyy')})
+        <div className="flex items-center gap-2 px-1">
+          <Calendar className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">
+            Last: {formatFunding(startup.lastRoundSize)} ({format(startup.lastRoundDate, 'MMM yyyy')})
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1">
           {startup.tags.slice(0, 4).map(tag => (
-            <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+            <Badge key={tag} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-muted/30">{tag}</Badge>
           ))}
         </div>
 
-        <div className="pt-2 border-t border-border/50">
-          <p className="text-xs text-muted-foreground mb-2">Key Metrics</p>
+        <div className="pt-2 border-t border-border/30">
+          <p className="text-[9px] font-mono text-muted-foreground mb-2 uppercase tracking-widest">Key Metrics</p>
           <div className="space-y-1">
             {startup.traction.map((t, i) => (
-              <div key={i} className="flex justify-between text-xs">
-                <span className="text-muted-foreground">{t.metric}</span>
-                <span className="font-medium">{t.value}</span>
+              <div key={i} className="flex justify-between text-[10px] font-mono bg-muted/20 rounded border border-border/30 px-2 py-1">
+                <span className="text-muted-foreground uppercase tracking-tight">{t.metric}</span>
+                <span className="font-bold text-primary">{t.value}</span>
               </div>
             ))}
           </div>
@@ -125,13 +125,13 @@ const StartupTracker = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="py-10 border-b border-border/50">
+        <section className="py-10 border-b border-border/50 bg-muted/10">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-3 mb-4">
               <Rocket className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl md:text-4xl font-semibold">Startup Tracker</h1>
+              <h1 className="text-3xl md:text-4xl font-bold font-mono tracking-tighter uppercase">Startup Tracker</h1>
             </div>
-            <p className="text-muted-foreground max-w-2xl text-base leading-relaxed">
+            <p className="text-muted-foreground max-w-2xl text-sm font-mono uppercase tracking-tight leading-relaxed">
               Discover and track emerging XR startups across global markets. Filter by region, sector, and funding stage to find the next spatial computing unicorns.
             </p>
           </div>
@@ -141,40 +141,40 @@ const StartupTracker = () => {
         <section className="py-6 border-b border-border/50 bg-muted/20">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="bg-card/50">
+              <Card className="bg-card/30 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <Building2 className="h-4 w-4 text-primary" />
-                    <p className="text-xs text-muted-foreground">Startups Tracked</p>
+                    <Building2 className="h-3 w-3 text-primary" />
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Startups Tracked</p>
                   </div>
-                  <p className="text-2xl font-semibold">{filteredStartups.length}</p>
+                  <p className="text-2xl font-bold font-mono tracking-tighter">{filteredStartups.length}</p>
                 </CardContent>
               </Card>
-              <Card className="bg-card/50">
+              <Card className="bg-card/30 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <DollarSign className="h-4 w-4 text-primary" />
-                    <p className="text-xs text-muted-foreground">Total Funding</p>
+                    <DollarSign className="h-3 w-3 text-primary" />
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Total Funding</p>
                   </div>
-                  <p className="text-2xl font-semibold">${(totalFunding / 1000).toFixed(1)}B</p>
+                  <p className="text-2xl font-bold font-mono tracking-tighter">${(totalFunding / 1000).toFixed(1)}B</p>
                 </CardContent>
               </Card>
-              <Card className="bg-card/50">
+              <Card className="bg-card/30 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                    <p className="text-xs text-muted-foreground">Avg Deal Size</p>
+                    <TrendingUp className="h-3 w-3 text-primary" />
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Avg Deal Size</p>
                   </div>
-                  <p className="text-2xl font-semibold">${avgDealSize.toFixed(0)}M</p>
+                  <p className="text-2xl font-bold font-mono tracking-tighter">${avgDealSize.toFixed(0)}M</p>
                 </CardContent>
               </Card>
-              <Card className="bg-card/50">
+              <Card className="bg-card/30 border-border/50">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <Globe className="h-4 w-4 text-primary" />
-                    <p className="text-xs text-muted-foreground">Regions</p>
+                    <Globe className="h-3 w-3 text-primary" />
+                    <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Regions</p>
                   </div>
-                  <p className="text-2xl font-semibold">6</p>
+                  <p className="text-2xl font-bold font-mono tracking-tighter">6</p>
                 </CardContent>
               </Card>
             </div>
@@ -182,16 +182,16 @@ const StartupTracker = () => {
         </section>
 
         {/* Filters and Discovery */}
-        <section className="py-6 border-b border-border/50">
+        <section className="py-6 border-b border-border/50 bg-muted/5">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
               <div className="relative w-full md:w-80">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search startups, sectors, tags..."
+                  placeholder="SEARCH STARTUPS, SECTORS, TAGS..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 text-sm"
+                  className="pl-10 text-[10px] font-mono uppercase tracking-widest bg-card/50 border-border/50"
                 />
               </div>
             </div>
@@ -203,37 +203,37 @@ const StartupTracker = () => {
           <section className="py-6 border-b border-border/50 bg-primary/5">
             <div className="container mx-auto px-4">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-medium">Latest AI Startup</h3>
+                <Sparkles className="h-4 w-4 text-primary" />
+                <h3 className="text-sm font-mono uppercase tracking-widest">Latest AI Discovery</h3>
               </div>
-              <Card className="border-primary/30">
+              <Card className="bg-card/30 border-primary/30">
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h4 className="text-xl font-medium mb-1">{discoveredStartup.name}</h4>
+                      <h4 className="text-xl font-bold font-mono tracking-tighter uppercase mb-1">{discoveredStartup.name}</h4>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">{discoveredStartup.sector}</Badge>
-                        <Badge variant="secondary" className="text-xs">{discoveredStartup.stage}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-tighter bg-muted/30">{discoveredStartup.sector}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-tighter bg-primary/10 text-primary border-primary/30">{discoveredStartup.stage}</Badge>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                     {discoveredStartup.description}
                   </p>
                   {discoveredStartup.metrics && (
                     <div className="grid grid-cols-3 gap-3 mb-4">
                       {Object.entries(discoveredStartup.metrics).slice(0, 3).map(([key, value], i) => (
-                        <div key={i} className="text-center p-3 bg-muted/50 rounded-lg">
-                          <p className="text-xs text-muted-foreground mb-1 capitalize">{key.replace(/_/g, ' ')}</p>
-                          <p className="text-sm font-medium">{String(value)}</p>
+                        <div key={i} className="text-center p-3 bg-muted/20 border border-border/30 rounded">
+                          <p className="text-[9px] font-mono text-muted-foreground mb-1 uppercase tracking-tighter">{key.replace(/_/g, ' ')}</p>
+                          <p className="text-xs font-mono font-bold tracking-tighter">{String(value)}</p>
                         </div>
                       ))}
                     </div>
                   )}
                   {discoveredStartup.investmentThesis && (
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Investment Thesis</p>
-                      <p className="text-sm leading-relaxed">{discoveredStartup.investmentThesis}</p>
+                    <div className="p-4 bg-muted/20 border border-border/30 rounded">
+                      <p className="text-[9px] font-mono text-muted-foreground mb-1 uppercase tracking-widest">Investment Thesis</p>
+                      <p className="text-xs leading-relaxed font-mono">{discoveredStartup.investmentThesis}</p>
                     </div>
                   )}
                 </CardContent>
@@ -246,9 +246,9 @@ const StartupTracker = () => {
         <section className="py-10">
           <div className="container mx-auto px-4">
             <Tabs value={activeRegion} onValueChange={setActiveRegion}>
-              <TabsList className="mb-6 flex-wrap h-auto">
+              <TabsList className="mb-8 bg-muted/20 border border-border/50 p-1 flex-wrap h-auto">
                 {Object.entries(regionLabels).map(([code, label]) => (
-                  <TabsTrigger key={code} value={code} className="text-xs">
+                  <TabsTrigger key={code} value={code} className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-mono text-[10px] uppercase tracking-widest px-4">
                     {label}
                   </TabsTrigger>
                 ))}
@@ -262,8 +262,8 @@ const StartupTracker = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground">No startups found matching your criteria</p>
+                  <div className="text-center py-20 border border-dashed border-border/50 rounded-xl">
+                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">No startups found matching your criteria</p>
                   </div>
                 )}
               </TabsContent>

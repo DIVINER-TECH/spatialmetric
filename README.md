@@ -47,12 +47,21 @@
    npm run dev
    ```
 
-## Daily Data Pipeline
+## Content Management
 
-The platform includes automated Supabase Edge Functions for data ingestion:
-- `daily-market-snapshot`: Fetches daily quotes and updates the Spatial Metric index.
-- `ingest-news`: Pulls recent XR/VR/AR news items into the database.
-- `auto-content`: Generates AI-driven insights from the latest market data and news.
+You can manage the platform's content through the Supabase Dashboard:
+- **Articles**: Manually edit or add professional deep-dives in the `articles` table.
+- **AI Insights**: Automatically populated by the `auto-content` function from the `content_items` table.
+- **Market Data**: Managed via the `market_daily_snapshots` table.
+
+## Deployment & Updates
+
+The platform is configured for automatic deployment via GitHub Actions (`deploy.yml`). Any push to the `main` branch will trigger a build and update the site.
+
+## Troubleshooting
+
+- **Ticker Not Showing Stats**: Ensure the `daily-market-snapshot` function has been invoked at least once. If Supabase is empty, the site will use its built-in XR industry fallback data.
+- **Articles Not Showing**: Verify that `is_published` is set to `true` in the `articles` table.
 
 ## License
 

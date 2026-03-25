@@ -15,22 +15,28 @@ const SpatialUpdates = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="py-12 border-b border-border/50">
+        <section className="py-10 border-b border-border/50 bg-muted/10">
           <div className="container mx-auto px-4">
-            <div className="flex items-center gap-3 mb-4">
-              <Zap className="h-8 w-8 text-accent" />
-              <h1 className="text-3xl md:text-4xl font-bold">Spatial Updates</h1>
-              <LiveIndicator label="Daily" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center border border-accent/20">
+                <Zap className="h-6 w-6 text-accent" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold font-mono tracking-tighter uppercase">Spatial Updates</h1>
+                <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest mt-1">
+                  Daily news, product launches, and updates from the spatial computing industry
+                </p>
+              </div>
+              <div className="ml-auto">
+                <LiveIndicator label="Daily" />
+              </div>
             </div>
-            <p className="text-muted-foreground max-w-2xl">
-              Daily news, product launches, and updates from the spatial computing industry.
-            </p>
           </div>
         </section>
 
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {newsItems && newsItems.length > 0 ? (
                 newsItems.map(item => (
                   <NewsCard key={item.id} item={item} />

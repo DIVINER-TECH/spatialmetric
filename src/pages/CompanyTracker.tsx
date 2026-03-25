@@ -8,11 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import {
     Rocket, MapPin, DollarSign, Users, Calendar, Search, Building2,
-    TrendingUp, TrendingDown, ChevronDown, ChevronUp, BarChart3,
+    TrendingUp, TrendingDown, ChevronDown, ChevronUp, BarChart3, RefreshCw
 } from 'lucide-react';
 import { useCompanyTracker } from '@/hooks/useCompanyTracker';
 import { TrackedCompany } from '@/types/company';
 import { format } from 'date-fns';
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
     PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip,
     ResponsiveContainer, Legend,
@@ -58,43 +62,43 @@ const PublicCompanyCard = ({ company }: { company: TrackedCompany }) => {
 
     return (
         <Link to={`/company/${company.slug}`}>
-            <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-                <CardHeader className="pb-2">
+            <Card className="bg-card/30 border-border/50 hover:border-primary/50 transition-all cursor-pointer h-full group">
+                <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold shrink-0 ${sectorColor}`}>
+                            <div className={`flex h-8 w-8 items-center justify-center rounded text-[10px] font-bold shrink-0 font-mono ${sectorColor}`}>
                                 {company.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
                             </div>
                             <div>
-                                <CardTitle className="text-base">{company.name}</CardTitle>
-                                <p className="text-sm text-muted-foreground">{company.sector}</p>
+                                <CardTitle className="text-sm font-mono uppercase tracking-widest truncate max-w-[120px]">{company.name}</CardTitle>
+                                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">{company.sector}</p>
                             </div>
                         </div>
-                        {company.ticker && <Badge variant="outline" className="font-mono">{company.ticker}</Badge>}
+                        {company.ticker && <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-tighter bg-muted/30">{company.ticker}</Badge>}
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{company.description}</p>
+                <CardContent className="pt-4">
+                    <p className="text-xs text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{company.description}</p>
                     {company.ticker && (
-                        <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="grid grid-cols-2 gap-4 mb-4 p-3 rounded-lg bg-muted/20 border border-border/30">
                             <div>
-                                <p className="text-xs text-muted-foreground">Stock Price</p>
-                                <p className="font-mono font-semibold">${company.stockPrice?.toFixed(2)}</p>
-                                <div className={`flex items-center gap-1 text-xs ${positive ? 'text-success' : 'text-destructive'}`}>
+                                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1">Stock Price</p>
+                                <p className="text-sm font-mono font-bold tracking-tighter">${company.stockPrice?.toFixed(2)}</p>
+                                <div className={`flex items-center gap-1 text-[10px] font-mono ${positive ? 'text-success' : 'text-destructive'}`}>
                                     {positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                                     {positive ? '+' : ''}{company.priceChangePercent?.toFixed(2)}%
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs text-muted-foreground">Market Cap</p>
-                                <p className="font-mono font-semibold">{formatMarketCap(company.marketCap!)}</p>
+                                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1">Market Cap</p>
+                                <p className="text-sm font-mono font-bold tracking-tighter">{formatMarketCap(company.marketCap!)}</p>
                             </div>
                         </div>
                     )}
                     {company.tags && (
                         <div className="flex flex-wrap gap-1">
                             {company.tags.slice(0, 3).map(tag => (
-                                <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                                <Badge key={tag} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-muted/30">{tag}</Badge>
                             ))}
                         </div>
                     )}
@@ -111,80 +115,80 @@ const CompanyCard = ({ company }: { company: TrackedCompany }) => {
     const initials = company.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
     return (
-        <Card className="hover:border-primary/50 transition-colors h-full">
-            <CardHeader className="pb-3">
+        <Card className="bg-card/30 border-border/50 hover:border-primary/50 transition-all h-full group">
+            <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 flex-1">
-                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold shrink-0 ${sectorColor}`}>
+                        <div className={`flex h-8 w-8 items-center justify-center rounded text-[10px] font-bold shrink-0 font-mono ${sectorColor}`}>
                             {initials}
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                                <CardTitle className="text-base font-medium truncate">{company.name}</CardTitle>
+                                <CardTitle className="text-sm font-mono uppercase tracking-widest truncate">{company.name}</CardTitle>
                                 {company.type === 'unicorn' && (
-                                    <Badge variant="default" className="text-xs bg-primary/20 text-primary shrink-0">🦄</Badge>
+                                    <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-tighter bg-primary/10 text-primary border-primary/30 shrink-0">Unicorn</Badge>
                                 )}
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">
                                 <MapPin className="h-3 w-3" /><span className="truncate">{company.headquarters}</span>
                             </div>
                         </div>
                     </div>
-                    <Badge variant="outline" className="text-xs shrink-0">{company.stage}</Badge>
+                    <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-tighter bg-muted/30 shrink-0">{company.stage}</Badge>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{company.description}</p>
+            <CardContent className="space-y-4 pt-4">
+                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{company.description}</p>
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-2 p-2 rounded bg-muted/20 border border-border/30">
+                        <DollarSign className="h-3 w-3 text-primary" />
                         <div>
-                            <p className="text-xs text-muted-foreground">{company.valuation ? 'Valuation' : 'Total Raised'}</p>
-                            <p className="text-sm font-medium">{formatFunding(company.valuation || company.totalFunding)}</p>
+                            <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">{company.valuation ? 'Valuation' : 'Raised'}</p>
+                            <p className="text-xs font-mono font-bold tracking-tighter">{formatFunding(company.valuation || company.totalFunding)}</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-2 p-2 rounded bg-muted/20 border border-border/30">
+                        <Users className="h-3 w-3 text-primary" />
                         <div>
-                            <p className="text-xs text-muted-foreground">Employees</p>
-                            <p className="text-sm font-medium">{company.employees.toLocaleString()}</p>
+                            <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">Employees</p>
+                            <p className="text-xs font-mono font-bold tracking-tighter">{company.employees.toLocaleString()}</p>
                         </div>
                     </div>
                 </div>
                 {company.fundingRounds.length > 0 && (
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">
-                            Last round: {formatFunding(company.fundingRounds[company.fundingRounds.length - 1].amount)} ({format(company.fundingRounds[company.fundingRounds.length - 1].date, 'MMM yyyy')})
+                    <div className="flex items-center gap-2 px-1">
+                        <Calendar className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-tighter">
+                          Last: {formatFunding(company.fundingRounds[company.fundingRounds.length - 1].amount)} ({format(company.fundingRounds[company.fundingRounds.length - 1].date, 'MMM yyyy')})
                         </span>
                     </div>
                 )}
                 {company.tags && company.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                         {company.tags.slice(0, 4).map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                            <Badge key={tag} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-muted/30">{tag}</Badge>
                         ))}
                     </div>
                 )}
-                <div className="pt-2 border-t border-border/50">
-                    <button onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 text-sm text-primary hover:underline w-full">
-                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                        {isExpanded ? 'Show less' : 'Show more details'}
+                <div className="pt-2 border-t border-border/30">
+                    <button onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-primary hover:text-primary/80 transition-colors w-full">
+                        {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        {isExpanded ? 'Hide Details' : 'View Intelligence'}
                     </button>
                     {isExpanded && (
-                        <div className="mt-4 space-y-4">
+                        <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                             {company.fundingRounds.length > 0 && (
                                 <div>
-                                    <p className="text-xs text-muted-foreground mb-2 font-medium">Funding History</p>
-                                    <div className="space-y-2">
+                                    <p className="text-[9px] font-mono text-muted-foreground mb-2 uppercase tracking-widest">Funding History</p>
+                                    <div className="space-y-1.5">
                                         {company.fundingRounds.slice(-4).reverse().map((round, i) => (
-                                            <div key={i} className="flex justify-between text-xs bg-muted/30 rounded px-3 py-2">
+                                            <div key={i} className="flex justify-between text-[10px] font-mono bg-muted/20 rounded border border-border/30 px-2 py-1.5">
                                                 <div>
-                                                    <span className="font-medium">{round.round}</span>
-                                                    <span className="text-muted-foreground ml-2">{format(round.date, 'MMM yyyy')}</span>
+                                                    <span className="font-bold uppercase tracking-tight">{round.round}</span>
+                                                    <span className="text-muted-foreground ml-2 uppercase">{format(round.date, 'MMM yyyy')}</span>
                                                 </div>
                                                 <div className="text-right">
-                                                    <span className="font-semibold">{formatFunding(round.amount)}</span>
+                                                    <span className="font-bold text-primary">{formatFunding(round.amount)}</span>
                                                     {round.valuation && <span className="text-muted-foreground ml-2">@ {formatFunding(round.valuation)}</span>}
                                                 </div>
                                             </div>
@@ -194,45 +198,32 @@ const CompanyCard = ({ company }: { company: TrackedCompany }) => {
                             )}
                             {company.investors.length > 0 && (
                                 <div>
-                                    <p className="text-xs text-muted-foreground mb-2 font-medium">Investors</p>
+                                    <p className="text-[9px] font-mono text-muted-foreground mb-2 uppercase tracking-widest">Investors</p>
                                     <div className="flex flex-wrap gap-1">
                                         {company.investors.slice(0, 8).map(investor => (
-                                            <Badge key={investor} variant="outline" className="text-xs">{investor}</Badge>
+                                            <Badge key={investor} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-muted/30">{investor}</Badge>
                                         ))}
                                     </div>
                                 </div>
                             )}
                             {company.products.length > 0 && (
                                 <div>
-                                    <p className="text-xs text-muted-foreground mb-2 font-medium">Products</p>
+                                    <p className="text-[9px] font-mono text-muted-foreground mb-2 uppercase tracking-widest">Products</p>
                                     <div className="flex flex-wrap gap-1">
                                         {company.products.map(product => (
-                                            <Badge key={product} variant="secondary" className="text-xs">{product}</Badge>
+                                            <Badge key={product} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-muted/30">{product}</Badge>
                                         ))}
                                     </div>
                                 </div>
                             )}
                             {company.keyMetrics && company.keyMetrics.length > 0 && (
                                 <div>
-                                    <p className="text-xs text-muted-foreground mb-2 font-medium">Key Metrics</p>
+                                    <p className="text-[9px] font-mono text-muted-foreground mb-2 uppercase tracking-widest">Key Metrics</p>
                                     <div className="grid grid-cols-3 gap-2">
                                         {company.keyMetrics.map((metric, i) => (
-                                            <div key={i} className="bg-muted/50 rounded p-2 text-center">
-                                                <p className="text-sm font-bold text-primary">{metric.value}</p>
-                                                <p className="text-xs text-muted-foreground">{metric.label}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            {company.traction && company.traction.length > 0 && (
-                                <div>
-                                    <p className="text-xs text-muted-foreground mb-2 font-medium">Traction</p>
-                                    <div className="space-y-1">
-                                        {company.traction.map((t, i) => (
-                                            <div key={i} className="flex justify-between text-xs">
-                                                <span className="text-muted-foreground">{t.metric}</span>
-                                                <span className="font-medium">{t.value}</span>
+                                            <div key={i} className="bg-muted/20 border border-border/30 rounded p-2 text-center">
+                                                <p className="text-xs font-bold font-mono tracking-tighter text-primary">{metric.value}</p>
+                                                <p className="text-[8px] font-mono uppercase tracking-tighter text-muted-foreground">{metric.label}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -248,7 +239,29 @@ const CompanyCard = ({ company }: { company: TrackedCompany }) => {
 
 const CompanyTracker = () => {
     const { companies, stats, filters } = useCompanyTracker();
+    const queryClient = useQueryClient();
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const { companyType, setCompanyType, selectedRegion, setSelectedRegion, searchQuery, setSearchQuery } = filters;
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            const { error } = await supabase.functions.invoke("daily-pipeline", {
+                body: { triggered_by: "manual_tracker" },
+            });
+            if (error) throw error;
+            toast.success("Market data pipeline triggered successfully");
+            setTimeout(() => {
+                queryClient.invalidateQueries({ queryKey: ["companyTracker"] });
+                queryClient.invalidateQueries({ queryKey: ["marketSnapshot"] });
+            }, 5000);
+        } catch (error) {
+            console.error("Failed to trigger pipeline:", error);
+            toast.error("Failed to trigger data refresh");
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     // Compute sector distribution for charts
     const sectorDistribution = (() => {
@@ -278,148 +291,164 @@ const CompanyTracker = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">
-                <section className="py-10 border-b border-border/50">
-                    <div className="container mx-auto px-4">
-                        <div className="flex items-center gap-3 mb-4">
-                            <Rocket className="h-8 w-8 text-primary" />
-                            <h1 className="text-3xl md:text-4xl font-semibold">Company Tracker</h1>
-                        </div>
-                        <p className="text-muted-foreground max-w-2xl text-base leading-relaxed">
-                            Track XR companies across all stages — from public market leaders to billion-dollar unicorns and emerging startups.
-                        </p>
+                <section className="py-10 border-b border-border/50 bg-muted/10">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Rocket className="h-8 w-8 text-primary" />
+                <h1 className="text-3xl md:text-4xl font-bold font-mono tracking-tighter uppercase">Company Tracker</h1>
+              </div>
+              <Button 
+                onClick={handleRefresh} 
+                disabled={isRefreshing}
+                variant="outline"
+                size="sm"
+                className="gap-2 font-mono text-[9px] uppercase tracking-widest border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-300 h-9 px-4"
+              >
+                <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+                {isRefreshing ? "Syncing..." : "Sync Data"}
+              </Button>
+            </div>
+            <p className="text-muted-foreground max-w-2xl text-sm font-mono uppercase tracking-tight leading-relaxed">
+              Track XR companies across all stages — from public market leaders to billion-dollar unicorns and emerging startups.
+            </p>
+          </div>
+        </section>
+
+        {/* Stats */}
+        <section className="py-6 border-b border-border/50 bg-muted/20">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[
+                { icon: Building2, label: 'Total Companies', value: stats.total },
+                { icon: BarChart3, label: 'Public Companies', value: stats.publicCount },
+                { icon: TrendingUp, label: 'Unicorns', value: stats.unicornCount },
+                { icon: Rocket, label: 'Startups', value: stats.startupCount },
+                { icon: DollarSign, label: 'Total Market Cap', value: stats.totalMarketCap > 0 ? formatMarketCap(stats.totalMarketCap) : `$${(stats.totalFunding / 1000).toFixed(1)}B raised` },
+              ].map(s => (
+                <Card key={s.label} className="bg-card/30 border-border/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <s.icon className="h-3 w-3 text-primary" />
+                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{s.label}</p>
                     </div>
-                </section>
+                    <p className="text-2xl font-bold font-mono tracking-tighter">{s.value}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                {/* Stats */}
-                <section className="py-6 border-b border-border/50 bg-muted/20">
-                    <div className="container mx-auto px-4">
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                            {[
-                                { icon: Building2, label: 'Total Companies', value: stats.total },
-                                { icon: BarChart3, label: 'Public Companies', value: stats.publicCount },
-                                { icon: TrendingUp, label: 'Unicorns', value: stats.unicornCount },
-                                { icon: Rocket, label: 'Startups', value: stats.startupCount },
-                                { icon: DollarSign, label: 'Total Market Cap', value: stats.totalMarketCap > 0 ? formatMarketCap(stats.totalMarketCap) : `$${(stats.totalFunding / 1000).toFixed(1)}B raised` },
-                            ].map(s => (
-                                <Card key={s.label} className="bg-card/50">
-                                    <CardContent className="p-4">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <s.icon className="h-4 w-4 text-primary" />
-                                            <p className="text-xs text-muted-foreground">{s.label}</p>
-                                        </div>
-                                        <p className="text-2xl font-semibold">{s.value}</p>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+        {/* Search */}
+        <section className="py-6 border-b border-border/50 bg-muted/5">
+          <div className="container mx-auto px-4">
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="SEARCH COMPANIES, SECTORS, TICKERS..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 text-[10px] font-mono uppercase tracking-widest bg-card/50 border-border/50" />
+            </div>
+          </div>
+        </section>
 
-                {/* Search */}
-                <section className="py-6 border-b border-border/50">
-                    <div className="container mx-auto px-4">
-                        <div className="relative w-full md:w-80">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search companies, sectors, tickers..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 text-sm" />
-                        </div>
-                    </div>
-                </section>
+        {/* Charts */}
+        <section className="py-8 border-b border-border/50">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="bg-card/30 border-border/50">
+                <CardHeader className="border-b border-border/50 bg-muted/20">
+                  <CardTitle className="text-sm font-mono uppercase tracking-widest">Sector Distribution</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={sectorDistribution} cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={2} dataKey="value">
+                          {sectorDistribution.map((entry, idx) => (
+                            <Cell key={idx} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '10px' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {sectorDistribution.map(s => (
+                      <div key={s.name} className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-tighter">
+                        <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                        <span className="text-muted-foreground truncate">{s.name}</span>
+                        <span className="font-bold ml-auto">{s.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
 
-                {/* Charts */}
-                <section className="py-8 border-b border-border/50">
-                    <div className="container mx-auto px-4">
-                        <div className="grid lg:grid-cols-2 gap-6">
-                            <Card className="bg-card/50">
-                                <CardHeader><CardTitle className="text-base">Sector Distribution</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="h-[250px]">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <PieChart>
-                                                <Pie data={sectorDistribution} cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={2} dataKey="value">
-                                                    {sectorDistribution.map((entry, idx) => (
-                                                        <Cell key={idx} fill={entry.color} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-1 mt-2">
-                                        {sectorDistribution.map(s => (
-                                            <div key={s.name} className="flex items-center gap-2 text-xs">
-                                                <div className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-                                                <span className="text-muted-foreground truncate">{s.name}</span>
-                                                <span className="font-medium ml-auto">{s.value}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
+              <Card className="bg-card/30 border-border/50">
+                <CardHeader className="border-b border-border/50 bg-muted/20">
+                  <CardTitle className="text-sm font-mono uppercase tracking-widest">Stage Distribution</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="h-[280px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={stageDistribution} layout="vertical" margin={{ left: 70 }}>
+                        <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontFamily: 'var(--font-mono)' }} />
+                        <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontFamily: 'var(--font-mono)' }} width={65} />
+                        <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '10px' }} />
+                        <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 2, 2, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
 
-                            <Card className="bg-card/50">
-                                <CardHeader><CardTitle className="text-base">Stage Distribution</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="h-[280px]">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={stageDistribution} layout="vertical" margin={{ left: 70 }}>
-                                                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
-                                                <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} width={65} />
-                                                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
-                                                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
-                </section>
+        {/* Company Grid with Tabs */}
+        <section className="py-10">
+          <div className="container mx-auto px-4">
+            <Tabs value={companyType} onValueChange={(v) => setCompanyType(v as "all" | "public" | "unicorn" | "startup")}>
+              <TabsList className="mb-8 bg-muted/20 border border-border/50 p-1">
+                <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-mono text-[10px] uppercase tracking-widest px-6">All Companies</TabsTrigger>
+                <TabsTrigger value="public" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-mono text-[10px] uppercase tracking-widest px-6">Public Companies</TabsTrigger>
+                <TabsTrigger value="unicorn" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-mono text-[10px] uppercase tracking-widest px-6">Unicorns</TabsTrigger>
+                <TabsTrigger value="startup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-mono text-[10px] uppercase tracking-widest px-6">Emerging Startups</TabsTrigger>
+              </TabsList>
 
-                {/* Company Grid with Tabs */}
-                <section className="py-10">
-                    <div className="container mx-auto px-4">
-                        <Tabs value={companyType} onValueChange={(v) => setCompanyType(v as any)}>
-                            <TabsList className="mb-6">
-                                <TabsTrigger value="all">All Companies</TabsTrigger>
-                                <TabsTrigger value="public">Public Companies</TabsTrigger>
-                                <TabsTrigger value="unicorn">Unicorns</TabsTrigger>
-                                <TabsTrigger value="startup">Emerging Startups</TabsTrigger>
-                            </TabsList>
+              <div className="mb-8 p-4 rounded-lg bg-muted/10 border border-border/30">
+                <p className="text-[10px] font-mono text-muted-foreground mb-3 uppercase tracking-widest">Filter by Region:</p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(regionLabels).map(([code, label]) => (
+                    <Badge
+                      key={code}
+                      variant={selectedRegion === code ? 'default' : 'outline'}
+                      className="cursor-pointer text-[10px] font-mono uppercase tracking-tighter px-3 py-1"
+                      onClick={() => setSelectedRegion(code as any)}
+                    >
+                      {label}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
 
-                            <div className="mb-6">
-                                <p className="text-sm text-muted-foreground mb-3">Filter by Region:</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {Object.entries(regionLabels).map(([code, label]) => (
-                                        <Badge
-                                            key={code}
-                                            variant={selectedRegion === code ? 'default' : 'outline'}
-                                            className="cursor-pointer text-xs"
-                                            onClick={() => setSelectedRegion(code as any)}
-                                        >
-                                            {label}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <TabsContent value={companyType} className="mt-0">
-                                {companies.length > 0 ? (
-                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {companies.map(company => (
-                                            company.type === 'public'
-                                                ? <PublicCompanyCard key={company.id} company={company} />
-                                                : <CompanyCard key={company.id} company={company} />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-12">
-                                        <p className="text-muted-foreground">No companies found matching your criteria</p>
-                                    </div>
-                                )}
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                </section>
+              <TabsContent value={companyType} className="mt-0">
+                {companies.length > 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {companies.map(company => (
+                      company.type === 'public'
+                        ? <PublicCompanyCard key={company.id} company={company} />
+                        : <CompanyCard key={company.id} company={company} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20 border border-dashed border-border/50 rounded-xl">
+                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">No companies found matching your criteria</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
             </main>
             <Footer />
         </div>

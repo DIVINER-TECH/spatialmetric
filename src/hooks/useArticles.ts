@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
 import { 
   articles, 
   getArticlesByCategory, 
@@ -10,6 +11,8 @@ import {
   getArticleBySlug,
   type Article 
 } from '@/data/articles';
+
+type ContentItem = Tables<'content_items'>;
 
 export const useArticles = (category?: Article['category']) => {
   const filteredArticles = useMemo(() => {
@@ -76,7 +79,7 @@ export const useArticle = (slug: string) => {
 
       if (itemsError) throw itemsError;
 
-      const match = (items ?? []).find((item: any) => {
+      const match = (items ?? []).find((item: ContentItem) => {
         const itemSlug = (item.title as string).toLowerCase().replace(/[^a-z0-9]+/g, '-');
         // Check both exact match and partial match if the slug was truncated
         return itemSlug === slug || itemSlug.startsWith(slug.substring(0, 20));
@@ -84,7 +87,7 @@ export const useArticle = (slug: string) => {
 
       if (!match) return null;
       
-      const meta = (match.metadata ?? {}) as Record<string, any>;
+      const meta = (match.metadata ?? {}) as Record<string, unknown>;
       const tags = (match.tags ?? []) as string[];
       let category: Article['category'] = 'market-intelligence';
       if (tags.includes('tech-explain')) category = 'tech-explain';
@@ -99,8 +102,8 @@ export const useArticle = (slug: string) => {
         excerpt: match.excerpt || '',
         content: match.content || '',
         category,
-        subcategory: meta.subcategory || 'AI Generated',
-        region: meta.region,
+        subcategory: (meta.subcategory as string) || 'AI Generated',
+        region: meta.region as string | undefined,
         author: {
           name: 'SpatialMetrics AI',
           avatar: 'AI',
@@ -112,8 +115,8 @@ export const useArticle = (slug: string) => {
         trending: false,
         featured: false,
         tags,
-        imageUrl: meta.imageUrl || '/placeholder.svg',
-        keyTakeaways: meta.keyTakeaways || [],
+        imageUrl: (meta.imageUrl as string) || '/placeholder.svg',
+        keyTakeaways: (meta.keyTakeaways as string[]) || [],
         metrics: meta.metrics,
       } as Article;
     },

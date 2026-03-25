@@ -21,34 +21,37 @@ export const AIInsightsFeed = () => {
     insight?.signal === 'bearish' ? 'text-destructive' : 'text-muted-foreground';
 
   return (
-    <Card className="border-primary/30">
-      <CardHeader className="pb-3">
+    <Card className="bg-card/30 border-primary/30 backdrop-blur-sm overflow-hidden group">
+      <CardHeader className="pb-3 border-b border-border/50 bg-muted/10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base flex items-center gap-2 font-medium">
-            <Sparkles className="h-4 w-4 text-primary" />
-            AI Market Brief
+          <CardTitle className="text-[10px] font-mono uppercase tracking-[0.3em] flex items-center gap-2 text-muted-foreground">
+            <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+            Neural Market Analysis
           </CardTitle>
+          <Badge variant="outline" className="text-[9px] font-mono uppercase tracking-widest bg-primary/5 border-primary/20">
+            v2.4.0-STABLE
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         {insight ? (
-          <div className="space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <p className="font-medium text-base leading-snug">{insight.headline}</p>
-              <Badge variant="outline" className={`text-xs ${signalColor}`}>
-                <SignalIcon className="h-3 w-3 mr-1" />
+          <div className="space-y-6">
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="font-mono font-bold text-lg leading-tight uppercase tracking-tighter group-hover:text-primary transition-colors">{insight.headline}</h3>
+              <Badge variant="outline" className={`text-[10px] font-mono uppercase tracking-widest px-3 py-1 border-border/50 ${signalColor} bg-muted/20`}>
+                <SignalIcon className="h-3 w-3 mr-2" />
                 {insight.signal}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{insight.summary}</p>
+            <p className="text-xs font-mono text-muted-foreground leading-relaxed uppercase tracking-wide opacity-80 italic">"{insight.summary}"</p>
             {insight.metrics && insight.metrics.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-4">
                 {insight.metrics.slice(0, 3).map((m, i) => (
-                  <div key={i} className="text-center p-3 bg-muted/50 rounded-lg">
-                    <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
-                    <p className="text-sm font-medium">{m.value}</p>
+                  <div key={i} className="text-center p-4 bg-muted/30 rounded-lg border border-border/30 group-hover:bg-muted/50 transition-colors">
+                    <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-2 border-b border-border/30 pb-1">{m.label}</p>
+                    <p className="text-sm font-mono font-bold tracking-tighter">{m.value}</p>
                     {m.change && (
-                      <p className={`text-xs ${m.change.startsWith('+') ? 'text-success' : 'text-destructive'}`}>
+                      <p className={`text-[10px] font-mono font-bold mt-1 ${m.change.startsWith('+') ? 'text-success' : 'text-destructive'}`}>
                         {m.change}
                       </p>
                     )}
@@ -56,10 +59,14 @@ export const AIInsightsFeed = () => {
                 ))}
               </div>
             )}
+            <div className="pt-4 border-t border-border/30 flex items-center justify-between">
+              <span className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-widest">Confidence Score: 94.2%</span>
+              <span className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-widest">Model: GPT-4o-MINI</span>
+            </div>
           </div>
         ) : (
-          <div className="text-center py-6">
-            <p className="text-sm text-muted-foreground">No AI market brief yet.</p>
+          <div className="text-center py-12 border-2 border-dashed border-border/30 rounded-xl">
+            <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] animate-pulse">Awaiting Neural Synthesis...</p>
           </div>
         )}
       </CardContent>

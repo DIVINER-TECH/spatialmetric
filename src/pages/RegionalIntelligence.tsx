@@ -93,84 +93,72 @@ const RegionalIntelligence = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="py-8 border-b border-border/50">
+        <section className="py-10 border-b border-border/50 bg-muted/10">
           <div className="container mx-auto px-4">
-            <div className="flex items-center gap-3 mb-3">
-              <Globe className="h-7 w-7 text-primary" />
-              <h1 className="text-2xl md:text-3xl font-bold">Regional Market Intelligence</h1>
-              <LiveIndicator label="Snapshot" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Globe className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold font-mono tracking-tighter uppercase">Regional Intelligence</h1>
+                <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest mt-1">
+                  Global XR market metrics, investment statistics, and regional performance
+                </p>
+              </div>
+              <div className="ml-auto">
+                <LiveIndicator label="Snapshot" />
+              </div>
             </div>
-            <p className="text-sm text-muted-foreground max-w-2xl">
-              Curated investment metrics, statistics, and insights across global XR markets: North America, Europe, ASEAN, Pacific, South Asia, and MENA.
-            </p>
           </div>
         </section>
 
         {/* Global Summary */}
         {globalData && (
-          <section className="py-6 border-b border-border/50 bg-muted/20">
+          <section className="py-8 border-b border-border/50 bg-muted/20">
             <div className="container mx-auto px-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Global Investment</p>
-                    <p className="text-xl font-bold">${(globalData.totalInvestment / 1000).toFixed(1)}B</p>
-                    <p className="text-[10px] text-green-500">+{globalData.yoyGrowth}% YoY</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Total Deals</p>
-                    <p className="text-xl font-bold">{globalData.dealCount}</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Avg Deal Size</p>
-                    <p className="text-xl font-bold">${globalData.avgDealSize}M</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Unicorns</p>
-                    <p className="text-xl font-bold">{globalData.unicornCount}</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Active VCs</p>
-                    <p className="text-xl font-bold">{globalData.activeVCs}</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50">
-                  <CardContent className="p-3">
-                    <p className="text-[10px] text-muted-foreground">Market Size</p>
-                    <p className="text-xl font-bold">${(globalData.marketSize / 1000).toFixed(1)}B</p>
-                  </CardContent>
-                </Card>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {[
+                  { label: 'Global Investment', value: `$${(globalData.totalInvestment / 1000).toFixed(1)}B`, change: `+${globalData.yoyGrowth}% YoY`, positive: true },
+                  { label: 'Total Deals', value: globalData.dealCount },
+                  { label: 'Avg Deal Size', value: `$${globalData.avgDealSize}M` },
+                  { label: 'Unicorns', value: globalData.unicornCount },
+                  { label: 'Active VCs', value: globalData.activeVCs },
+                  { label: 'Market Size', value: `$${(globalData.marketSize / 1000).toFixed(1)}B` },
+                ].map((stat, i) => (
+                  <Card key={i} className="bg-card/30 border-border/50 hover:border-primary/50 transition-colors group">
+                    <CardContent className="p-4">
+                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+                      <p className="text-2xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">{stat.value}</p>
+                      {stat.change && (
+                        <p className={`text-[10px] font-mono uppercase mt-1 ${stat.positive ? 'text-success' : 'text-destructive'}`}>
+                          {stat.change}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </section>
         )}
 
         {/* Regional Tabs */}
-        <section className="py-8">
+        <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-4 gap-6">
+            <div className="grid lg:grid-cols-4 gap-10">
               <div className="lg:col-span-3">
                 <Tabs defaultValue="all" onValueChange={setActiveRegion}>
-                  <TabsList className="mb-6 flex-wrap h-auto gap-1">
-                    <TabsTrigger value="all" className="text-xs">All Regions</TabsTrigger>
-                    <TabsTrigger value="na" className="text-xs">North America</TabsTrigger>
-                    <TabsTrigger value="eu" className="text-xs">Europe</TabsTrigger>
-                    <TabsTrigger value="asean" className="text-xs">ASEAN</TabsTrigger>
-                    <TabsTrigger value="pacific" className="text-xs">Pacific</TabsTrigger>
-                    <TabsTrigger value="south-asia" className="text-xs">South Asia</TabsTrigger>
-                    <TabsTrigger value="mena" className="text-xs">MENA</TabsTrigger>
+                  <TabsList className="mb-8 bg-muted/20 border border-border/50 p-1 flex-wrap h-auto">
+                    <TabsTrigger value="all" className="text-[10px] font-mono uppercase tracking-widest px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All Regions</TabsTrigger>
+                    {regions.map(r => (
+                      <TabsTrigger key={r.regionCode} value={r.regionCode} className="text-[10px] font-mono uppercase tracking-widest px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                        {r.region}
+                      </TabsTrigger>
+                    ))}
                   </TabsList>
 
-                  <TabsContent value="all">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <TabsContent value="all" className="mt-0">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {regions.map(region => (
                         <RegionalCard key={region.regionCode} region={region} />
                       ))}
@@ -178,25 +166,25 @@ const RegionalIntelligence = () => {
                   </TabsContent>
 
                   {regions.map(region => (
-                    <TabsContent key={region.regionCode} value={region.regionCode}>
-                      <div className="grid md:grid-cols-2 gap-6">
+                    <TabsContent key={region.regionCode} value={region.regionCode} className="mt-0">
+                      <div className="grid md:grid-cols-2 gap-8">
                         <RegionalCard region={region} />
-                        <Card>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-sm">Quarterly Investment</CardTitle>
+                        <Card className="bg-card/30 border-border/50">
+                          <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
+                            <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Quarterly Investment Trend (2025)</CardTitle>
                           </CardHeader>
-                          <CardContent>
-                            <div className="space-y-3">
+                          <CardContent className="pt-8">
+                            <div className="space-y-6">
                               {region.quarterlyData.map((q, i) => (
-                                <div key={i} className="flex items-center justify-between">
-                                  <span className="text-xs">{q.quarter}</span>
-                                  <div className="flex-1 mx-3">
-                                    <Progress 
-                                      value={(q.investment / Math.max(...region.quarterlyData.map(d => d.investment))) * 100} 
-                                      className="h-2"
-                                    />
+                                <div key={i}>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{q.quarter}</span>
+                                    <span className="text-xs font-bold font-mono text-primary">${q.investment}M</span>
                                   </div>
-                                  <span className="text-xs font-medium">${q.investment}M</span>
+                                  <Progress 
+                                    value={(q.investment / Math.max(...region.quarterlyData.map(d => d.investment))) * 100} 
+                                    className="h-1 bg-muted/30"
+                                  />
                                 </div>
                               ))}
                             </div>
@@ -208,20 +196,23 @@ const RegionalIntelligence = () => {
                 </Tabs>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-8">
                 <AIInsightsFeed />
                 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Regional Comparison</CardTitle>
+                <Card className="bg-card/30 border-border/50">
+                  <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
+                    <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Growth Ranking</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-4 pt-6">
                     {regions
                       .sort((a, b) => b.yoyGrowth - a.yoyGrowth)
-                      .map(r => (
-                        <div key={r.regionCode} className="flex items-center justify-between text-xs">
-                          <span>{r.region}</span>
-                          <Badge variant={r.yoyGrowth > 40 ? 'default' : 'secondary'} className="text-[10px]">
+                      .map((r, i) => (
+                        <div key={r.regionCode} className="flex items-center justify-between group">
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-mono text-muted-foreground">0{i + 1}</span>
+                            <span className="text-[10px] font-mono uppercase tracking-widest group-hover:text-primary transition-colors">{r.region}</span>
+                          </div>
+                          <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-tighter ${r.yoyGrowth > 40 ? 'bg-success/10 text-success border-success/30' : 'bg-primary/10 text-primary border-primary/30'}`}>
                             +{r.yoyGrowth}%
                           </Badge>
                         </div>

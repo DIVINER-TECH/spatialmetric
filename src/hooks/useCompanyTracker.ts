@@ -123,10 +123,11 @@ export const useCompanyTracker = () => {
             switch (sortBy) {
                 case 'name':
                     return a.name.localeCompare(b.name);
-                case 'valuation':
+                case 'valuation': {
                     const typeOrder = { public: 0, unicorn: 1, startup: 2 };
                     if (a.type !== b.type) return typeOrder[a.type] - typeOrder[b.type];
                     return (b.valuation || b.totalFunding) - (a.valuation || a.totalFunding);
+                }
                 case 'funding':
                     return b.totalFunding - a.totalFunding;
                 case 'founded':

@@ -78,7 +78,7 @@ export const useMarketSnapshot = () => {
           return FALLBACK_DATA;
         }
         
-        if (!data || !data.data || (data.data as any).topCompanies?.length === 0) {
+        if (!data || !data.data || (data.data as MarketSnapshotData).topCompanies?.length === 0) {
           return FALLBACK_DATA;
         }
         

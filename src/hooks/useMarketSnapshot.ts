@@ -74,15 +74,23 @@ export const useMarketSnapshot = () => {
           .maybeSingle();
 
         if (error) {
-          console.error("Supabase Market Fetch Error:", error);
+          console.error("Supabase Market Fetch Error (Permissions or Table Missing?):", error);
+          console.warn("Using static fallback for market data.");
           return FALLBACK_DATA;
         }
         
-        if (!data || !data.data || (data.data as MarketSnapshotData).topCompanies?.length === 0) {
+        if (!data || !data.data) {
+          console.warn("No market snapshot found in database. Using static fallback.");
+          return FALLBACK_DATA;
+        }
+
+        const snapshot = normalizeSnapshot(data);
+        if (!snapshot.topCompanies || snapshot.topCompanies.length === 0) {
+          console.warn("Market snapshot data is incomplete. Using static fallback.");
           return FALLBACK_DATA;
         }
         
-        return normalizeSnapshot(data);
+        return snapshot;
       } catch (err) {
         console.error("Market Data Hook Crash:", err);
         return FALLBACK_DATA;

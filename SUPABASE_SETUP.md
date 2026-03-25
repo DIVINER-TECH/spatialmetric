@@ -20,30 +20,37 @@ If you have GitHub Actions set up with the `SUPABASE_ACCESS_TOKEN`, pushing to t
 The following secrets **MUST** be set in your Supabase project for the functions to work:
 
 ```bash
-# Set provider to Yahoo for best performance
+# AI Engine (Used for article generation and intelligence)
+supabase secrets set GROQ_API_KEY="your_groq_key"
+
+# Market Data Provider (Set to 'yahoo' for reliability)
 supabase secrets set MARKET_DATA_PROVIDER=yahoo
 
-# API Keys (Required for content and news)
-supabase secrets set GROQ_API_KEY="your_groq_key"
+# Optional: Live Search Integration
 supabase secrets set TAVILY_API_KEY="your_tavily_key"
-
-# Built-in Supabase Secrets (Should be present, but verify)
-# SUPABASE_URL
-# SUPABASE_ANON_KEY
-# SUPABASE_SERVICE_ROLE_KEY
 ```
 
-## 3. Automation (Cron Job)
+## 3. Database Schema & RLS
 
-To run the pipeline every 24 hours, go to the **Supabase SQL Editor** and run:
+You must initialize the database tables and Row Level Security (RLS) policies. Run the following migration files in the **Supabase SQL Editor**:
+
+1.  [`20260206_market_and_news.sql`](file:///c:/diviner%20code/spatialmetric/supabase/migrations/20260206_market_and_news.sql) — Creates market snapshots, news sources, and news items tables.
+2.  [`20260206_content_items.sql`](file:///c:/diviner%20code/spatialmetric/supabase/migrations/20260206_content_items.sql) — Creates the AI-generated content table.
+3.  [`20260206_function_runs.sql`](file:///c:/diviner%20code/spatialmetric/supabase/migrations/20260206_function_runs.sql) — Creates the audit log for functions.
+
+## 4. Seeding News Sources
+
+The `ingest-news` function requires active sources. The migrations above should seed three default sources (Road to VR, UploadVR, TechCrunch). Verify them in the `news_sources` table.
+
+## 5. Automation (Cron Job)
+
+To run the pipeline every 24 hours, run this in the **Supabase SQL Editor**:
 
 ```sql
--- Enable pg_cron if not enabled
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- Schedule the daily pipeline at 1 AM UTC
 SELECT cron.schedule(
-  'daily-market-sync',
+  'daily-pipeline-sync',
   '0 1 * * *',
   $$ SELECT net.http_post(
        url:='https://your-project-id.supabase.co/functions/v1/daily-pipeline',
@@ -52,7 +59,8 @@ SELECT cron.schedule(
 );
 ```
 
-## 4. Verification
+## 6. Verification
 
-- go to the **Function Runs** table in your Supabase database after a few hours.
-- Or check the **Database -> Edge Functions** logs in the Supabase Dashboard.
+- Check **Edge Function Logs** in the Supabase Dashboard.
+- Check the `function_runs` table for execution history.
+- Ensure `market_daily_snapshots` and `content_items` have rows with today's date.

@@ -14,7 +14,13 @@ type TickerConfig = {
 };
 
 type DailyPoint = { date: string; close: number; volume: number };
-type TickerSeries = { symbol: string; name: string; marketCap?: number; series: DailyPoint[] };
+type TickerSeries = { 
+  symbol: string; 
+  name: string; 
+  marketCap?: number; 
+  series: DailyPoint[];
+  providerSymbol?: { stooq?: string; alphavantage?: string; yahoo?: string };
+};
 
 const TICKERS: TickerConfig[] = [
   { symbol: "AAPL", name: "Apple", marketCap: 2850000000000, providerSymbol: { stooq: "aapl.us", yahoo: "AAPL" } },
@@ -78,6 +84,23 @@ const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
     close: Number(quotes.close[i]),
     volume: Number(quotes.volume[i] ?? 0)
   })).filter((p: any) => p.close !== null && !Number.isNaN(p.close));
+};
+
+const fetchYahooQuotes = async (symbols: string[]): Promise<Map<string, { price: number; changePercent: number; volume: number; marketCap: number }>> => {
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Yahoo Quotes fetch failed: ${res.status}`);
+  const data = await res.json();
+  const quoteMap = new Map();
+  data.quoteResponse.result.forEach((quote: any) => {
+    quoteMap.set(quote.symbol, {
+      price: quote.regularMarketPrice,
+      changePercent: quote.regularMarketChangePercent,
+      volume: quote.regularMarketVolume,
+      marketCap: quote.marketCap
+    });
+  });
+  return quoteMap;
 };
 
 const fetchAlphaVantageSeries = async (symbol: string, apiKey: string): Promise<DailyPoint[]> => {
@@ -153,11 +176,28 @@ serve(async (req) => {
         }
         
         if (series.length === 0) continue;
-        seriesList.push({ symbol: ticker.symbol, name: ticker.name, marketCap: ticker.marketCap, series });
+        seriesList.push({ 
+          symbol: ticker.symbol, 
+          name: ticker.name, 
+          marketCap: ticker.marketCap, 
+          series,
+          providerSymbol: ticker.providerSymbol
+        });
       } catch (e) {
         console.error(`Failed to fetch ${ticker.symbol}:`, e);
       }
     }
+
+    let quoteMap = new Map();
+    if (provider === "yahoo") {
+      const symbols = TICKERS.map(t => t.providerSymbol?.yahoo ?? t.symbol);
+      try {
+        quoteMap = await fetchYahooQuotes(symbols);
+      } catch (e) {
+        console.error("Failed to fetch Yahoo quotes:", e);
+      }
+    }
+
     if (seriesList.length === 0) throw new Error("No market data returned from provider");
 
     const indexSeries = computeIndexSeries(seriesList, 60);
@@ -168,13 +208,19 @@ serve(async (req) => {
     const topCompanies = seriesList.map((ticker) => {
       const latest = ticker.series[ticker.series.length - 1];
       const previous = ticker.series[ticker.series.length - 2];
-      const change = latest && previous ? latest.close - previous.close : 0;
-      const changePercent = latest && previous && previous.close !== 0 ? (change / previous.close) * 100 : 0;
+      
+      const quote = quoteMap.get(ticker.providerSymbol?.yahoo ?? ticker.symbol);
+      const price = quote ? quote.price : Number(latest?.close ?? 0);
+      const changePercent = quote ? quote.changePercent : (latest && previous && previous.close !== 0 ? ((latest.close - previous.close) / previous.close) * 100 : 0);
+      const change = quote ? (price * (changePercent / 100)) : (latest && previous ? latest.close - previous.close : 0);
+      
       return {
         symbol: ticker.symbol, name: ticker.name,
-        price: Number(latest?.close ?? 0), change: Number(change.toFixed(2)),
-        changePercent: Number(changePercent.toFixed(2)), volume: Number(latest?.volume ?? 0),
-        marketCap: ticker.marketCap ?? null,
+        price: Number(price.toFixed(2)), 
+        change: Number(change.toFixed(2)),
+        changePercent: Number(changePercent.toFixed(2)), 
+        volume: Number(quote?.volume ?? latest?.volume ?? 0),
+        marketCap: quote?.marketCap ?? ticker.marketCap ?? null,
       };
     });
 

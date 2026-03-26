@@ -93,7 +93,7 @@ Risks include potential regulatory scrutiny in European markets regarding spatia
     subcategory: 'Analysis',
     region: 'Global',
     author: aiAuthor,
-    publishedAt: new Date('2026-03-24'),
+    publishedAt: new Date('2026-03-25'),
     updatedAt: new Date('2026-03-25'),
     trending: true,
     featured: true,

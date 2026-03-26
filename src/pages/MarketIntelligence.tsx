@@ -38,7 +38,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
           <Globe className="h-24 w-24 text-primary" />
         </div>
         
-        <CardHeader className="pb-3 border-b border-black bg-black/40">
+        <CardHeader className="pb-3 border-b border-black bg-black/60">
           <div className="flex items-center justify-between relative z-10">
             <CardTitle className="text-sm font-mono uppercase tracking-[0.3em] font-bold">{region.displayName}</CardTitle>
             <Badge className={`font-mono text-[10px] uppercase tracking-tighter shadow-[0_0_10px_rgba(var(--primary),0.2)] ${region.yoyGrowth > 30 ? 'bg-primary text-black' : 'bg-black text-primary border border-primary/30'}`}>
@@ -49,7 +49,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
         </CardHeader>
         <CardContent className="space-y-6 pt-6 relative z-10">
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+            <div className="bg-black/40 p-4 rounded-xl border border-white/10">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Total Investment</p>
               <div className="text-2xl font-bold font-mono tracking-tighter text-primary">
                 <CountUp 
@@ -60,7 +60,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
                 />
               </div>
             </div>
-            <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+            <div className="bg-black/40 p-4 rounded-xl border border-white/10">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Deal Count</p>
               <div className="text-2xl font-bold font-mono tracking-tighter text-white">
                 <CountUp value={region.dealCount} />
@@ -74,7 +74,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
               { label: 'Active VCs', val: region.activeVCs },
               { label: 'Adoption', val: `${region.adoptionRate}%` }
             ].map((stat, i) => (
-              <div key={i} className="text-center p-3 bg-black/40 border border-black rounded-xl">
+              <div key={i} className="text-center p-3 bg-black/60 border border-black rounded-xl">
                 <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{stat.label}</p>
                 <p className="text-sm font-bold font-mono text-primary">{stat.val}</p>
               </div>
@@ -88,7 +88,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
             </p>
             <div className="flex flex-wrap gap-1.5">
               {region.topSectors.map(sector => (
-                <Badge key={sector} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-primary/5 border-primary/20 text-primary/80 px-3 py-1">
+                <Badge key={sector} variant="outline" className="text-[9px] font-mono uppercase tracking-tighter bg-primary/5 border-primary/20 text-primary px-3 py-1">
                   {sector}
                 </Badge>
               ))}

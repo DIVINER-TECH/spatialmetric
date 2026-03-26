@@ -16,7 +16,7 @@ export function MarketTicker() {
   }
 
   return (
-    <div className="border-y border-border/50 bg-muted/5 overflow-hidden relative backdrop-blur-sm">
+    <div className="border-y border-border/50 bg-black/60 overflow-hidden relative backdrop-blur-sm">
       <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
       
@@ -37,7 +37,7 @@ export function MarketTicker() {
           >
             <div className="flex flex-col">
               <span className="font-mono font-bold text-primary text-sm tracking-tighter uppercase">{item.symbol}</span>
-              <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{item.name}</span>
+              <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest group-hover:text-primary/70 transition-colors">{item.name}</span>
             </div>
             <div className="flex flex-col items-end">
               <span className="font-mono font-bold text-sm tracking-tighter">${(item.price ?? 0).toFixed(2)}</span>

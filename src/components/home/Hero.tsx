@@ -18,7 +18,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-black bg-black/20">
+    <section className="relative overflow-hidden border-b border-black bg-black/40">
       {/* HUD Background Flourish */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] rounded-full" />

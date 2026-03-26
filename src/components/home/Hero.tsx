@@ -18,7 +18,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-black bg-black/40">
+    <section className="relative overflow-hidden border-b border-black/5 bg-secondary/30">
       {/* HUD Background Flourish */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] rounded-full" />
@@ -31,7 +31,7 @@ export function Hero() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-4 px-6 py-2.5 rounded-full glass-premium border-black mb-12 backdrop-blur-xl shadow-[0_0_30px_rgba(var(--primary),0.1)]"
+            className="inline-flex items-center gap-4 px-6 py-2.5 rounded-full glass-premium border-black/5 mb-12 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
           >
             <div className="relative">
               <Target className="h-4 w-4 text-primary animate-pulse" />
@@ -94,7 +94,7 @@ export function Hero() {
               </Button>
             </Link>
             <Link to="/market-intelligence">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto gap-4 font-mono uppercase text-[10px] tracking-[0.2em] h-14 px-10 glass-premium border-black text-white hover:bg-white/5 transition-all">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto gap-4 font-mono uppercase text-[10px] tracking-[0.2em] h-14 px-10 glass-premium border-black/5 text-foreground hover:bg-black/5 transition-all">
                 <Zap className="h-4 w-4 text-primary" />
                 Intelligence Stream
               </Button>
@@ -113,7 +113,7 @@ export function Hero() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1 + (i * 0.1) }}
-                className="group relative p-8 glass-premium border-black hover:border-primary/50 transition-all duration-500 overflow-hidden"
+                className="group relative p-8 glass-premium border-black/5 hover:border-primary/50 transition-all duration-500 overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
                 <div className="text-4xl font-bold font-mono text-primary tracking-tighter mb-2 group-hover:translate-x-1 transition-transform">{stat.val}</div>
@@ -145,7 +145,7 @@ export function Hero() {
       </div>
 
       {/* Market Ticker with HUD overlay */}
-      <div className="relative z-20 border-t border-black bg-black/60 backdrop-blur-xl">
+      <div className="relative z-20 border-t border-black/5 bg-white/80 backdrop-blur-xl">
         <MarketTicker />
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-primary/5 to-transparent h-4 top-0" />
       </div>

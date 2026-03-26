@@ -17,12 +17,12 @@ export function RegionalIntelligenceMap({ activeRegion, onRegionChange }: Region
   ];
 
   return (
-    <div className="relative w-full aspect-[2/1] glass-premium border-black rounded-3xl overflow-hidden bg-black/40 group">
+    <div className="relative w-full aspect-[2/1] glass-premium border-black/5 rounded-3xl overflow-hidden bg-white/50 group shadow-sm">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(var(--primary),0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(var(--primary),0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
       
       {/* HUD Scanlines */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_2px,3px_100%]" />
+      <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[size:100%_2px]" />
 
       <svg viewBox="0 0 1000 500" className="w-full h-full relative z-10">
         {/* Connection Lines (Stylized) */}
@@ -78,16 +78,16 @@ export function RegionalIntelligenceMap({ activeRegion, onRegionChange }: Region
       </svg>
 
       {/* Targeting Overlay */}
-      <div className="absolute top-10 left-10 p-6 glass-premium border-black bg-black/60 backdrop-blur-xl">
+      <div className="absolute top-10 left-10 p-6 glass-premium border-black/5 bg-white/90 backdrop-blur-xl shadow-lg">
         <h3 className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] font-bold mb-4">Node Selection Matrix</h3>
         <div className="space-y-3">
           {regions.map(r => (
             <button
               key={r.id}
               onClick={() => onRegionChange(r.id)}
-              className={`flex items-center gap-4 group/btn w-full text-left transition-all ${activeRegion === r.id ? 'text-white' : 'text-muted-foreground hover:text-white'}`}
+              className={`flex items-center gap-4 group/btn w-full text-left transition-all ${activeRegion === r.id ? 'text-foreground font-bold' : 'text-muted-foreground hover:text-foreground'}`}
             >
-              <div className={`h-1.5 w-1.5 rounded-full ${activeRegion === r.id ? 'bg-primary shadow-[0_0_10px_rgba(var(--primary),1)]' : 'bg-white/10'}`} />
+              <div className={`h-1.5 w-1.5 rounded-full ${activeRegion === r.id ? 'bg-primary shadow-[0_0_10px_rgba(var(--primary),1)]' : 'bg-black/10'}`} />
               <span className="text-[9px] font-mono uppercase tracking-widest">{r.label}</span>
             </button>
           ))}
@@ -99,7 +99,7 @@ export function RegionalIntelligenceMap({ activeRegion, onRegionChange }: Region
           <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-[0.4em]">Sector Saturation</p>
           <p className="text-lg font-bold font-mono text-primary">84.2%</p>
         </div>
-        <div className="h-10 w-px bg-white/10" />
+        <div className="h-10 w-px bg-black/10" />
         <div className="text-right">
           <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-[0.4em]">Signal Latency</p>
           <p className="text-lg font-bold font-mono text-primary">12ms</p>

@@ -42,7 +42,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
         whileHover={{ x: 5 }}
       >
         <Link to={`/article/${article.slug}`}>
-          <Card className="glass-premium hover:border-primary/50 transition-colors cursor-pointer h-full border-black overflow-hidden group">
+          <Card className="glass-premium hover:border-primary/50 transition-colors cursor-pointer h-full border-black/5 overflow-hidden group shadow-sm">
             <CardContent className="p-4 relative">
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-widest border-primary/30 text-primary">{categoryLabels[article.category]}</Badge>
@@ -70,16 +70,16 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
       whileHover={{ y: -5 }}
     >
       <Link to={`/article/${article.slug}`}>
-        <Card className="glass-premium group overflow-hidden flex flex-col h-full border-black transition-all duration-500 relative">
-          <div className="absolute inset-0 bg-primary/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        <Card className="glass-premium group overflow-hidden flex flex-col h-full border-black/5 transition-all duration-500 relative shadow-sm">
+          <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           
           {/* Featured image or gradient fallback */}
-          <div className={`relative h-48 w-full bg-black/40 overflow-hidden border-b border-black`}>
+          <div className={`relative h-48 w-full bg-secondary/50 overflow-hidden border-b border-black/5`}>
             {hasImage ? (
               <img
                 src={article.imageUrl}
                 alt={article.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.5] group-hover:grayscale-0"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
                 referrerPolicy="no-referrer"
               />
@@ -93,7 +93,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-              <Badge className="text-[10px] font-mono uppercase tracking-widest bg-black/80 backdrop-blur-md border-primary/30 text-primary px-3 py-1 font-bold">
+              <Badge className="text-[10px] font-mono uppercase tracking-widest bg-white/90 backdrop-blur-md border-black/5 text-primary px-3 py-1 font-bold">
                 {categoryLabels[article.category]}
               </Badge>
               {article.trending && (
@@ -128,7 +128,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
             </p>
           </CardContent>
 
-          <CardFooter className="pt-0 pb-6 px-6 flex items-center justify-between border-t border-black bg-black/20 relative z-10">
+          <CardFooter className="pt-0 pb-6 px-6 flex items-center justify-between border-t border-black/5 bg-secondary/30 relative z-10">
             <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground uppercase tracking-widest font-bold">
               <Calendar className="h-3.5 w-3.5 text-primary/50" />
               <span>{format(article.publishedAt, 'MMM d, yyyy')}</span>

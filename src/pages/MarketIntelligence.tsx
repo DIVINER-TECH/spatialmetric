@@ -33,15 +33,15 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="h-full glass-premium border-black overflow-hidden relative">
+      <Card className="h-full glass-premium border-black/5 overflow-hidden relative shadow-sm">
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <Globe className="h-24 w-24 text-primary" />
         </div>
         
-        <CardHeader className="pb-3 border-b border-black bg-black/60">
+        <CardHeader className="pb-3 border-b border-black/5 bg-black/[0.03]">
           <div className="flex items-center justify-between relative z-10">
             <CardTitle className="text-sm font-mono uppercase tracking-[0.3em] font-bold">{region.displayName}</CardTitle>
-            <Badge className={`font-mono text-[10px] uppercase tracking-tighter shadow-[0_0_10px_rgba(var(--primary),0.2)] ${region.yoyGrowth > 30 ? 'bg-primary text-black' : 'bg-black text-primary border border-primary/30'}`}>
+            <Badge className={`font-mono text-[10px] uppercase tracking-tighter ${region.yoyGrowth > 30 ? 'bg-primary text-black' : 'bg-white text-primary border border-primary/30'}`}>
               <TrendingUp className="h-3 w-3 mr-1" />
               {region.yoyGrowth}% YoY
             </Badge>
@@ -74,7 +74,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
               { label: 'Active VCs', val: region.activeVCs },
               { label: 'Adoption', val: `${region.adoptionRate}%` }
             ].map((stat, i) => (
-              <div key={i} className="text-center p-3 bg-black/60 border border-black rounded-xl">
+              <div key={i} className="text-center p-3 bg-black/[0.03] border border-black/5 rounded-xl">
                 <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{stat.label}</p>
                 <p className="text-sm font-bold font-mono text-primary">{stat.val}</p>
               </div>
@@ -95,7 +95,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-black space-y-3">
+          <div className="pt-4 border-t border-black/5 space-y-3">
             <div className="flex justify-between items-start">
               <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Key Players</p>
               <p className="text-[10px] font-mono font-bold text-right max-w-[150px]">{region.keyPlayers.slice(0, 3).join(', ')}</p>

@@ -50,7 +50,7 @@ export function Header() {
         <Link to="/" className="flex items-center gap-3 group">
           <motion.div 
             whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
-            className="flex h-10 w-10 items-center justify-center rounded-lg overflow-hidden shadow-[0_0_20px_rgba(var(--primary),0.3)] bg-black/20 border border-primary/30"
+            className="flex h-10 w-10 items-center justify-center rounded-lg overflow-hidden shadow-sm bg-primary/10 border border-primary/20"
           >
             <img src="/logo.png" alt="SpatialMetric Logo" className="h-full w-full object-cover" />
           </motion.div>
@@ -65,7 +65,7 @@ export function Header() {
           </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1 bg-black/20 backdrop-blur-md rounded-full px-2 py-1 border border-white/5">
+        <nav className="hidden lg:flex items-center gap-1 bg-white/40 backdrop-blur-md rounded-full px-2 py-1 border border-black/5 shadow-sm">
           {navItems.map((item) => {
             const isActive = location.pathname === item.href;
             return (
@@ -75,7 +75,7 @@ export function Header() {
                 className="relative group"
               >
                 <div className={`flex items-center gap-2 px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-all rounded-full ${
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-white"
+                  isActive ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
                 }`}>
                   <item.icon className={`h-3.5 w-3.5 transition-transform ${isActive ? "scale-110" : "group-hover:scale-110"}`} />
                   {item.label}

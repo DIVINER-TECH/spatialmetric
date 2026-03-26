@@ -28,18 +28,18 @@ export const AIInsightsFeed = () => {
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
     >
-      <Card className="glass-premium border-black overflow-hidden group relative">
+      <Card className="glass-premium border-black/5 overflow-hidden group relative shadow-sm">
         <div className="absolute -right-4 -top-4 opacity-5 pointer-events-none">
           <Cpu className="h-32 w-32 text-primary" />
         </div>
         
-        <CardHeader className="pb-3 border-b border-black bg-black/40">
+        <CardHeader className="pb-3 border-b border-black/5 bg-black/[0.03]">
           <div className="flex items-center justify-between">
             <CardTitle className="text-[10px] font-mono uppercase tracking-[0.4em] flex items-center gap-2 text-primary font-bold">
               <Sparkles className="h-3 w-3 animate-pulse" />
               Neural Node Analysis
             </CardTitle>
-            <Badge className="text-[9px] font-mono uppercase tracking-widest bg-black text-primary border border-primary/20">
+            <Badge className="text-[9px] font-mono uppercase tracking-widest bg-white text-primary border border-primary/20">
               STABLE_v2.4
             </Badge>
           </div>
@@ -51,15 +51,15 @@ export const AIInsightsFeed = () => {
                 <div className="flex items-start justify-between gap-4">
                   <h3 className="font-mono font-bold text-xl leading-none uppercase tracking-tighter group-hover:text-primary transition-colors">{insight.headline}</h3>
                 </div>
-                <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-widest px-4 py-1.5 border-black ${signalColor} bg-black/40 shadow-[0_0_10px_rgba(var(--primary),0.1)]`}>
+                <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-widest px-4 py-1.5 border-black/5 ${signalColor} bg-black/[0.03] shadow-sm`}>
                   <SignalIcon className="h-3 w-3 mr-2" />
                   Signal: {insight.signal}
                 </Badge>
               </div>
 
-              <div className="relative p-4 bg-black/20 rounded-xl border border-white/5 overflow-hidden">
+              <div className="relative p-4 bg-secondary/30 rounded-xl border border-black/5 overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full bg-primary/40" />
-                <p className="text-[11px] font-mono text-white/80 leading-relaxed uppercase tracking-wide italic">
+                <p className="text-[11px] font-mono text-foreground leading-relaxed uppercase tracking-wide italic font-medium">
                   "{insight.summary}"
                 </p>
               </div>
@@ -67,9 +67,9 @@ export const AIInsightsFeed = () => {
               {insight.metrics && insight.metrics.length > 0 && (
                 <div className="grid grid-cols-3 gap-3">
                   {insight.metrics.slice(0, 3).map((m, i) => (
-                    <div key={i} className="text-center p-3 bg-black/40 rounded-xl border border-black group-hover:border-primary/20 transition-all">
+                    <div key={i} className="text-center p-3 bg-black/[0.03] rounded-xl border border-black/5 group-hover:border-primary/20 transition-all">
                       <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{m.label}</p>
-                      <p className="text-[12px] font-mono font-bold tracking-tighter text-white">{m.value}</p>
+                      <p className="text-[12px] font-mono font-bold tracking-tighter text-foreground">{m.value}</p>
                       {m.change && (
                         <p className={`text-[9px] font-mono font-bold mt-1 ${m.change.startsWith('+') ? 'text-primary' : 'text-destructive'}`}>
                           {m.change}
@@ -79,13 +79,13 @@ export const AIInsightsFeed = () => {
                   ))}
                 </div>
               )}
-              <div className="pt-6 border-t border-black flex items-center justify-between">
+              <div className="pt-6 border-t border-black/5 flex items-center justify-between">
                 <span className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest">Confidence: 94.2%</span>
                 <span className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest">Core: GPT-4o-M</span>
               </div>
             </div>
           ) : (
-            <div className="text-center py-16 border border-dashed border-black rounded-2xl bg-black/20">
+            <div className="text-center py-16 border border-dashed border-black/10 rounded-2xl bg-black/[0.02]">
               <p className="text-[10px] font-mono text-primary uppercase tracking-[0.3em] animate-pulse">Establishing Satellite Uplink...</p>
             </div>
           )}

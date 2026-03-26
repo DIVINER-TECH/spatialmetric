@@ -16,7 +16,7 @@ export function MarketTicker() {
   }
 
   return (
-    <div className="border-y border-border/50 bg-black/60 overflow-hidden relative backdrop-blur-sm">
+    <div className="border-y border-black/5 bg-white/80 overflow-hidden relative backdrop-blur-sm shadow-sm">
       <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10" />
       

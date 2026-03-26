@@ -9,6 +9,7 @@ import { TrendingUp, TrendingDown, Globe, DollarSign, Users, Building2, BarChart
 import { regionalData, type RegionalMetrics } from '@/data/regions';
 import { AIInsightsFeed } from '@/components/ai/AIInsightsFeed';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
+import { CountUp } from '@/components/shared/CountUp';
 
 const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
   const formatNumber = (n: number) => {
@@ -17,8 +18,8 @@ const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
   };
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <Card className="glass-premium border-black/5 overflow-hidden transition-all hover:shadow-lg group">
+      <CardHeader className="pb-4 border-b border-black/5 bg-black/[0.02]">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">{region.displayName}</CardTitle>
           <Badge variant={region.yoyGrowth > 30 ? 'default' : 'secondary'} className="text-xs">
@@ -30,16 +31,25 @@ const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
-            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <p className="text-[10px] text-muted-foreground flex items-center gap-1 uppercase tracking-widest">
               <DollarSign className="h-3 w-3" /> Investment
             </p>
-            <p className="text-lg font-bold">{formatNumber(region.totalInvestment)}</p>
+            <div className="text-xl font-bold font-mono tracking-tighter">
+              <CountUp 
+                value={region.totalInvestment >= 1000 ? region.totalInvestment / 1000 : region.totalInvestment} 
+                prefix="$" 
+                suffix={region.totalInvestment >= 1000 ? "B" : "M"} 
+                decimals={region.totalInvestment >= 1000 ? 1 : 0}
+              />
+            </div>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <p className="text-[10px] text-muted-foreground flex items-center gap-1 uppercase tracking-widest">
               <BarChart3 className="h-3 w-3" /> Deals
             </p>
-            <p className="text-lg font-bold">{region.dealCount}</p>
+            <div className="text-xl font-bold font-mono tracking-tighter">
+              <CountUp value={region.dealCount} />
+            </div>
           </div>
           <div className="space-y-1">
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -90,23 +100,24 @@ const RegionalIntelligence = () => {
   const regions = regionalData.filter(r => r.regionCode !== 'global');
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Header />
       <main className="flex-1">
-        <section className="py-10 border-b border-border/50 bg-muted/10">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-                <Globe className="h-6 w-6 text-primary" />
+        <section className="py-20 border-b border-black/5 bg-secondary/30 relative overflow-hidden">
+          <div className="absolute inset-0 bg-grid-subtle opacity-10 pointer-events-none" />
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center gap-8 mb-6">
+              <div className="h-16 w-16 glass-premium flex items-center justify-center border-black/5 rounded-2xl shadow-sm">
+                <Globe className="h-8 w-8 text-primary animate-pulse" />
               </div>
-              <div>
-                <h1 className="text-4xl font-bold font-mono tracking-tighter uppercase">Regional Intelligence</h1>
-                <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest mt-1">
-                  Global XR market metrics, investment statistics, and regional performance
+              <div className="space-y-2">
+                <h1 className="text-5xl font-bold font-mono tracking-tighter uppercase leading-none">Regional <span className="text-primary">Intelligence</span></h1>
+                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.5em] mt-3">
+                  Global XR market metrics & performance vectors
                 </p>
               </div>
-              <div className="ml-auto">
-                <LiveIndicator label="Snapshot" />
+              <div className="ml-auto flex items-center gap-4 bg-white/50 backdrop-blur-md p-1.5 rounded-full border border-black/5">
+                <LiveIndicator label="RT-SYNC" />
               </div>
             </div>
           </div>
@@ -114,23 +125,31 @@ const RegionalIntelligence = () => {
 
         {/* Global Summary */}
         {globalData && (
-          <section className="py-8 border-b border-border/50 bg-muted/20">
+          <section className="py-12 border-b border-black/5 bg-white/50 backdrop-blur-sm">
             <div className="container mx-auto px-4">
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 {[
-                  { label: 'Global Investment', value: `$${(globalData.totalInvestment / 1000).toFixed(1)}B`, change: `+${globalData.yoyGrowth}% YoY`, positive: true },
-                  { label: 'Total Deals', value: globalData.dealCount },
-                  { label: 'Avg Deal Size', value: `$${globalData.avgDealSize}M` },
-                  { label: 'Unicorns', value: globalData.unicornCount },
-                  { label: 'Active VCs', value: globalData.activeVCs },
-                  { label: 'Market Size', value: `$${(globalData.marketSize / 1000).toFixed(1)}B` },
+                  { label: 'Global Investment', raw: globalData.totalInvestment, prefix: '$', suffix: 'B', divisor: 1000, change: `+${globalData.yoyGrowth}% YoY`, positive: true },
+                  { label: 'Total Deals', raw: globalData.dealCount },
+                  { label: 'Avg Deal Size', raw: globalData.avgDealSize, prefix: '$', suffix: 'M' },
+                  { label: 'Unicorns', raw: globalData.unicornCount },
+                  { label: 'Active VCs', raw: globalData.activeVCs },
+                  { label: 'Market Size', raw: globalData.marketSize, prefix: '$', suffix: 'B', divisor: 1000 },
                 ].map((stat, i) => (
-                  <Card key={i} className="bg-card/30 border-border/50 hover:border-primary/50 transition-colors group">
-                    <CardContent className="p-4">
-                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] mb-2">{stat.label}</p>
-                      <p className="text-2xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">{stat.value}</p>
+                  <Card key={i} className="glass-premium border-black/5 hover:border-primary/50 transition-all group overflow-hidden shadow-sm">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary/10 group-hover:bg-primary transition-colors" />
+                    <CardContent className="p-5">
+                      <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-3">{stat.label}</p>
+                      <div className="text-2xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">
+                        <CountUp 
+                          value={stat.divisor ? stat.raw / stat.divisor : stat.raw || 0} 
+                          prefix={stat.prefix || ""} 
+                          suffix={stat.suffix || ""} 
+                          decimals={stat.divisor ? 1 : 0} 
+                        />
+                      </div>
                       {stat.change && (
-                        <p className={`text-[10px] font-mono uppercase mt-1 ${stat.positive ? 'text-success' : 'text-destructive'}`}>
+                        <p className={`text-[9px] font-mono uppercase mt-2 font-bold ${stat.positive ? 'text-success' : 'text-destructive'}`}>
                           {stat.change}
                         </p>
                       )}

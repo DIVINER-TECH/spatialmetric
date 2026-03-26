@@ -42,7 +42,7 @@ export function Hero() {
               />
             </div>
             <span className="text-[10px] font-mono font-bold text-primary uppercase tracking-[0.4em]">Spatial Intelligence Active</span>
-            <div className="flex h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
+            <div className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
           </motion.div>
 
           {/* Holographic Heading */}
@@ -117,7 +117,7 @@ export function Hero() {
               >
                 <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
                 <div className="text-4xl font-bold font-mono text-primary tracking-tighter mb-2 group-hover:translate-x-1 transition-transform">{stat.val}</div>
-                <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.3em] font-bold group-hover:text-white transition-colors flex items-center gap-2">
+                <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.3em] font-bold group-hover:text-foreground transition-colors flex items-center gap-2">
                   <stat.icon className="h-3 w-3" />
                   {stat.label}
                 </div>

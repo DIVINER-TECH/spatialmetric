@@ -12,12 +12,15 @@ import {
   Globe,
   Search,
   Rocket,
-  Landmark
+  Landmark,
+  Moon,
+  Sun
 } from "lucide-react";
 
 const navItems = [
   { label: "Market Intelligence", href: "/market-intelligence", icon: TrendingUp },
   { label: "Company Tracker", href: "/company-tracker", icon: Rocket },
+  { label: "Control Room", href: "/social-control", icon: Building2 },
   { label: "VC Directory", href: "/vc-directory", icon: Landmark },
   { label: "Tech Explain", href: "/tech-explain", icon: Cpu },
   { label: "Events", href: "/events", icon: Calendar },
@@ -34,6 +37,15 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   return (
     <header 
@@ -93,6 +105,15 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme}
+            className="hover:bg-primary/5 hover:text-primary transition-colors rounded-full"
+          >
+            {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          </Button>
+
           <Button variant="ghost" size="icon" className="hidden md:flex hover:bg-primary/5 hover:text-primary transition-colors rounded-full">
             <Search className="h-4 w-4" />
           </Button>

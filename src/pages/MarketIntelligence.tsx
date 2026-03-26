@@ -190,7 +190,7 @@ const MarketIntelligence = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-black/40 backdrop-blur-md p-2 rounded-full border border-white/5">
+            <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-full border border-black/5 shadow-sm">
               <Button 
                 onClick={handleRefresh} 
                 disabled={isRefreshing}
@@ -267,7 +267,7 @@ const MarketIntelligence = () => {
         <section className="py-20 border-t border-black">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex items-center justify-between mb-16 flex-wrap gap-6">
-              <TabsList className="bg-black/40 backdrop-blur-md border border-white/5 p-1.5 rounded-full scale-110 origin-left">
+              <TabsList className="bg-white/50 backdrop-blur-md border border-black/5 p-1.5 rounded-full scale-110 origin-left shadow-sm">
                 <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-black font-mono text-[10px] uppercase tracking-widest px-10 h-10 rounded-full transition-all">TERMINAL FEED</TabsTrigger>
                 <TabsTrigger value="regional" className="data-[state=active]:bg-primary data-[state=active]:text-black font-mono text-[10px] uppercase tracking-widest px-10 h-10 rounded-full transition-all">REGIONAL MATRIX</TabsTrigger>
               </TabsList>
@@ -303,8 +303,8 @@ const MarketIntelligence = () => {
                 >
                   <AIInsightsFeed />
 
-                  <Card className="glass-premium border-black overflow-hidden">
-                    <CardHeader className="pb-4 border-b border-black bg-black/40">
+                  <Card className="glass-premium border-black/5 overflow-hidden shadow-sm">
+                    <CardHeader className="pb-4 border-b border-black/5 bg-black/[0.02]">
                       <CardTitle className="text-[10px] font-mono uppercase tracking-[0.3em] font-bold flex items-center gap-3">
                         <TrendingUp className="h-4 w-4 text-primary" />
                         GVA Growth Momentum

@@ -13,8 +13,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 75 20% 5%;
 
-    --primary: 63 85% 52%;
-    --primary-foreground: 75 100% 5%;
+    --primary: 43 100% 28%; /* High-contrast Dark Gold/Olive for text */
+    --primary-foreground: 0 0% 100%;
+    
+    --brand-yellow: 63 85% 52%; /* Preserve the original brand yellow for accents */
 
     --secondary: 75 14% 96%;
     --secondary-foreground: 75 20% 5%;
@@ -31,8 +33,8 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 75 20% 5%;
+    --warning: 38 92% 40%;
+    --warning-foreground: 0 0% 100%;
 
     --border: 75 13% 88%;
     --input: 75 13% 88%;
@@ -116,6 +118,11 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+    cursor: none !important; /* Global custom cursor override */
+  }
+
+  a, button, [role="button"] {
+    cursor: none !important;
   }
 }
 

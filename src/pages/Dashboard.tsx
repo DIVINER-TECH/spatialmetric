@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { CountUp } from "@/components/shared/CountUp";
+import { MarketTicker } from "@/components/home/MarketTicker";
 
 const SECTOR_MAP: Record<string, string> = {
   AAPL: "Hardware", META: "Social/Metaverse", MSFT: "Enterprise", NVDA: "Semiconductor",
@@ -212,10 +214,10 @@ const Dashboard = () => {
   const hasSnapshot = Boolean(indexSeries.length && snapshotCompanies.length);
 
   const kpiCards = [
-    { title: "Total XR Market Cap", value: formatMarketCap(computedData.totalStaticMarketCap), change: "", positive: true, icon: DollarSign, description: `${staticCompanies.length} tracked companies` },
-    { title: "Total R&D Investment", value: formatMarketCap(computedData.totalRAndD), change: "", positive: true, icon: Activity, description: "annual R&D spend" },
-    { title: "Sectors Covered", value: `${computedData.uniqueSectors}`, change: "", positive: true, icon: Layers, description: "unique sectors" },
-    { title: "Companies Tracked", value: `${computedData.totalTracked}`, change: "", positive: true, icon: Building2, description: "public + private" },
+    { title: "Total XR Market Cap", value: computedData.totalStaticMarketCap, raw: computedData.totalStaticMarketCap, change: "", positive: true, icon: DollarSign, description: `${staticCompanies.length} tracked companies`, prefix: "$", divisor: 1e12, suffix: "T" },
+    { title: "Total R&D Investment", value: computedData.totalRAndD, raw: computedData.totalRAndD, change: "", positive: true, icon: Activity, description: "annual R&D spend", prefix: "$", divisor: 1e9, suffix: "B" },
+    { title: "Sectors Covered", value: computedData.uniqueSectors, raw: computedData.uniqueSectors, change: "", positive: true, icon: Layers, description: "unique sectors" },
+    { title: "Companies Tracked", value: computedData.totalTracked, raw: computedData.totalTracked, change: "", positive: true, icon: Building2, description: "public + private" },
   ];
 
   const lastUpdatedLabel = snapshot?.asOfDate ? format(new Date(snapshot.asOfDate), "MMM d, yyyy") : "—";
@@ -258,9 +260,16 @@ const Dashboard = () => {
                 <kpi.icon className="h-12 w-12 text-primary" />
               </div>
               <CardContent className="pt-8">
-                <div className="text-3xl font-bold mb-2 font-mono tracking-tighter group-hover:text-primary transition-colors">{kpi.value}</div>
+                <div className="text-3xl font-bold mb-2 font-mono tracking-tighter group-hover:text-primary transition-colors">
+                  <CountUp 
+                    value={kpi.divisor ? kpi.raw / kpi.divisor : kpi.raw} 
+                    prefix={kpi.prefix || ""} 
+                    suffix={kpi.suffix || ""} 
+                    decimals={kpi.divisor ? 1 : 0} 
+                  />
+                </div>
                 <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-4 border-b border-border/30 pb-2">{kpi.title}</div>
-                <div className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
+                <div className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2 group-hover:text-foreground/70 transition-colors">
                   <Activity className="h-3 w-3 text-primary/50" />
                   {kpi.description}
                 </div>

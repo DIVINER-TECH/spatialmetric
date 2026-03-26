@@ -17,7 +17,7 @@ export function RegionalIntelligenceMap({ activeRegion, onRegionChange }: Region
   ];
 
   return (
-    <div className="relative w-full aspect-[2/1] glass-premium border-black/5 rounded-3xl overflow-hidden bg-white/50 group shadow-sm">
+    <div className="relative w-full aspect-[2/1] glass-premium border-black/5 rounded-3xl overflow-hidden bg-white/70 group shadow-lg">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(var(--primary),0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(var(--primary),0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
       
@@ -97,7 +97,7 @@ export function RegionalIntelligenceMap({ activeRegion, onRegionChange }: Region
       <div className="absolute bottom-10 right-10 flex items-center gap-6">
         <div className="text-right">
           <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-[0.4em]">Sector Saturation</p>
-          <p className="text-lg font-bold font-mono text-primary">84.2%</p>
+          <p className="text-lg font-bold font-mono text-foreground group-hover:text-primary transition-colors">84.2%</p>
         </div>
         <div className="h-10 w-px bg-black/10" />
         <div className="text-right">

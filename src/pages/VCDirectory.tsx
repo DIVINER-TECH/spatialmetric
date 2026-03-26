@@ -11,6 +11,7 @@ import { investors, getTopInvestorsByXRDeals, type VCFirm } from '@/data/investo
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { CountUp } from '@/components/shared/CountUp';
 
 const VCDirectory = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,38 +59,55 @@ const VCDirectory = () => {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-10">
-          <div className="mb-10 border-b border-border/50 pb-8 flex items-end justify-between">
-            <div>
-              <h1 className="text-4xl font-bold font-mono tracking-tighter uppercase mb-3">Capital Allocation Index</h1>
-              <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">Comprehensive database of {investors.length}+ venture capital firms investing in spatial computing</p>
+          <section className="py-20 border-b border-black/5 bg-secondary/30 relative overflow-hidden -mx-4 px-4 mb-10">
+            <div className="absolute inset-0 bg-grid-subtle opacity-10 pointer-events-none" />
+            <div className="container mx-auto px-4 relative z-10">
+              <div className="flex flex-col md:flex-row md:items-center gap-8 mb-6">
+                <div className="h-16 w-16 glass-premium flex items-center justify-center border-black/5 rounded-2xl shadow-sm">
+                  <Building2 className="h-8 w-8 text-primary animate-pulse" />
+                </div>
+                <div className="space-y-2">
+                  <h1 className="text-5xl font-bold font-mono tracking-tighter uppercase leading-none">Capital <span className="text-primary">Allocation</span></h1>
+                  <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.5em] mt-3">
+                    VC Database & Portfolio Performance Metrics
+                  </p>
+                </div>
+                <div className="ml-auto flex flex-col items-end gap-4">
+                  <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-1.5 rounded-full border border-black/5 shadow-sm">
+                    <Button 
+                      onClick={handleRefresh} 
+                      disabled={isRefreshing}
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2 font-mono text-[9px] uppercase tracking-widest hover:bg-black/5 rounded-full"
+                    >
+                      <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+                      {isRefreshing ? "Syncing..." : "Sync Systems"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Button 
-              onClick={handleRefresh} 
-              disabled={isRefreshing}
-              variant="outline"
-              size="sm"
-              className="gap-2 font-mono text-[9px] uppercase tracking-widest border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-300 h-9 px-4 mb-1"
-            >
-              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
-              {isRefreshing ? "Syncing..." : "Sync Data"}
-            </Button>
-          </div>
+          </section>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
             {[
-              { label: 'Total Firms', value: investors.length, icon: Building2 },
-              { label: 'Combined AUM', value: `$${investors.reduce((sum, i) => sum + i.aum, 0).toFixed(0)}B`, icon: DollarSign },
-              { label: 'XR Investments', value: investors.reduce((sum, i) => sum + i.xrInvestments, 0), icon: TrendingUp },
-              { label: 'Portfolio Cos', value: new Set(investors.flatMap(i => i.xrPortfolio)).size, icon: Users },
+              { label: 'Total Firms', value: investors.length, raw: investors.length, icon: Building2 },
+              { label: 'Combined AUM', value: `$${investors.reduce((sum, i) => sum + i.aum, 0).toFixed(0)}B`, raw: investors.reduce((sum, i) => sum + i.aum, 0), prefix: '$', suffix: 'B', icon: DollarSign },
+              { label: 'XR Investments', value: investors.reduce((sum, i) => sum + i.xrInvestments, 0), raw: investors.reduce((sum, i) => sum + i.xrInvestments, 0), icon: TrendingUp },
+              { label: 'Portfolio Cos', value: new Set(investors.flatMap(i => i.xrPortfolio)).size, raw: new Set(investors.flatMap(i => i.xrPortfolio)).size, icon: Users },
             ].map((stat, i) => (
-              <Card key={i} className="bg-card/30 border-border/50 hover:border-primary/50 transition-colors group">
+              <Card key={i} className="glass-premium border-black/5 hover:border-primary/50 transition-all group overflow-hidden shadow-sm">
+                <div className="absolute top-0 left-0 w-1 h-full bg-primary/10 group-hover:bg-primary transition-colors" />
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-3 text-muted-foreground mb-3">
+                  <div className="flex items-center gap-3 text-muted-foreground mb-4">
                     <stat.icon className="h-4 w-4 text-primary" />
-                    <span className="text-[10px] font-mono uppercase tracking-[0.2em]">{stat.label}</span>
+                    <span className="text-[9px] font-mono uppercase tracking-widest">{stat.label}</span>
                   </div>
-                  <p className="text-3xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">{stat.value}</p>
+                  <div className="text-3xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">
+                    <CountUp value={stat.raw} prefix={stat.prefix || ""} suffix={stat.suffix || ""} />
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -124,19 +142,21 @@ const VCDirectory = () => {
               Most Active XR Capital Allocators
               <div className="h-px flex-1 bg-border/50" />
             </h2>
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide">
               {topByDeals.map(vc => (
-                <Card key={vc.id} className="min-w-[240px] bg-primary/5 border-primary/30 hover:bg-primary/10 transition-all cursor-pointer group">
+                <Card key={vc.id} className="min-w-[280px] glass-premium border-black/5 hover:border-primary/50 transition-all cursor-pointer group shadow-sm">
                   <CardContent className="p-6">
-                    <p className="font-mono font-bold text-xs uppercase tracking-tight mb-3 group-hover:text-primary transition-colors">{vc.name}</p>
+                    <p className="font-mono font-bold text-[10px] uppercase tracking-widest mb-4 group-hover:text-primary transition-colors border-b border-black/5 pb-2">{vc.name}</p>
                     <div className="flex items-end justify-between">
                       <div>
-                        <p className="text-primary text-2xl font-bold font-mono tracking-tighter">{vc.xrInvestments}</p>
-                        <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Deals Executed</p>
+                        <div className="text-primary text-3xl font-bold font-mono tracking-tighter">
+                          <CountUp value={vc.xrInvestments} />
+                        </div>
+                        <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest">Deals Executed</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-mono font-bold tracking-tighter">{formatAUM(vc.aum)}</p>
-                        <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">AUM</p>
+                        <p className="text-sm font-mono font-bold tracking-tighter group-hover:text-primary transition-colors">{formatAUM(vc.aum)}</p>
+                        <p className="text-[8px] font-mono text-muted-foreground uppercase tracking-widest">AUM Index</p>
                       </div>
                     </div>
                   </CardContent>
@@ -160,8 +180,8 @@ const VCDirectory = () => {
               const initials = vc.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
               return (
-              <Card key={vc.id} className="bg-card/30 border-border/50 hover:border-primary/50 transition-all group overflow-hidden">
-                <CardHeader className="pb-4 border-b border-border/50 bg-muted/10">
+              <Card key={vc.id} className="glass-premium border-black/5 hover:border-primary/50 transition-all group overflow-hidden shadow-sm">
+                <CardHeader className="pb-4 border-b border-black/5 bg-black/[0.02]">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`flex h-12 w-12 items-center justify-center rounded-lg text-sm font-bold font-mono border shrink-0 shadow-inner ${avatarColor}`}>

@@ -37,7 +37,7 @@ export function MarketTicker() {
           >
             <div className="flex flex-col">
               <span className="font-mono font-bold text-primary text-sm tracking-tighter uppercase">{item.symbol}</span>
-              <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest group-hover:text-primary/70 transition-colors">{item.name}</span>
+              <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest group-hover:text-foreground transition-colors">{item.name}</span>
             </div>
             <div className="flex flex-col items-end">
               <span className="font-mono font-bold text-sm tracking-tighter">${(item.price ?? 0).toFixed(2)}</span>

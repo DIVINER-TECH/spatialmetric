@@ -4,9 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
+import { CustomCursor } from "./components/shared/CustomCursor";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import MarketIntelligence from "./pages/MarketIntelligence";
+import SocialControlRoom from "./pages/SocialControlRoom";
 import TechExplain from "./pages/TechExplain";
 import Events from "./pages/Events";
 import SpatialUpdates from "./pages/SpatialUpdates";
@@ -26,6 +28,7 @@ import ApiAccess from "./pages/ApiAccess";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -42,11 +45,17 @@ const AnimatedRoutes = () => {
     mouseY.set(moveY);
   };
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.classList.toggle("dark", savedTheme === "dark");
+  }, []);
+  
   return (
     <div 
       className="relative min-h-screen bg-background text-foreground selection:bg-primary/30 overflow-x-hidden"
       onMouseMove={handleMouseMove}
     >
+      <CustomCursor />
       {/* Global Spatial HUD Layer */}
       <motion.div 
         style={{ x: mouseX, y: mouseY }}
@@ -73,6 +82,7 @@ const AnimatedRoutes = () => {
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/market-intelligence" element={<MarketIntelligence />} />
+            <Route path="/social-control" element={<SocialControlRoom />} />
             <Route path="/regional-intelligence" element={<RegionalIntelligence />} />
             <Route path="/company-tracker" element={<CompanyTracker />} />
             <Route path="/companies" element={<Navigate to="/company-tracker" replace />} />

@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { CountUp } from '@/components/shared/CountUp';
 import {
     PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip,
     ResponsiveContainer, Legend,
@@ -62,8 +63,8 @@ const PublicCompanyCard = ({ company }: { company: TrackedCompany }) => {
 
     return (
         <Link to={`/company/${company.slug}`}>
-            <Card className="bg-card/30 border-border/50 hover:border-primary/50 transition-all cursor-pointer h-full group">
-                <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+            <Card className="glass-premium border-black/5 hover:border-primary/50 transition-all cursor-pointer h-full group shadow-sm overflow-hidden">
+                <CardHeader className="pb-4 border-b border-black/5 bg-black/[0.02]">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className={`flex h-8 w-8 items-center justify-center rounded text-[10px] font-bold shrink-0 font-mono ${sectorColor}`}>
@@ -115,8 +116,8 @@ const CompanyCard = ({ company }: { company: TrackedCompany }) => {
     const initials = company.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
     return (
-        <Card className="bg-card/30 border-border/50 hover:border-primary/50 transition-all h-full group">
-            <CardHeader className="pb-3 border-b border-border/50 bg-muted/20">
+        <Card className="glass-premium border-black/5 hover:border-primary/50 transition-all h-full group shadow-sm overflow-hidden">
+            <CardHeader className="pb-4 border-b border-black/5 bg-black/[0.02]">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3 flex-1">
                         <div className={`flex h-8 w-8 items-center justify-center rounded text-[10px] font-bold shrink-0 font-mono ${sectorColor}`}>
@@ -291,49 +292,57 @@ const CompanyTracker = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">
-                <section className="py-10 border-b border-border/50 bg-muted/10">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Rocket className="h-8 w-8 text-primary" />
-                <h1 className="text-3xl md:text-4xl font-bold font-mono tracking-tighter uppercase">Company Tracker</h1>
+        <section className="py-20 border-b border-black/5 bg-secondary/30 relative overflow-hidden">
+          <div className="absolute inset-0 bg-grid-subtle opacity-10 pointer-events-none" />
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center gap-8 mb-6">
+              <div className="h-16 w-16 glass-premium flex items-center justify-center border-black/5 rounded-2xl shadow-sm">
+                <Rocket className="h-8 w-8 text-primary animate-pulse" />
               </div>
-              <Button 
-                onClick={handleRefresh} 
-                disabled={isRefreshing}
-                variant="outline"
-                size="sm"
-                className="gap-2 font-mono text-[9px] uppercase tracking-widest border-primary/30 hover:bg-primary hover:text-primary-foreground transition-all duration-300 h-9 px-4"
-              >
-                <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
-                {isRefreshing ? "Syncing..." : "Sync Data"}
-              </Button>
+              <div className="space-y-2">
+                <h1 className="text-5xl font-bold font-mono tracking-tighter uppercase leading-none">Company <span className="text-primary">Tracker</span></h1>
+                <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.5em] mt-3">
+                  Global XR Entity Monitor & Performance Index
+                </p>
+              </div>
+              <div className="ml-auto flex items-center gap-4 bg-white/50 backdrop-blur-md p-1.5 rounded-full border border-black/5 shadow-sm">
+                <Button 
+                  onClick={handleRefresh} 
+                  disabled={isRefreshing}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2 font-mono text-[9px] uppercase tracking-widest hover:bg-black/5 rounded-full"
+                >
+                  <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+                  {isRefreshing ? "Syncing..." : "Sync Monitor"}
+                </Button>
+              </div>
             </div>
-            <p className="text-muted-foreground max-w-2xl text-sm font-mono uppercase tracking-tight leading-relaxed">
-              Track XR companies across all stages — from public market leaders to billion-dollar unicorns and emerging startups.
-            </p>
           </div>
         </section>
 
         {/* Stats */}
-        <section className="py-6 border-b border-border/50 bg-muted/20">
+        <section className="py-12 border-b border-black/5 bg-white/50 backdrop-blur-sm">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               {[
-                { icon: Building2, label: 'Total Companies', value: stats.total },
-                { icon: BarChart3, label: 'Public Companies', value: stats.publicCount },
-                { icon: TrendingUp, label: 'Unicorns', value: stats.unicornCount },
-                { icon: Rocket, label: 'Startups', value: stats.startupCount },
-                { icon: DollarSign, label: 'Total Market Cap', value: stats.totalMarketCap > 0 ? formatMarketCap(stats.totalMarketCap) : `$${(stats.totalFunding / 1000).toFixed(1)}B raised` },
+                { icon: Building2, label: 'Total Companies', raw: stats.total },
+                { icon: BarChart3, label: 'Public Companies', raw: stats.publicCount },
+                { icon: TrendingUp, label: 'Unicorns', raw: stats.unicornCount },
+                { icon: Rocket, label: 'Startups', raw: stats.startupCount },
+                { icon: DollarSign, label: 'Total Market Cap', raw: stats.totalMarketCap || stats.totalFunding, prefix: '$', suffix: stats.totalMarketCap > 0 ? 'T' : 'B', divisor: stats.totalMarketCap > 0 ? 1e12 : 1000 },
               ].map(s => (
-                <Card key={s.label} className="bg-card/30 border-border/50">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <s.icon className="h-3 w-3 text-primary" />
-                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{s.label}</p>
-                    </div>
-                    <p className="text-2xl font-bold font-mono tracking-tighter">{s.value}</p>
-                  </CardContent>
+                <Card key={s.label} className="glass-premium border-black/5 hover:border-primary/50 transition-all group overflow-hidden shadow-sm">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary/10 group-hover:bg-primary transition-colors" />
+                    <CardContent className="p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <s.icon className="h-3 w-3 text-primary" />
+                        <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">{s.label}</p>
+                      </div>
+                      <div className="text-2xl font-bold font-mono tracking-tighter group-hover:text-primary transition-colors">
+                        <CountUp value={s.divisor ? s.raw / s.divisor : s.raw} prefix={s.prefix || ""} suffix={s.suffix || ""} decimals={s.divisor ? 1 : 0} />
+                      </div>
+                    </CardContent>
                 </Card>
               ))}
             </div>

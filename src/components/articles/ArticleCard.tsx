@@ -93,9 +93,11 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-              <Badge className="text-[10px] font-mono uppercase tracking-widest bg-white/90 backdrop-blur-md border-black/5 text-primary px-3 py-1 font-bold">
-                {categoryLabels[article.category]}
-              </Badge>
+              {article.category && (
+                <Badge variant="secondary" className="text-[10px] font-mono tracking-[0.2em] font-bold uppercase py-1 px-3 bg-white/80 backdrop-blur-md border-black/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                  {categoryLabels[article.category]}
+                </Badge>
+              )}
               {article.trending && (
                 <Badge className="bg-primary text-black text-[10px] font-mono uppercase tracking-widest px-3 py-1 font-bold shadow-[0_0_15px_rgba(var(--primary),0.5)]">
                   <TrendingUp className="h-3 w-3 mr-1" /> Trending

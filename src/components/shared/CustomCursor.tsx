@@ -62,39 +62,29 @@ export const CustomCursor = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] mix-blend-difference">
-      {/* Inner Dot */}
+      {/* Simple Crosshair (+) Cursor */}
       <motion.div
         style={{ x: mouseX, y: mouseY }}
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"
-      />
-      
-      {/* Outer Ring */}
-      <motion.div
-        style={{ x: outerX, y: outerY }}
         animate={{
-          scale: isMouseDown ? 0.8 : isPointer ? 1.5 : 1,
-          opacity: 1,
+          scale: isMouseDown ? 0.9 : isPointer ? 1.4 : 1,
+          rotate: isPointer ? 90 : 0
         }}
-        className="fixed top-0 left-0 w-8 h-8 border border-white/50 rounded-full -translate-x-1/2 -translate-y-1/2"
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2"
       >
+        {/* Vertical Line */}
+        <div className="absolute w-[1.5px] h-4 bg-white -translate-x-1/2 -translate-y-1/2" />
+        {/* Horizontal Line */}
+        <div className="absolute w-4 h-[1.5px] bg-white -translate-x-1/2 -translate-y-1/2" />
+        
+        {/* Subtle Ring on hover */}
         {isPointer && (
           <motion.div 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute inset-0 border border-white/20 rounded-full animate-ping"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.2 }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-white"
           />
         )}
-      </motion.div>
-
-      {/* HUD Lines (Crosshair feel) */}
-      <motion.div
-        style={{ x: mouseX, y: mouseY }}
-        className="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 opacity-20"
-      >
-        <div className="absolute w-[2px] h-4 bg-white -top-6 left-0" />
-        <div className="absolute w-[2px] h-4 bg-white -bottom-0 left-0 translate-y-2" />
-        <div className="absolute w-4 h-[2px] bg-white -left-6 top-0" />
-        <div className="absolute w-4 h-[2px] bg-white -right-0 top-0 translate-x-2" />
       </motion.div>
     </div>
   );

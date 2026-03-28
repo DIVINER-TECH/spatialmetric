@@ -49,7 +49,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
         </CardHeader>
         <CardContent className="space-y-6 pt-6 relative z-10">
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-black/40 p-4 rounded-xl border border-white/10">
+            <div className="bg-secondary/50 dark:bg-muted/20 p-4 rounded-xl border border-black/5 dark:border-white/5">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Total Investment</p>
               <div className="text-2xl font-bold font-mono tracking-tighter text-primary">
                 <CountUp 
@@ -60,9 +60,9 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
                 />
               </div>
             </div>
-            <div className="bg-black/40 p-4 rounded-xl border border-white/10">
+            <div className="bg-secondary/50 dark:bg-muted/20 p-4 rounded-xl border border-black/5 dark:border-white/5">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Deal Count</p>
-              <div className="text-2xl font-bold font-mono tracking-tighter text-white">
+              <div className="text-2xl font-bold font-mono tracking-tighter text-foreground">
                 <CountUp value={region.dealCount} />
               </div>
             </div>
@@ -339,7 +339,7 @@ const MarketIntelligence = () => {
                     onRegionChange={setActiveRegion} 
                   />
 
-                  <div className="flex items-center gap-2 p-2 rounded-full bg-black/40 border border-white/5 w-fit mt-10">
+                  <div className="flex items-center gap-2 p-2 rounded-full bg-secondary/80 dark:bg-muted/20 border border-black/5 dark:border-white/5 w-fit mt-10">
                     {regionalData.map(region => (
                       <button
                         key={region.regionCode}
@@ -364,14 +364,14 @@ const MarketIntelligence = () => {
                     <CardContent className="pt-10">
                       <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
                         {selectedRegion.quarterlyData.map((q, i) => (
-                          <div key={i} className="group p-4 bg-black/20 rounded-xl border border-white/5 hover:border-primary/30 transition-all">
+                          <div key={i} className="group p-4 bg-secondary/30 dark:bg-muted/10 rounded-xl border border-black/5 dark:border-white/5 hover:border-primary/30 transition-all">
                             <div className="flex justify-between text-[10px] font-mono uppercase tracking-widest mb-3">
                               <span className="text-primary font-bold">{q.quarter}</span>
                               <span className="text-muted-foreground">DEALS: {q.deals}</span>
                             </div>
                             <div className="flex items-center gap-4">
-                              <span className="text-xl font-bold font-mono tracking-tighter">${q.investment}M</span>
-                              <Progress value={(q.investment / 1500) * 100} className="h-1.5 flex-1 bg-white/5" />
+                              <span className="text-xl font-bold font-mono tracking-tighter text-foreground">${q.investment}M</span>
+                              <Progress value={(q.investment / 1500) * 100} className="h-1.5 flex-1 bg-black/5 dark:bg-white/5" />
                             </div>
                           </div>
                         ))}

@@ -18,8 +18,8 @@
     
     --brand-yellow: 63 85% 52%; /* Preserve the original brand yellow for accents */
 
-    --secondary: 75 14% 96%;
-    --secondary-foreground: 75 20% 5%;
+    --secondary: 48 100% 92%; /* Soft Tech Yellow */
+    --secondary-foreground: 48 100% 15%;
 
     --muted: 75 14% 94%;
     --muted-foreground: 75 10% 40%;
@@ -62,8 +62,8 @@
     --background: 75 100% 4%;
     --foreground: 63 70% 98%;
 
-    --card: 75 80% 6%;
-    --card-foreground: 63 70% 98%;
+    --card: 75 40% 8%; /* Slightly darker for better light-text pop */
+    --card-foreground: 78 100% 90%;
 
     --popover: 75 80% 6%;
     --popover-foreground: 63 70% 95%;
@@ -140,7 +140,7 @@
   }
 
   .glass-premium {
-    @apply bg-white/70 backdrop-blur-2xl border border-black/5;
+    @apply bg-white/70 backdrop-blur-2xl border border-black/5 dark:bg-black/40 dark:border-white/10;
     box-shadow: 
       0 10px 40px -10px rgba(0,0,0,0.1),
       0 0 0 1px rgba(0,0,0,0.02);

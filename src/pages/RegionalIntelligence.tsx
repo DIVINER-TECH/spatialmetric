@@ -55,13 +55,13 @@ const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
               <Building2 className="h-3 w-3" /> Unicorns
             </p>
-            <p className="text-lg font-bold">{region.unicornCount}</p>
+            <p className="text-lg font-bold text-foreground">{region.unicornCount}</p>
           </div>
           <div className="space-y-1">
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
               <Users className="h-3 w-3" /> VCs
             </p>
-            <p className="text-lg font-bold">{region.activeVCs}</p>
+            <p className="text-lg font-bold text-foreground">{region.activeVCs}</p>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
 
         <div>
           <p className="text-[10px] text-muted-foreground mb-1.5">Key Players</p>
-          <p className="text-xs">{region.keyPlayers.slice(0, 4).join(', ')}</p>
+          <p className="text-xs text-foreground font-medium">{region.keyPlayers.slice(0, 4).join(', ')}</p>
         </div>
 
         <div>
@@ -188,9 +188,9 @@ const RegionalIntelligence = () => {
                     <TabsContent key={region.regionCode} value={region.regionCode} className="mt-0">
                       <div className="grid md:grid-cols-2 gap-8">
                         <RegionalCard region={region} />
-                        <Card className="bg-card/30 border-border/50">
-                          <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
-                            <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Quarterly Investment Trend (2025)</CardTitle>
+                        <Card className="glass-premium border-black/5 dark:bg-muted/10">
+                          <CardHeader className="pb-4 border-b border-black/5 bg-secondary/30 dark:bg-muted/20">
+                            <CardTitle className="text-[10px] font-mono uppercase tracking-widest text-foreground">Quarterly Investment Trend (2025)</CardTitle>
                           </CardHeader>
                           <CardContent className="pt-8">
                             <div className="space-y-6">
@@ -218,9 +218,9 @@ const RegionalIntelligence = () => {
               <div className="space-y-8">
                 <AIInsightsFeed />
                 
-                <Card className="bg-card/30 border-border/50">
-                  <CardHeader className="pb-4 border-b border-border/50 bg-muted/20">
-                    <CardTitle className="text-[10px] font-mono uppercase tracking-widest">Growth Ranking</CardTitle>
+                <Card className="glass-premium border-black/5 dark:bg-muted/10">
+                  <CardHeader className="pb-4 border-b border-black/5 bg-secondary/30 dark:bg-muted/20">
+                    <CardTitle className="text-[10px] font-mono uppercase tracking-widest text-foreground">Growth Ranking</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4 pt-6">
                     {regions

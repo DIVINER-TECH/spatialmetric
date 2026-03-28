@@ -238,7 +238,7 @@ const Dashboard = () => {
             <p className="text-muted-foreground max-w-2xl font-mono text-sm tracking-tight">Spatial computing market metrics, company analytics, and investment data. Real-time processing enabled.</p>
             <div className="flex items-center gap-4 mt-4">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] bg-muted/30 px-2 py-1 rounded border border-border/30">Last Snapshot: {lastUpdatedLabel}</p>
-              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] animate-pulse">System Status: Optimal</p>
+              <p className="text-[10px] font-mono text-primary font-bold uppercase tracking-[0.2em] animate-pulse">System Status: Optimal</p>
             </div>
           </div>
           <Button 
@@ -260,7 +260,7 @@ const Dashboard = () => {
                 <kpi.icon className="h-12 w-12 text-primary" />
               </div>
               <CardContent className="pt-8">
-                <div className="text-3xl font-bold mb-2 font-mono tracking-tighter group-hover:text-primary transition-colors">
+                <div className="text-3xl font-bold mb-2 font-mono tracking-tighter group-hover:text-primary transition-colors text-foreground">
                   <CountUp 
                     value={kpi.divisor ? kpi.raw / kpi.divisor : kpi.raw} 
                     prefix={kpi.prefix || ""} 
@@ -309,9 +309,9 @@ const Dashboard = () => {
                       <tr key={stock.ticker} className="hover:bg-primary/5 transition-all group cursor-pointer">
                         <td className="py-4 px-6 text-muted-foreground text-[10px]">{idx + 1}</td>
                         <td className="py-4 px-6 font-bold text-primary text-xs tracking-widest group-hover:translate-x-1 transition-transform">{stock.ticker}</td>
-                        <td className="py-4 px-6 font-medium text-xs uppercase tracking-tight">{stock.name}</td>
+                        <td className="py-4 px-6 font-medium text-xs uppercase tracking-tight text-foreground">{stock.name}</td>
                         <td className="py-4 px-6 text-muted-foreground hidden md:table-cell italic text-[10px] uppercase tracking-tighter">{stock.sector}</td>
-                        <td className="py-4 px-6 text-right text-xs font-bold">${stock.price.toFixed(2)}</td>
+                        <td className="py-4 px-6 text-right text-xs font-bold text-foreground">${stock.price.toFixed(2)}</td>
                         <td className={`py-4 px-6 text-right text-xs font-bold ${positive ? 'text-success' : 'text-destructive'}`}>
                           <span className="flex items-center justify-end gap-1">
                             {positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}

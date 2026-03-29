@@ -51,7 +51,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-secondary/50 dark:bg-muted/20 p-4 rounded-xl border border-black/5 dark:border-white/5">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-1">Total Investment</p>
-              <div className="text-2xl font-bold font-mono tracking-tighter text-primary">
+              <div className="text-2xl font-bold font-mono tracking-tighter text-primary-text">
                 <CountUp 
                   value={formatCurrencyValue(region.totalInvestment)} 
                   prefix="$" 
@@ -76,7 +76,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
             ].map((stat, i) => (
               <div key={i} className="text-center p-3 bg-black/[0.03] border border-black/5 rounded-xl">
                 <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mb-1">{stat.label}</p>
-                <p className="text-sm font-bold font-mono text-primary">{stat.val}</p>
+                <p className="text-sm font-bold font-mono text-primary-text">{stat.val}</p>
               </div>
             ))}
           </div>
@@ -249,7 +249,7 @@ const MarketIntelligence = () => {
                           ) : metric.status}
                         </div>
                         {metric.value !== 0 && metric.label === 'Market Velocity' && (
-                          <div className={`flex items-center gap-1 text-[10px] font-mono uppercase mt-2 ${metric.positive ? 'text-primary' : 'text-destructive'}`}>
+                          <div className={`flex items-center gap-1 text-[10px] font-mono uppercase mt-2 ${metric.positive ? 'text-primary-text' : 'text-destructive'}`}>
                             {metric.positive ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
                             {metric.value >= 0 ? '+' : ''}{metric.value.toFixed(2)}%
                           </div>
@@ -276,7 +276,7 @@ const MarketIntelligence = () => {
 
               <div className="flex items-center gap-2 px-6 py-2 rounded-full border border-primary/20 bg-primary/5">
                 <Globe className="h-4 w-4 text-primary animate-pulse" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-bold">Active Nodes: 124/124</span>
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary-text font-bold">Active Nodes: 124/124</span>
               </div>
             </div>
 

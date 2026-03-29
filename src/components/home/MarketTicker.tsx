@@ -36,7 +36,7 @@ export function MarketTicker() {
             className="flex items-center gap-6 px-8 py-4 border-r border-border/30 whitespace-nowrap group hover:bg-primary/5 transition-colors cursor-default"
           >
             <div className="flex flex-col">
-              <span className="font-mono font-bold text-primary text-sm tracking-tighter uppercase">{item.symbol}</span>
+              <span className="font-mono font-bold text-primary-text text-sm tracking-tighter uppercase">{item.symbol}</span>
               <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest group-hover:text-foreground transition-colors">{item.name}</span>
             </div>
             <div className="flex flex-col items-end">

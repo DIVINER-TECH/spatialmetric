@@ -38,7 +38,7 @@ const normalizeSnapshot = (row: Tables<"market_daily_snapshots">): MarketSnapsho
 
 const FALLBACK_DATA: MarketSnapshotData = {
   asOfDate: new Date().toISOString().split('T')[0],
-  provider: "static-fallback-v3",
+  provider: "EMULATED_FALLBACK_V3",
   indexSeries: [
     { date: "2026-03-20", value: 98.8 },
     { date: "2026-03-21", value: 100.2 },

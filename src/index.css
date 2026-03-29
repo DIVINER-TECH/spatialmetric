@@ -14,7 +14,8 @@
     --popover-foreground: 75 20% 5%;
 
     --primary: 63 85% 52%; /* Brand Neon Yellow */
-    --primary-foreground: 0 0% 100%;
+    --primary-text: 63 100% 20%; /* Dark Olive for high-contrast light mode text */
+    --primary-foreground: 75 20% 5%; /* Dark text on bright yellow buttons */
     
     --brand-yellow: 63 85% 52%; /* Preserve the original brand yellow for accents */
 
@@ -69,6 +70,7 @@
     --popover-foreground: 63 70% 95%;
 
     --primary: 63 85% 52%;
+    --primary-text: 63 85% 52%; /* Neon yellow for dark mode text */
     --primary-foreground: 75 100% 4%;
 
     --secondary: 75 40% 12%;

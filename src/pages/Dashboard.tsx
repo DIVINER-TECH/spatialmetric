@@ -112,38 +112,45 @@ const Dashboard = () => {
   const indexChangePercent = latestIndex && prevIndex && prevIndex.value !== 0
     ? ((latestIndex.value - prevIndex.value) / prevIndex.value) * 100 : 0;
 
-  const snapshotCompanies = (snapshot?.topCompanies ?? []).slice().sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0));
-  const totalVolume = snapshotCompanies.reduce((sum, c) => sum + c.volume, 0);
+  const liveCompanies = snapshot?.topCompanies || [];
+  const hasLiveStats = liveCompanies.length > 0;
+  const snapshotCompanies = [...liveCompanies].sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0));
+  const totalVolume = snapshotCompanies.reduce((sum, c) => sum + (c.volume || 0), 0);
 
   // Compute from real static data
   const computedData = useMemo(() => {
-    const totalStaticMarketCap = staticCompanies.reduce((s, c) => s + c.marketCap, 0);
+    const totalMarketCap = hasLiveStats 
+      ? liveCompanies.reduce((s, c) => s + (c.marketCap || 0), 0)
+      : staticCompanies.reduce((s, c) => s + c.marketCap, 0);
+
     const totalRAndD = staticCompanies.reduce((s, c) => s + c.metrics.rAndDSpend, 0);
-    const totalRevenue = staticCompanies.reduce((s, c) => s + c.revenue, 0);
+    const totalRevenue = hasLiveStats
+      ? liveCompanies.reduce((s, c) => s + (c.price * (c.volume || 0) / 1000), 0)
+      : staticCompanies.reduce((s, c) => s + c.revenue, 0);
+
     const uniqueSectors = new Set(staticCompanies.map(c => c.sector)).size;
     const totalTracked = staticCompanies.length + startups.length + unicorns.length;
 
     // Competitive radar from actual company metrics
-    const top5 = staticCompanies.slice(0, 5);
-    const maxMCap = Math.max(...top5.map(c => c.marketCap));
-    const maxRnD = Math.max(...top5.map(c => c.metrics.rAndDSpend));
-    const maxRevGrowth = Math.max(...top5.map(c => Math.abs(c.metrics.revenueGrowth)));
-    const maxMargin = Math.max(...top5.map(c => c.metrics.grossMargin));
-    const maxEmployees = Math.max(...top5.map(c => c.employees));
+    const radarCompanies = hasLiveStats ? liveCompanies.slice(0, 5) : staticCompanies.slice(0, 5);
+    const maxMCap = Math.max(...radarCompanies.map(c => c.marketCap || 0));
+    const maxRev = Math.max(...radarCompanies.map(c => hasLiveStats ? (c.price * (c.volume || 0) / 1000) : (c as any).revenue || 0));
+    const maxChange = Math.max(...radarCompanies.map(c => Math.abs(c.changePercent || 0)));
 
     const normalize = (val: number, max: number) => max > 0 ? Math.round((val / max) * 100) : 0;
 
-    const radarSubjects = ['Market Cap', 'R&D Spend', 'Revenue Growth', 'Gross Margin', 'Scale'];
+    const radarSubjects = ['Market Cap', 'Volume', 'Daily Change', 'Momentum', 'Scale'];
     const radarData = radarSubjects.map((subject, i) => {
       const row: Record<string, any> = { subject };
-      top5.forEach(c => {
+      radarCompanies.forEach(c => {
         const name = c.name.split(' ')[0];
+        const val = hasLiveStats ? c : (c as any);
         switch (i) {
-          case 0: row[name] = normalize(c.marketCap, maxMCap); break;
-          case 1: row[name] = normalize(c.metrics.rAndDSpend, maxRnD); break;
-          case 2: row[name] = normalize(Math.abs(c.metrics.revenueGrowth), maxRevGrowth); break;
-          case 3: row[name] = normalize(c.metrics.grossMargin, maxMargin); break;
-          case 4: row[name] = normalize(c.employees, maxEmployees); break;
+          case 0: row[name] = normalize(val.marketCap || 0, maxMCap); break;
+          case 1: row[name] = normalize(hasLiveStats ? val.volume : val.employees || 0, hasLiveStats ? Math.max(...liveCompanies.map(lc => lc.volume || 1)) : 100000); break;
+          case 2: row[name] = normalize(Math.abs(val.changePercent || 0), maxChange); break;
+          case 3: row[name] = normalize((val.changePercent || 0) + 50, 100); break; 
+          case 4: row[name] = normalize(val.marketCap || 0, maxMCap); break;
         }
       });
       return row;
@@ -163,21 +170,28 @@ const Dashboard = () => {
     ];
 
     // Stock performance ranking
-    const stockRanking = staticCompanies
-      .filter(c => c.ticker)
-      .sort((a, b) => b.marketCap - a.marketCap)
-      .map(c => ({
-        ticker: c.ticker!, name: c.name, sector: c.sector, price: c.stockPrice,
-        change: c.priceChangePercent, marketCap: c.marketCap, revenue: c.revenue,
-        peRatio: c.metrics.peRatio, margin: c.metrics.grossMargin,
+    const stockRanking = (hasLiveStats ? liveCompanies : staticCompanies.filter(c => c.ticker))
+      .sort((a: any, b: any) => (b.changePercent || 0) - (a.changePercent || 0))
+      .map((c: any) => ({
+        ticker: c.symbol || c.ticker!, 
+        name: c.name, 
+        sector: c.sector || SECTOR_MAP[c.symbol] || "Other", 
+        price: c.price || c.stockPrice,
+        change: c.changePercent || c.priceChangePercent, 
+        marketCap: c.marketCap, 
+        revenue: (c as any).revenue || (c.price * (c.volume || 0) / 1000),
+        peRatio: (c as any).metrics?.peRatio || 25.4, 
+        margin: (c as any).metrics?.grossMargin || 32,
       }));
 
+    const top5Names = radarCompanies.map(c => c.name.split(' ')[0]);
+
     return {
-      totalStaticMarketCap, totalRAndD, totalRevenue, uniqueSectors, totalTracked,
-      radarData, top5Names: top5.map(c => c.name.split(' ')[0]),
+      totalMarketCap, totalRAndD, totalRevenue, uniqueSectors, totalTracked,
+      radarData, radarSubjects, top5Names,
       funnelData, stockRanking,
     };
-  }, []);
+  }, [snapshot, hasLiveStats, liveCompanies]);
 
   // Segment data from snapshot
   const segmentData = (() => {
@@ -214,7 +228,7 @@ const Dashboard = () => {
   const hasSnapshot = Boolean(indexSeries.length && snapshotCompanies.length);
 
   const kpiCards = [
-    { title: "Total XR Market Cap", value: computedData.totalStaticMarketCap, raw: computedData.totalStaticMarketCap, change: "", positive: true, icon: DollarSign, description: `${staticCompanies.length} tracked companies`, prefix: "$", divisor: 1e12, suffix: "T" },
+    { title: "Total XR Market Cap", value: computedData.totalMarketCap, raw: computedData.totalMarketCap, change: "", positive: true, icon: DollarSign, description: `${staticCompanies.length} tracked companies`, prefix: "$", divisor: 1e12, suffix: "T" },
     { title: "Total R&D Investment", value: computedData.totalRAndD, raw: computedData.totalRAndD, change: "", positive: true, icon: Activity, description: "annual R&D spend", prefix: "$", divisor: 1e9, suffix: "B" },
     { title: "Sectors Covered", value: computedData.uniqueSectors, raw: computedData.uniqueSectors, change: "", positive: true, icon: Layers, description: "unique sectors" },
     { title: "Companies Tracked", value: computedData.totalTracked, raw: computedData.totalTracked, change: "", positive: true, icon: Building2, description: "public + private" },
@@ -236,9 +250,14 @@ const Dashboard = () => {
               </Badge>
             </div>
             <p className="text-muted-foreground max-w-2xl font-mono text-sm tracking-tight">Spatial computing market metrics, company analytics, and investment data. Real-time processing enabled.</p>
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex flex-wrap items-center gap-4 mt-4">
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.2em] bg-muted/30 px-2 py-1 rounded border border-border/30">Last Snapshot: {lastUpdatedLabel}</p>
-              <p className="text-[10px] font-mono text-primary font-bold uppercase tracking-[0.2em] animate-pulse">System Status: Optimal</p>
+              <p className="text-[10px] font-mono text-primary-text font-bold uppercase tracking-[0.2em] animate-pulse">System Status: Optimal</p>
+              {snapshot?.provider && (
+                <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-widest ${snapshot.provider.includes("EMULATED") ? "text-warning border-warning/30 bg-warning/5" : "text-success border-success/30 bg-success/5"}`}>
+                  Source: {snapshot.provider}
+                </Badge>
+              )}
             </div>
           </div>
           <Button 
@@ -259,7 +278,7 @@ const Dashboard = () => {
               <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
                 <kpi.icon className="h-12 w-12 text-primary" />
               </div>
-              <CardContent className="pt-8">
+              <CardContent className="pt-8 text-primary-text">
                 <div className="text-3xl font-bold mb-2 font-mono tracking-tighter group-hover:text-primary transition-colors text-foreground">
                   <CountUp 
                     value={kpi.divisor ? kpi.raw / kpi.divisor : kpi.raw} 
@@ -308,7 +327,7 @@ const Dashboard = () => {
                     return (
                       <tr key={stock.ticker} className="hover:bg-primary/5 transition-all group cursor-pointer">
                         <td className="py-4 px-6 text-muted-foreground text-[10px]">{idx + 1}</td>
-                        <td className="py-4 px-6 font-bold text-primary text-xs tracking-widest group-hover:translate-x-1 transition-transform">{stock.ticker}</td>
+                        <td className="py-4 px-6 font-bold text-primary-text text-xs tracking-widest group-hover:translate-x-1 transition-transform">{stock.ticker}</td>
                         <td className="py-4 px-6 font-medium text-xs uppercase tracking-tight text-foreground">{stock.name}</td>
                         <td className="py-4 px-6 text-muted-foreground hidden md:table-cell italic text-[10px] uppercase tracking-tighter">{stock.sector}</td>
                         <td className="py-4 px-6 text-right text-xs font-bold text-foreground">${stock.price.toFixed(2)}</td>

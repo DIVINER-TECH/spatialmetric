@@ -71,8 +71,14 @@ const fetchStooqSeries = async (symbol: string): Promise<DailyPoint[]> => {
 };
 
 const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=6mo`;
-  const res = await fetch(url);
+  const url = `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=6mo`;
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+      "Accept": "application/json",
+      "Referer": "https://finance.yahoo.com"
+    }
+  });
   if (!res.ok) throw new Error(`Yahoo fetch failed for ${symbol}: ${res.status}`);
   const data = await res.json();
   const result = data.chart.result[0];
@@ -87,8 +93,14 @@ const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
 };
 
 const fetchYahooQuotes = async (symbols: string[]): Promise<Map<string, { price: number; changePercent: number; volume: number; marketCap: number }>> => {
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`;
-  const res = await fetch(url);
+  const url = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`;
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+      "Accept": "application/json",
+      "Referer": "https://finance.yahoo.com"
+    }
+  });
   if (!res.ok) throw new Error(`Yahoo Quotes fetch failed: ${res.status}`);
   const data = await res.json();
   const quoteMap = new Map();
@@ -159,14 +171,19 @@ serve(async (req) => {
     if (!supabaseUrl || !serviceRoleKey) throw new Error("Supabase service role not configured");
     const supabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
 
-    let provider = (Deno.env.get("MARKET_DATA_PROVIDER") ?? "stooq").toLowerCase();
+    let provider = (Deno.env.get("MARKET_DATA_PROVIDER") ?? "yahoo").toLowerCase();
     const alphaKey = Deno.env.get("ALPHAVANTAGE_API_KEY") ?? "";
     if (provider === "alphavantage" && !alphaKey) provider = "stooq";
 
     const seriesList: TickerSeries[] = [];
+    const usedProviders: Record<string, string> = {};
+
     for (const ticker of TICKERS) {
+      let series: DailyPoint[] = [];
+      let usedProvider = provider;
+
+      // Try Preferred Provider
       try {
-        let series: DailyPoint[] = [];
         if (provider === "yahoo") {
           series = await fetchYahooSeries(ticker.providerSymbol?.yahoo ?? ticker.symbol);
         } else if (provider === "alphavantage") {
@@ -174,17 +191,21 @@ serve(async (req) => {
         } else {
           series = await fetchStooqSeries(ticker.providerSymbol?.stooq ?? ticker.symbol.toLowerCase());
         }
-        
-        if (series.length === 0) continue;
-        seriesList.push({ 
-          symbol: ticker.symbol, 
-          name: ticker.name, 
-          marketCap: ticker.marketCap, 
-          series,
-          providerSymbol: ticker.providerSymbol
-        });
       } catch (e) {
-        console.error(`Failed to fetch ${ticker.symbol}:`, e);
+        console.warn(`Preferred provider ${provider} failed for ${ticker.symbol}, falling back to stooq...`);
+        try {
+          series = await fetchStooqSeries(ticker.providerSymbol?.stooq ?? ticker.symbol.toLowerCase());
+          usedProvider = "stooq";
+        } catch (stooqErr) {
+          console.error(`All providers failed for ${ticker.symbol}:`, stooqErr);
+        }
+      }
+      
+      if (series.length > 0) {
+        seriesList.push({ 
+          symbol: ticker.symbol, name: ticker.name, marketCap: ticker.marketCap, series, providerSymbol: ticker.providerSymbol
+        });
+        usedProviders[ticker.symbol] = usedProvider;
       }
     }
 
@@ -194,7 +215,7 @@ serve(async (req) => {
       try {
         quoteMap = await fetchYahooQuotes(symbols);
       } catch (e) {
-        console.error("Failed to fetch Yahoo quotes:", e);
+        console.warn("Failed to fetch primary Yahoo quotes, individual ticker updates will rely on series data.");
       }
     }
 
@@ -224,7 +245,14 @@ serve(async (req) => {
       };
     });
 
-    const payload = { asOfDate, provider, indexSeries, topCompanies, fetchedAt: new Date().toISOString() };
+    const payload = { 
+      asOfDate, 
+      provider, 
+      providers_used: usedProviders,
+      indexSeries, 
+      topCompanies, 
+      fetchedAt: new Date().toISOString() 
+    };
     const { error } = await supabase.from("market_daily_snapshots").upsert({ as_of_date: asOfDate, data: payload, sources: { provider } }, { onConflict: "as_of_date" });
     if (error) throw error;
 

@@ -87,7 +87,7 @@ const RegionalCard = ({ region }: { region: RegionalMetrics }) => {
 
         <div>
           <p className="text-[10px] text-muted-foreground mb-1.5">Emerging Startups</p>
-          <p className="text-xs text-primary">{region.emergingStartups.slice(0, 3).join(', ')}</p>
+          <p className="text-xs text-primary-text font-bold">{region.emergingStartups.slice(0, 3).join(', ')}</p>
         </div>
       </CardContent>
     </Card>
@@ -198,7 +198,7 @@ const RegionalIntelligence = () => {
                                 <div key={i}>
                                   <div className="flex items-center justify-between mb-2">
                                     <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{q.quarter}</span>
-                                    <span className="text-xs font-bold font-mono text-primary">${q.investment}M</span>
+                                    <span className="text-xs font-bold font-mono text-primary-text">${q.investment}M</span>
                                   </div>
                                   <Progress 
                                     value={(q.investment / Math.max(...region.quarterlyData.map(d => d.investment))) * 100} 
@@ -229,9 +229,9 @@ const RegionalIntelligence = () => {
                         <div key={r.regionCode} className="flex items-center justify-between group">
                           <div className="flex items-center gap-3">
                             <span className="text-[10px] font-mono text-muted-foreground">0{i + 1}</span>
-                            <span className="text-[10px] font-mono uppercase tracking-widest group-hover:text-primary transition-colors">{r.region}</span>
+                            <span className="text-[10px] font-mono uppercase tracking-widest group-hover:text-primary-text transition-colors">{r.region}</span>
                           </div>
-                          <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-tighter ${r.yoyGrowth > 40 ? 'bg-success/10 text-success border-success/30' : 'bg-primary/10 text-primary border-primary/30'}`}>
+                          <Badge variant="outline" className={`text-[9px] font-mono uppercase tracking-tighter ${r.yoyGrowth > 40 ? 'bg-success/10 text-success border-success/30' : 'bg-primary/10 text-primary-text border-primary/30'}`}>
                             +{r.yoyGrowth}%
                           </Badge>
                         </div>

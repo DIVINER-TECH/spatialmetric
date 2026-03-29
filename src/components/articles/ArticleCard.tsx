@@ -45,7 +45,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
           <Card className="glass-premium hover:border-primary/50 transition-colors cursor-pointer h-full border-black/5 overflow-hidden group shadow-sm">
             <CardContent className="p-4 relative">
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-widest border-primary/30 text-primary">{categoryLabels[article.category]}</Badge>
+                <Badge variant="outline" className="text-[10px] font-mono uppercase tracking-widest border-primary/30 text-primary-text">{categoryLabels[article.category]}</Badge>
                 {article.trending && <TrendingUp className="h-3 w-3 text-primary animate-pulse" />}
               </div>
               <h4 className="font-bold font-mono text-sm uppercase tracking-tighter line-clamp-2 mb-2 leading-snug group-hover:text-primary transition-colors">
@@ -94,7 +94,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
 
             <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
               {article.category && (
-                <Badge variant="secondary" className="text-[10px] font-mono tracking-[0.2em] font-bold uppercase py-1 px-3 bg-white/80 backdrop-blur-md border-black/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                <Badge variant="secondary" className="text-[10px] font-mono tracking-[0.2em] font-bold uppercase py-1 px-3 bg-white/80 backdrop-blur-md border-black/5 text-primary-text group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   {categoryLabels[article.category]}
                 </Badge>
               )}
@@ -109,7 +109,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
           <CardHeader className="pb-2 pt-6 px-6 relative z-10">
             <div className="flex items-center gap-3">
               {article.region && (
-                <div className="flex items-center gap-1.5 text-[10px] font-mono text-primary uppercase tracking-widest font-bold">
+                <div className="flex items-center gap-1.5 text-[10px] font-mono text-primary-text uppercase tracking-widest font-bold">
                   <MapPin className="h-3.5 w-3.5" />
                   {article.region}
                 </div>
@@ -137,7 +137,7 @@ export const ArticleCard = ({ article, variant = 'default', index = 0 }: Article
             </div>
             <motion.div 
               whileHover={{ x: 5 }}
-              className="flex items-center gap-2 text-primary"
+              className="flex items-center gap-2 text-primary-text"
             >
               <span className="text-[10px] font-mono font-bold uppercase tracking-widest">Analyze</span>
               <TrendingUp className="h-3 w-3" />

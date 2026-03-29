@@ -382,9 +382,9 @@ const MarketIntelligence = () => {
 
                 <div className="space-y-10">
                   <AIInsightsFeed />
-                  <Card className="glass-premium border-black overflow-hidden shadow-2xl">
-                    <CardHeader className="pb-4 border-b border-black bg-black/40">
-                      <CardTitle className="text-[10px] font-mono uppercase tracking-[0.3em] font-bold">Node Connectivity</CardTitle>
+                  <Card className="glass-premium border-black/5 dark:bg-muted/10 overflow-hidden shadow-2xl">
+                    <CardHeader className="pb-4 border-b border-black/5 bg-secondary/30 dark:bg-muted/20">
+                      <CardTitle className="text-[10px] font-mono uppercase tracking-[0.3em] font-bold text-foreground">Node Connectivity</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
                       {regionalData.filter(r => r.regionCode !== 'global').map((region, i) => (
@@ -394,7 +394,7 @@ const MarketIntelligence = () => {
                           className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
                             activeRegion === region.regionCode 
                               ? 'bg-primary/20 border-primary shadow-[0_0_20px_rgba(var(--primary),0.1)]' 
-                              : 'bg-black/40 border-black hover:border-primary/20'
+                              : 'bg-secondary/50 dark:bg-muted/10 border-black/5 dark:border-white/10 hover:border-primary/20'
                           }`}
                           onClick={() => setActiveRegion(region.regionCode)}
                         >

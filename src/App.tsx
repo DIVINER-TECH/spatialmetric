@@ -1,3 +1,4 @@
+import React, { Component, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,7 +29,34 @@ import ApiAccess from "./pages/ApiAccess";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
+
+// === Error Boundary: prevents blank white pages on runtime errors ===
+interface ErrorBoundaryState { hasError: boolean; message: string; }
+class ErrorBoundary extends Component<{ children: React.ReactNode }, ErrorBoundaryState> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, message: error.message };
+  }
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[SpatialMetric] Uncaught error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a', color: '#fff', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚠</div>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Application Error</h1>
+          <p style={{ color: '#888', fontSize: '0.75rem', maxWidth: '480px', marginBottom: '1.5rem' }}>{this.state.message || 'An unexpected error occurred. Please refresh the page.'}</p>
+          <button onClick={() => window.location.reload()} style={{ background: '#c8ff00', color: '#000', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Reload Page</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const queryClient = new QueryClient();
 
@@ -36,6 +64,9 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   const mouseX = useSpring(0, { stiffness: 50, damping: 20 });
   const mouseY = useSpring(0, { stiffness: 50, damping: 20 });
+  // Derived transforms must be declared at hook level (not inside JSX)
+  const dotX = useTransform(mouseX, (v) => v * 1.5);
+  const dotY = useTransform(mouseY, (v) => v * 1.5);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
@@ -62,7 +93,7 @@ const AnimatedRoutes = () => {
         className="fixed inset-[-5%] bg-grid-dynamic opacity-[0.15] pointer-events-none z-0" 
       />
       <motion.div 
-        style={{ x: useTransform(mouseX, (v) => v * 1.5), y: useTransform(mouseY, (v) => v * 1.5) }}
+        style={{ x: dotX, y: dotY }}
         className="fixed inset-[-5%] bg-dot-subtle opacity-[0.05] pointer-events-none z-0" 
       />
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
@@ -113,15 +144,17 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AnimatedRoutes />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AnimatedRoutes />
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

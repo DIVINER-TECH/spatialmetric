@@ -3,12 +3,12 @@ import { Footer } from '@/components/layout/Footer';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { NewsCard } from '@/components/news/NewsCard';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
-import { useArticles } from '@/hooks/useArticles';
+import { useHybridArticles } from '@/hooks/useHybridArticles';
 import { useNewsItems } from '@/hooks/useNewsItems';
 import { Zap } from 'lucide-react';
 
 const SpatialUpdates = () => {
-  const { articles } = useArticles('spatial-updates');
+  const { articles } = useHybridArticles('spatial-updates');
   const { data: newsItems } = useNewsItems(24);
 
   return (

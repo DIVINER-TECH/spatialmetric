@@ -161,6 +161,10 @@
       linear-gradient(to bottom, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
     background-size: 60px 60px;
   }
+
+  .glow-text-subtle {
+    text-shadow: 0 0 15px hsl(var(--primary) / 0.3);
+  }
 }
 
 @keyframes marquee {
@@ -169,8 +173,8 @@
 }
 
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+  0% { top: -2px; }
+  100% { top: 100%; }
 }
 
 .animate-marquee {

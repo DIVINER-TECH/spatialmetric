@@ -61,9 +61,9 @@ export function LatestNewsFeed() {
               transition={{ delay: i * 0.1 }}
               className="block group relative"
             >
-              <Card className="glass-premium border-black bg-black/20 group-hover:bg-white/[0.03] transition-all duration-500 overflow-hidden">
+              <Card className="glass-premium group-hover:bg-white/[0.03] transition-all duration-500 overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
-                <CardContent className="p-8 flex items-start justify-between gap-8">
+                <CardContent className="p-5 md:p-6 flex items-start justify-between gap-6">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-4">
                       {item.source && (

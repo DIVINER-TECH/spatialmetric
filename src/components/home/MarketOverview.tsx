@@ -95,11 +95,11 @@ export function MarketOverview() {
           viewport={{ once: true }}
           className="lg:col-span-2"
         >
-          <Card className="glass-premium border-border overflow-hidden h-full group">
-            <CardHeader className="border-b border-border bg-secondary/40 p-6">
+          <Card className="glass-premium overflow-hidden h-full group">
+            <CardHeader className="border-b border-[hsl(var(--border-brand-dark)/0.2)] bg-secondary/40 p-4">
               <CardTitle className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] font-bold flex items-center gap-3">
-                  <Activity className="h-4 w-4 text-primary animate-pulse" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] font-bold flex items-center gap-2">
+                  <Activity className="h-3.5 w-3.5 text-primary animate-pulse" />
                   Performance Vector Matrix
                 </span>
                 <div className={`flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-secondary/80 border border-border/50 ${indexChangePercent >= 0 ? "text-primary" : "text-destructive"}`}>
@@ -175,15 +175,15 @@ export function MarketOverview() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
             >
-              <Card className="glass-premium border-border h-full group hover:bg-secondary/20 transition-colors relative overflow-hidden">
+              <Card className="glass-premium h-full group hover:bg-secondary/20 transition-colors relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <CardContent className="p-4 py-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/50 border border-border group-hover:border-primary/40 transition-all duration-500">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/50 border border-[hsl(var(--border-brand-dark)/0.2)] group-hover:border-primary/40 transition-all duration-500">
                       <stat.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                     </div>
                     {stat.change ? (
-                      <div className={`flex items-center gap-1 text-[9px] font-mono font-bold uppercase tracking-[0.2em] px-3 py-1 bg-secondary rounded-full border border-border ${stat.positive ? "text-primary shadow-[0_0_10px_rgba(var(--primary),0.2)]" : "text-destructive"}`}>
+                      <div className={`flex items-center gap-1 text-[9px] font-mono font-bold uppercase tracking-[0.2em] px-3 py-1 bg-secondary rounded-full border border-[hsl(var(--border-brand-dark)/0.2)] ${stat.positive ? "text-primary shadow-[0_0_10px_rgba(var(--primary),0.2)]" : "text-destructive"}`}>
                         {stat.positive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                         {stat.change}
                       </div>

@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, BarChart3, Globe, MapPin, RefreshCw, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, Globe, MapPin, RefreshCw, Activity, Loader2, ChevronDown } from 'lucide-react';
 import { regionalData, getRegionalComparison } from '@/data/regions';
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -112,7 +112,7 @@ const RegionalCard = ({ region }: { region: typeof regionalData[0] }) => {
 };
 
 const MarketIntelligence = () => {
-  const { articles: contentItems, isLoading: isLoadingArticles } = useHybridArticles('market-intelligence', 9);
+  const { articles: contentItems, isLoading: isLoadingArticles, hasMore, loadMore } = useHybridArticles('market-intelligence', 9);
   const { data: snapshot, isLoading: isLoadingSnapshot } = useMarketSnapshot();
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -294,6 +294,24 @@ const MarketIntelligence = () => {
                       ))
                     )}
                   </div>
+
+                  {hasMore && (
+                    <div className="flex justify-center pt-8">
+                      <Button 
+                        onClick={loadMore} 
+                        variant="outline" 
+                        disabled={isLoadingArticles}
+                        className="glass-premium border-primary/20 hover:border-primary px-10 h-14 rounded-full font-mono text-[10px] uppercase tracking-[0.2em] group"
+                      >
+                        {isLoadingArticles ? (
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 mr-2 group-hover:translate-y-1 transition-transform" />
+                        )}
+                        Load More Intelligence
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <motion.div 

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useContentItems, type ContentItem } from '@/hooks/useContentItems';
 import { articles, type Article } from '@/data/articles';
 
@@ -39,7 +39,9 @@ const transformContentItem = (item: ContentItem): Article => ({
     metrics: (item.metadata as any)?.metrics,
 });
 
-export const useHybridArticles = (category?: Article['category'], limit?: number) => {
+export const useHybridArticles = (category?: Article['category'], initialLimit: number = 6) => {
+    const [limit, setLimit] = useState(initialLimit);
+    
     // Get ALL AI-generated articles (not filtered by type) so tag-based filtering works
     const { data: contentItems, isLoading } = useContentItems('article', 50);
     // refetchInterval inherited from useContentItems
@@ -74,16 +76,21 @@ export const useHybridArticles = (category?: Article['category'], limit?: number
         merged.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
         // Apply limit if provided
-        if (limit) {
-            merged = merged.slice(0, limit);
-        }
+        const limited = merged.slice(0, limit);
 
-        return merged;
+        return {
+            all: merged,
+            limited
+        };
     }, [contentItems, category, limit]);
 
+    const loadMore = () => setLimit(prev => prev + 6);
+
     return {
-        articles: hybridArticles,
+        articles: hybridArticles.limited,
         isLoading,
-        total: hybridArticles.length,
+        total: hybridArticles.all.length,
+        hasMore: hybridArticles.all.length > limit,
+        loadMore
     };
 };

@@ -3,6 +3,7 @@ import { unicorns, type Unicorn } from '@/data/unicorns';
 import { startups, type Startup } from '@/data/startups';
 import { companies as publicCompanies, type Company } from '@/data/companies';
 import { TrackedCompany, CompanyType, CompanyRegion } from '@/types/company';
+import { useMarketSnapshot } from '@/hooks/useMarketSnapshot';
 
 const transformUnicorn = (unicorn: Unicorn): TrackedCompany => ({
     id: unicorn.id,
@@ -85,6 +86,7 @@ const transformPublicCompany = (company: Company): TrackedCompany => ({
 });
 
 export const useCompanyTracker = () => {
+    const { data: snapshot } = useMarketSnapshot();
     const [companyType, setCompanyType] = useState<CompanyType>('all');
     const [selectedRegion, setSelectedRegion] = useState<CompanyRegion>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -94,8 +96,30 @@ export const useCompanyTracker = () => {
         const unicornCompanies = unicorns.map(transformUnicorn);
         const startupCompanies = startups.map(transformStartup);
         const pubCompanies = publicCompanies.map(transformPublicCompany);
-        return [...pubCompanies, ...unicornCompanies, ...startupCompanies];
-    }, []);
+        
+        const merged = [...pubCompanies, ...unicornCompanies, ...startupCompanies];
+
+        // Merge live data if available
+        if (snapshot?.topCompanies) {
+            return merged.map(c => {
+                if (c.ticker) {
+                    const live = snapshot.topCompanies.find(tc => tc.symbol === c.ticker);
+                    if (live) {
+                        return {
+                            ...c,
+                            stockPrice: live.price,
+                            priceChangePercent: live.changePercent,
+                            marketCap: live.marketCap,
+                            valuation: live.marketCap ? live.marketCap / 1e6 : c.valuation
+                        };
+                    }
+                }
+                return c;
+            });
+        }
+
+        return merged;
+    }, [snapshot]);
 
     const filteredCompanies = useMemo(() => {
         let filtered = allCompanies;

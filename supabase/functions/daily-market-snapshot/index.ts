@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import yahooFinance from "npm:yahoo-finance2";
+
+// Disable validation to speed up and avoid issues with some Yahoo responses
+yahooFinance.setGlobalConfig({ validation: { logErrors: false } });
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,6 +45,8 @@ const TICKERS: TickerConfig[] = [
   { symbol: "KOPN", name: "Kopin", marketCap: 180000000, providerSymbol: { stooq: "kopn.us", yahoo: "KOPN" } },
   { symbol: "LAZR", name: "Luminar", marketCap: 1100000000, providerSymbol: { stooq: "lazr.us", yahoo: "LAZR" } },
   { symbol: "AEVA", name: "Aeva Technologies", marketCap: 600000000, providerSymbol: { stooq: "aeva.us", yahoo: "AEVA" } },
+  { symbol: "AMZN", name: "Amazon", marketCap: 1800000000000, providerSymbol: { stooq: "amzn.us", yahoo: "AMZN" } },
+  { symbol: "TSLA", name: "Tesla", marketCap: 600000000000, providerSymbol: { stooq: "tsla.us", yahoo: "TSLA" } },
 ];
 
 const toYYYYMMDD = (date: Date) => {
@@ -71,45 +77,26 @@ const fetchStooqSeries = async (symbol: string): Promise<DailyPoint[]> => {
 };
 
 const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
-  const url = `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=6mo`;
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-      "Accept": "application/json",
-      "Referer": "https://finance.yahoo.com"
-    }
-  });
-  if (!res.ok) throw new Error(`Yahoo fetch failed for ${symbol}: ${res.status}`);
-  const data = await res.json();
-  const result = data.chart.result[0];
-  const timestamps = result.timestamp;
-  const quotes = result.indicators.quote[0];
+  const result = await yahooFinance.chart(symbol, { period1: "6mo", interval: "1d" });
+  if (!result || !result.quotes) return [];
   
-  return timestamps.map((ts: number, i: number) => ({
-    date: new Date(ts * 1000).toISOString().split('T')[0],
-    close: Number(quotes.close[i]),
-    volume: Number(quotes.volume[i] ?? 0)
+  return result.quotes.map((q: any) => ({
+    date: q.date instanceof Date ? q.date.toISOString().split('T')[0] : q.date,
+    close: Number(q.close),
+    volume: Number(q.volume ?? 0)
   })).filter((p: any) => p.close !== null && !Number.isNaN(p.close));
 };
 
 const fetchYahooQuotes = async (symbols: string[]): Promise<Map<string, { price: number; changePercent: number; volume: number; marketCap: number }>> => {
-  const url = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(",")}`;
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-      "Accept": "application/json",
-      "Referer": "https://finance.yahoo.com"
-    }
-  });
-  if (!res.ok) throw new Error(`Yahoo Quotes fetch failed: ${res.status}`);
-  const data = await res.json();
+  const results = await yahooFinance.quote(symbols);
   const quoteMap = new Map();
-  data.quoteResponse.result.forEach((quote: any) => {
-    quoteMap.set(quote.symbol, {
-      price: quote.regularMarketPrice,
-      changePercent: quote.regularMarketChangePercent,
-      volume: quote.regularMarketVolume,
-      marketCap: quote.marketCap
+  
+  results.forEach((q: any) => {
+    quoteMap.set(q.symbol, {
+      price: q.regularMarketPrice,
+      changePercent: q.regularMarketChangePercent,
+      volume: q.regularMarketVolume,
+      marketCap: q.marketCap
     });
   });
   return quoteMap;

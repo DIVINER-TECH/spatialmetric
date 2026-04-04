@@ -38,6 +38,7 @@
     --warning-foreground: 0 0% 100%;
 
     --border: 75 13% 88%;
+    --border-brand-dark: 142 76% 15%; /* Tactical Dark Green */
     --input: 75 13% 88%;
     --ring: 63 85% 52%;
 
@@ -92,6 +93,7 @@
     --warning-foreground: 75 100% 4%;
 
     --border: 75 40% 14%;
+    --border-brand-dark: 142 80% 8%; /* Even darker for dark mode stroke */
     --input: 75 40% 14%;
     --ring: 63 85% 52%;
 
@@ -142,7 +144,7 @@
   }
 
   .glass-premium {
-    @apply bg-white/70 backdrop-blur-2xl border border-black/5 dark:bg-black/40 dark:border-white/10;
+    @apply bg-white/70 backdrop-blur-2xl border border-[hsl(var(--border-brand-dark)/0.2)] dark:bg-black/40 dark:border-[hsl(var(--border-brand-dark)/0.4)];
     box-shadow: 
       0 10px 40px -10px rgba(0,0,0,0.1),
       0 0 0 1px rgba(0,0,0,0.02);

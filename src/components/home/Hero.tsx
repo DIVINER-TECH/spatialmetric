@@ -18,14 +18,14 @@ export function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-black/5 bg-secondary/30">
+    <section className="relative overflow-hidden border-b border-black/5 bg-secondary/30 min-h-[160vh]">
       {/* HUD Background Flourish */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-primary/5 blur-[120px] rounded-full" />
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] border border-primary/10 rounded-full opacity-20 animate-pulse" />
       </div>
       
-      <div className="container relative pt-32 pb-24 md:pt-40 md:pb-32">
+      <div className="container relative pt-32 pb-24 md:pt-48 md:pb-40">
         <div className="max-w-6xl mx-auto text-center">
           {/* System Status HUD */}
           <motion.div 
@@ -113,12 +113,12 @@ export function Hero() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1 + (i * 0.1) }}
-                className="group relative p-8 glass-premium border-black/5 hover:border-primary/50 transition-all duration-500 overflow-hidden"
+                className="group relative p-4 py-6 glass-premium border-black/5 hover:border-primary/50 transition-all duration-500 overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
-                <div className="text-4xl font-bold font-mono text-primary tracking-tighter mb-2 group-hover:translate-x-1 transition-transform">{stat.val}</div>
-                <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.3em] font-bold group-hover:text-foreground transition-colors flex items-center gap-2">
-                  <stat.icon className="h-3 w-3" />
+                <div className="text-2xl font-bold font-mono text-primary tracking-tighter mb-1 group-hover:translate-x-1 transition-transform">{stat.val}</div>
+                <div className="text-[8px] font-mono text-muted-foreground uppercase tracking-[0.2em] font-bold group-hover:text-foreground transition-colors flex items-center gap-2">
+                  <stat.icon className="h-2.5 w-2.5" />
                   {stat.label}
                 </div>
               </motion.div>

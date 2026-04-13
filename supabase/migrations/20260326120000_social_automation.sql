@@ -84,11 +84,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- It also assumes a 'secrets' table or access to env vars which is usually handled via 
 -- standard Supabase webhook UI, but we can define it here for completeness if pg_net is enabled.
 
-/* 
 -- If applying via SQL Editor, ensure pg_net is enabled:
 CREATE EXTENSION IF NOT EXISTS pg_net;
 
 CREATE TRIGGER on_article_created
     AFTER INSERT ON public.content_items
     FOR EACH ROW EXECUTE FUNCTION public.trigger_social_copy_generation();
-*/

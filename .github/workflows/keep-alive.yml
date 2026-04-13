@@ -1,0 +1,17 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # Every day at 01:00 UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Pipeline
+        run: |
+          curl -X POST "https://${{ secrets.VITE_SUPABASE_PROJECT_ID }}.supabase.co/functions/v1/daily-pipeline" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+          -H "Content-Type: application/json" \
+          -d '{}'

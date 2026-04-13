@@ -1,7 +1,7 @@
 project_id = "wgvmfqkyksfyitmaehkl"
 
-[functions.generate-content]
-verify_jwt = false
+[functions.daily-pipeline]
+verify_jwt = true # Protected by Service Role from Keep-Alive workflow
 
 [functions.daily-market-snapshot]
 verify_jwt = false
@@ -10,4 +10,19 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.auto-content]
+verify_jwt = false
+
+[functions.generate-carousel-copy]
+verify_jwt = true
+
+[functions.social-publisher]
+verify_jwt = true
+
+[functions.canva-render-job]
+verify_jwt = true
+
+[functions.canva-webhook-handler]
+verify_jwt = false # Needs to be public for Canva webhooks
+
+[functions.generate-content]
 verify_jwt = false

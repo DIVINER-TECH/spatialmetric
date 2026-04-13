@@ -32,4 +32,7 @@ jobs:
           GROQ_API_SECRET: ${{ secrets.GROQ_API_SECRET }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
 
-      # Add deployment steps here (e.g., to Netlify, Vercel, or Supabase)
+      - name: Deploy Edge Functions
+        run: npx supabase functions deploy --project-ref ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

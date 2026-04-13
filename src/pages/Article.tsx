@@ -10,42 +10,9 @@ import { useArticle } from '@/hooks/useArticles';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { format } from 'date-fns';
 import { calculateReadingTime } from '@/lib/readingTime';
+import ArticleRenderer from '@/components/articles/ArticleRenderer';
 
-// Parse article content - convert markdown to HTML with structured insights
-const parseArticleContent = (content: string): string => {
-  return content
-    // Convert [INSIGHT]...[/INSIGHT] to styled blocks
-    .replace(/\[INSIGHT\](.*?)\[\/INSIGHT\]/gs, '<div class="insight-premium"><strong>Analyst Insight:</strong> $1</div>')
-    // Convert [NOTE]...[/NOTE] to styled blocks
-    .replace(/\[NOTE\](.*?)\[\/NOTE\]/gs, '<div class="note-premium"><strong>Strategic Note:</strong> $1</div>')
-    // Remove bold/italic markers completely for a cleaner look
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    // Convert headers
-    .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
-    // Convert blockquotes
-    .replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>')
-    // Convert numbered lists
-    .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>')
-    // Convert bullet points
-    .replace(/^- (.*?)$/gm, '<li>$1</li>')
-    // Remove any orphan # characters
-    .replace(/^#\s*$/gm, '')
-    // Convert paragraphs (double newlines)
-    .replace(/\n\n/g, '</p><p>')
-    // Convert single newlines in remaining text
-    .replace(/\n/g, '<br/>')
-    // Wrap in paragraph tags
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>')
-    // Clean up empty paragraphs
-    .replace(/<p><\/p>/g, '')
-    .replace(/<p><br\/><\/p>/g, '')
-    // Clean up paragraph wrapping around headers and custom blocks
-    .replace(/<p>(<(h[23]|div|blockquote))/g, '$1')
-    .replace(/(<\/(h[23]|div|blockquote)>)<\/p>/g, '$1');
-};
+
 
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -148,21 +115,7 @@ const Article = () => {
           </Card>
 
           {/* Content */}
-          <div 
-            className="prose prose-base max-w-none mb-12 
-              [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tighter [&_h2]:uppercase [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:text-foreground
-              [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-4 [&_h3]:text-primary
-              [&_p]:text-base [&_p]:leading-8 [&_p]:mb-6 [&_p]:text-foreground/80
-              [&_li]:text-base [&_li]:leading-8 [&_li]:mb-2 [&_li]:text-foreground/80
-              [&_blockquote]:text-lg [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:my-8 [&_blockquote]:text-primary/80
-              [&_.insight-premium]:p-6 [&_.insight-premium]:bg-primary/5 [&_.insight-premium]:border [&_.insight-premium]:border-primary/20 [&_.insight-premium]:rounded-2xl [&_.insight-premium]:my-10 [&_.insight-premium]:text-base [&_.insight-premium]:leading-8 [&_.insight-premium]:relative
-              [&_.insight-premium]:before:content-[''] [&_.insight-premium]:before:absolute [&_.insight-premium]:before:left-0 [&_.insight-premium]:before:top-0 [&_.insight-premium]:before:bottom-0 [&_.insight-premium]:before:w-1 [&_.insight-premium]:before:bg-primary
-              [&_.note-premium]:p-6 [&_.note-premium]:bg-secondary/30 [&_.note-premium]:border [&_.note-premium]:border-black/5 [&_.note-premium]:rounded-2xl [&_.note-premium]:my-10 [&_.note-premium]:text-base [&_.note-premium]:leading-8 [&_.note-premium]:italic
-            " 
-            dangerouslySetInnerHTML={{ 
-              __html: parseArticleContent(article.content)
-            }} 
-          />
+          <ArticleRenderer content={article.content} />
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-8">

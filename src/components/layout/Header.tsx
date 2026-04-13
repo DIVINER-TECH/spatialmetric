@@ -50,10 +50,10 @@ export function Header() {
 
   return (
     <header 
-      className={`absolute top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
+      className={`sticky top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
         scrolled 
-          ? "bg-background/60 backdrop-blur-2xl border-primary/20 py-2" 
-          : "bg-background/0 border-transparent py-4"
+          ? "bg-background/80 backdrop-blur-2xl border-primary/20 py-2" 
+          : "bg-background/40 backdrop-blur-md border-transparent py-4"
       }`}
     >
       <div className="absolute inset-0 bg-grid-subtle opacity-20 pointer-events-none" />

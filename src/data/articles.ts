@@ -58,15 +58,22 @@ The shift from hardware-only focus to ecosystem-first investment is the primary 
 
 The spatial computing market has undergone a fundamental restructuring since Vision Pro 2's announcement. Total addressable market projections have been revised upward to $142 billion by 2028, representing a 23% increase from pre-launch estimates. Apple's market share in the premium segment now stands at 67%, up from 41% with the first-generation device.
 
-Enterprise adoption has emerged as the primary growth driver. According to a recent survey by Deloitte, 78% of Fortune 500 companies have either deployed or are actively piloting Vision Pro 2 for workplace applications. "We're seeing the fastest enterprise technology adoption cycle since the smartphone," notes Jennifer Martinez, Partner at McKinsey Digital. "Companies that delayed XR investment are now accelerating timelines by 18-24 months."
+:::metrics
+Market TAM: $142B
+Growth: 23%
+Market Share: 67%
+Adopt Rate: 78%
+:::
 
-The healthcare sector has been particularly aggressive. Cleveland Clinic reported a 45% reduction in surgical training time using Vision Pro 2's volumetric visualization capabilities. Similar results have emerged from Johns Hopkins, Mayo Clinic, and Kaiser Permanente. The medical XR software market is projected to reach $8.7 billion by 2027, with Apple capturing an estimated 52% of the premium tier.
+Enterprise adoption has emerged as the primary growth driver. According to a recent survey by **Deloitte**, **78%** of Fortune 500 companies have either deployed or are actively piloting Vision Pro 2 for workplace applications. "We're seeing the fastest enterprise technology adoption cycle since the smartphone," notes **Jennifer Martinez**, Partner at McKinsey Digital. "Companies that delayed XR investment are now accelerating timelines by 18-24 months."
+
+The healthcare sector has been particularly aggressive. **Cleveland Clinic** reported a 45% reduction in surgical training time using Vision Pro 2's volumetric visualization capabilities. Similar results have emerged from **Johns Hopkins**, **Mayo Clinic**, and **Kaiser Permanente**. The medical XR software market is projected to reach **$8.7 billion** by 2027, with Apple capturing an estimated **52%** of the premium tier.
 
 ## Competitive Response and Market Dynamics
 
-Meta has responded with an aggressive pivot toward its enterprise-focused Quest Pro 2, scheduled for Q1 2026 with a $1,499 price point. The company has committed $3.2 billion to enterprise software development and recently acquired Spatial Computing Solutions, a B2B workflow platform, for $890 million.
+Meta has responded with an aggressive pivot toward its enterprise-focused **Quest Pro 2**, scheduled for Q1 2026 with a **$1,499** price point. The company has committed **$3.2 billion** to enterprise software development and recently acquired **Spatial Computing Solutions**, a B2B workflow platform, for **$890 million**.
 
-Samsung's Android XR partnership with Google has gained momentum. The Galaxy Vision headset, launching February 2026, will be the first major Android XR device. Initial developer reception has been positive, with 2,400 applications already committed for launch. However, analysts at Morgan Stanley project Android XR will capture only 18% of the premium market by 2027.
+Samsung's Android XR partnership with Google has gained momentum. The **Galaxy Vision** headset, launching February 2026, will be the first major Android XR device. Initial developer reception has been positive, with **2,400** applications already committed for launch. However, analysts at Morgan Stanley project Android XR will capture only **18%** of the premium market by 2027.
 
 Chinese manufacturers have accelerated their efforts. Huawei's HarmonyOS XR platform now supports 4,200 applications, primarily targeting domestic enterprise and education markets. Xiaomi and Oppo have both announced mixed reality devices for 2026, with aggressive pricing expected between $800 and $1,200.
 
@@ -78,9 +85,9 @@ Vertical integration remains Apple's strongest moat. By controlling the Micro-OL
 
 Apple's vertical integration strategy has created significant competitive moats. The company's exclusive partnership with Sony for micro-OLED displays continues through 2027, with $1.8 billion in committed capacity. TSMC's 3nm production for the M4 chip has expanded specifically for Vision Pro volumes, with Apple representing 23% of 3nm capacity allocation.
 
-Key supply chain beneficiaries include Luxshare Precision, which saw XR revenue increase 156% year-over-year to $2.1 billion. Lens supplier Largan Precision reported record margins of 34.2% on Vision Pro components. Display driver IC manufacturer Novatek has doubled XR-related revenue to $340 million.
+Key supply chain beneficiaries include **Luxshare Precision**, which saw XR revenue increase **156%** year-over-year to **$2.1 billion**. Lens supplier **Largan Precision** reported record margins of **34.2%** on Vision Pro components. Display driver IC manufacturer **Novatek** has doubled XR-related revenue to **$340 million**.
 
-"The supply chain for spatial computing has matured significantly," observes David Chen, Managing Director at Bernstein Research. "We're now seeing the economies of scale that enable meaningful price reductions while maintaining margins."
+"The supply chain for spatial computing has matured significantly," observes **David Chen**, Managing Director at Bernstein Research. "We're now seeing the economies of scale that enable meaningful price reductions while maintaining margins."
 
 ## Investment Implications
 
@@ -141,6 +148,14 @@ European investment reached $3.31 billion, growing 41.5% year-over-year. Germany
 Asia Pacific attracted $4.79 billion in XR investment. Japan and South Korea combined for $2.14 billion, primarily in hardware components and display technology. China's domestic XR market saw $1.82 billion in funding despite geopolitical headwinds, while Southeast Asia's ASEAN region grew 52% to $1.83 billion with Singapore emerging as the regional hub.
 
 The MENA region demonstrated the fastest percentage growth at 78.4%, reaching $1.24 billion. Saudi Arabia's Vision 2030 initiative and UAE's digitization efforts have created substantial government-backed investment flows. South Asia, led by India, attracted $890 million, with education and healthcare applications dominating deal flow.
+
+:::chart
+North America: 8.47
+Asia Pacific: 4.79
+Europe: 3.31
+ASEAN: 1.83
+MENA: 1.24
+:::
 
 ## Sector Analysis and Trends
 

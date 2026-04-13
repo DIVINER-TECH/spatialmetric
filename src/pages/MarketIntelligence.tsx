@@ -162,29 +162,31 @@ const MarketIntelligence = () => {
     <div className="min-h-screen flex flex-col relative">
       <Header />
       
-      <main className="flex-1 relative z-10 px-4 md:px-8">
+      <main className="flex-1 relative z-10">
         {/* HUD Sub-Navigation/Header */}
-        <section className="py-12 relative">
+        <section className="pt-16 pb-12 px-4 md:px-8 relative overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-1/2 h-full bg-primary/5 blur-[120px] pointer-events-none -z-10" />
+          
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12"
           >
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  className="h-14 w-14 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center"
+                  className="h-16 w-16 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center bg-primary/5 backdrop-blur-sm"
                 >
-                  <BarChart3 className="h-6 w-6 text-primary" />
+                  <BarChart3 className="h-8 w-8 text-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]" />
                 </motion.div>
                 <div>
-                  <h1 className="text-5xl font-bold font-mono tracking-tighter uppercase leading-none">
+                  <h1 className="text-5xl md:text-6xl font-black font-mono tracking-tighter uppercase leading-none text-foreground">
                     Intelligence<span className="text-primary">.OS</span>
                   </h1>
-                  <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.5em] mt-2">
-                    Spatial Computing & Metaverse Market Analytics
+                  <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.6em] mt-3">
+                    Terminal Access // Global Market Analytics v2.0
                   </p>
                 </div>
               </div>
@@ -264,7 +266,7 @@ const MarketIntelligence = () => {
         </section>
 
         {/* Intelligence Grid */}
-        <section className="py-20 border-t border-black">
+        <section className="py-20 px-4 md:px-8 border-t border-black">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex items-center justify-between mb-16 flex-wrap gap-6">
               <TabsList className="bg-white/50 backdrop-blur-md border border-black/5 p-1.5 rounded-full scale-110 origin-left shadow-sm">

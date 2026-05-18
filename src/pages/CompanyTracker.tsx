@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useCompanyTracker } from '@/hooks/useCompanyTracker';
 import { TrackedCompany } from '@/types/company';
+import type { CompanyRegion } from '@/types/company';
 import { format } from 'date-fns';
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -432,7 +433,7 @@ const CompanyTracker = () => {
                       key={code}
                       variant={selectedRegion === code ? 'default' : 'outline'}
                       className="cursor-pointer text-[10px] font-mono uppercase tracking-tighter px-3 py-1"
-                      onClick={() => setSelectedRegion(code as any)}
+                      onClick={() => setSelectedRegion(code as CompanyRegion)}
                     >
                       {label}
                     </Badge>

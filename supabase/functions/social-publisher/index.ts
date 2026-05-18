@@ -22,7 +22,7 @@ serve(async (req) => {
     const { post_id } = await req.json();
 
     const { data: post, error: postError } = await supabase
-        .from("social_posts" as any)
+        .from("social_posts")
         .select("*, content_items(*)")
         .eq("id", post_id)
         .single();
@@ -51,7 +51,7 @@ serve(async (req) => {
     // In reality, fetch Meta token and call POST /v1/media/carousel
     
     // 4. Update status to 'published'
-    await supabase.from("social_posts" as any).update({ 
+    await supabase.from("social_posts").update({ 
         status: 'published',
         live_urls: { linkedin: "https://linkedin.com/posts/placeholder", instagram: "https://instagram.com/p/placeholder" }
     }).eq("id", post_id);

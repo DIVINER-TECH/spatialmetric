@@ -6,6 +6,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+type CarouselSlide = {
+    headline?: string;
+    body?: string;
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -26,7 +31,7 @@ serve(async (req) => {
 
     // 1. Fetch the Social Post and Canva Token
     const { data: post, error: postError } = await supabase
-        .from("social_posts" as any)
+        .from("social_posts")
         .select("*, content_items(*)")
         .eq("id", post_id)
         .single();
@@ -34,7 +39,7 @@ serve(async (req) => {
     if (postError || !post) throw new Error("Could not find social post record");
 
     const { data: canvaInt, error: canvaError } = await supabase
-        .from("integrations" as any)
+        .from("integrations")
         .select("*")
         .eq("platform", "canva")
         .single();
@@ -46,10 +51,10 @@ serve(async (req) => {
     // 2. Prepare Canva Autofill Payload
     // This is a template-specific mapping. 
     // Usually you define which fields in Canva match which slide body.
-    const slides = post.carousel_copy || [];
+    const slides = (Array.isArray(post.carousel_copy) ? post.carousel_copy : []) as CarouselSlide[];
     const dataset = {
         // Example mapping: Slide1_Title, Slide1_Body, etc.
-        ...slides.reduce((acc: any, slide: any, idx: number) => {
+        ...slides.reduce<Record<string, { text: string }>>((acc, slide, idx) => {
             acc[`Slide${idx+1}_Headline`] = { text: slide.headline };
             acc[`Slide${idx+1}_Body`] = { text: slide.body };
             return acc;
@@ -82,7 +87,7 @@ serve(async (req) => {
 
     // 4. Update status to 'rendering'
     await supabase
-        .from("social_posts" as any)
+        .from("social_posts")
         .update({ status: 'rendering', canva_job_id: job.id })
         .eq("id", post_id);
 

@@ -18,6 +18,14 @@ type TickerConfig = {
 };
 
 type DailyPoint = { date: string; close: number; volume: number };
+type YahooChartQuote = { date: Date | string; close: number | null; volume?: number | null };
+type YahooQuote = {
+  symbol: string;
+  regularMarketPrice?: number;
+  regularMarketChangePercent?: number;
+  regularMarketVolume?: number;
+  marketCap?: number;
+};
 type TickerSeries = { 
   symbol: string; 
   name: string; 
@@ -80,23 +88,23 @@ const fetchYahooSeries = async (symbol: string): Promise<DailyPoint[]> => {
   const result = await yahooFinance.chart(symbol, { period1: "6mo", interval: "1d" });
   if (!result || !result.quotes) return [];
   
-  return result.quotes.map((q: any) => ({
+  return (result.quotes as YahooChartQuote[]).map((q) => ({
     date: q.date instanceof Date ? q.date.toISOString().split('T')[0] : q.date,
     close: Number(q.close),
     volume: Number(q.volume ?? 0)
-  })).filter((p: any) => p.close !== null && !Number.isNaN(p.close));
+  })).filter((p) => p.close !== null && !Number.isNaN(p.close));
 };
 
 const fetchYahooQuotes = async (symbols: string[]): Promise<Map<string, { price: number; changePercent: number; volume: number; marketCap: number }>> => {
-  const results = await yahooFinance.quote(symbols);
+  const results = await yahooFinance.quote(symbols) as YahooQuote[];
   const quoteMap = new Map();
   
-  results.forEach((q: any) => {
+  results.forEach((q) => {
     quoteMap.set(q.symbol, {
-      price: q.regularMarketPrice,
-      changePercent: q.regularMarketChangePercent,
-      volume: q.regularMarketVolume,
-      marketCap: q.marketCap
+      price: q.regularMarketPrice ?? 0,
+      changePercent: q.regularMarketChangePercent ?? 0,
+      volume: q.regularMarketVolume ?? 0,
+      marketCap: q.marketCap ?? 0
     });
   });
   return quoteMap;

@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMarketSnapshot } from "@/hooks/useMarketSnapshot";
+import type { MarketCompany } from "@/hooks/useMarketSnapshot";
 import { useNewsItems } from "@/hooks/useNewsItems";
 import { companies as staticCompanies } from "@/data/companies";
+import type { TrackedCompany } from "@/types/company";
 import { startups } from "@/data/startups";
 import { unicorns } from "@/data/unicorns";
 import {
@@ -79,6 +81,22 @@ const formatAxisDate = (value: string) => {
   return format(parsed, "MMM d");
 };
 
+type DashboardCompany = Partial<TrackedCompany> & Partial<MarketCompany> & {
+  name: string;
+  sector?: string;
+  symbol?: string;
+};
+
+type RadarRow = { subject: string } & Record<string, string | number>;
+
+const getCompanyRevenue = (company: DashboardCompany) => {
+  return company.revenue ?? ((company.price ?? 0) * (company.volume ?? 0) / 1000);
+};
+
+const getCompanyChangePercent = (company: DashboardCompany) => {
+  return company.changePercent ?? company.priceChangePercent ?? 0;
+};
+
 const Dashboard = () => {
   const { data: snapshot, isLoading: isSnapshotLoading } = useMarketSnapshot();
   const { data: newsItems } = useNewsItems(5);
@@ -112,7 +130,7 @@ const Dashboard = () => {
   const indexChangePercent = latestIndex && prevIndex && prevIndex.value !== 0
     ? ((latestIndex.value - prevIndex.value) / prevIndex.value) * 100 : 0;
 
-  const liveCompanies = snapshot?.topCompanies || [];
+  const liveCompanies = useMemo(() => snapshot?.topCompanies ?? [], [snapshot?.topCompanies]);
   const hasLiveStats = liveCompanies.length > 0;
   const snapshotCompanies = [...liveCompanies].sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0));
   const totalVolume = snapshotCompanies.reduce((sum, c) => sum + (c.volume || 0), 0);
@@ -132,25 +150,23 @@ const Dashboard = () => {
     const totalTracked = staticCompanies.length + startups.length + unicorns.length;
 
     // Competitive radar from actual company metrics
-    const radarCompanies = hasLiveStats ? liveCompanies.slice(0, 5) : staticCompanies.slice(0, 5);
+    const radarCompanies: DashboardCompany[] = hasLiveStats ? liveCompanies.slice(0, 5) : staticCompanies.slice(0, 5);
     const maxMCap = Math.max(...radarCompanies.map(c => c.marketCap || 0));
-    const maxRev = Math.max(...radarCompanies.map(c => hasLiveStats ? (c.price * (c.volume || 0) / 1000) : (c as any).revenue || 0));
-    const maxChange = Math.max(...radarCompanies.map(c => Math.abs(c.changePercent || 0)));
+    const maxChange = Math.max(...radarCompanies.map(c => Math.abs(getCompanyChangePercent(c))));
 
     const normalize = (val: number, max: number) => max > 0 ? Math.round((val / max) * 100) : 0;
 
     const radarSubjects = ['Market Cap', 'Volume', 'Daily Change', 'Momentum', 'Scale'];
     const radarData = radarSubjects.map((subject, i) => {
-      const row: Record<string, any> = { subject };
+      const row: RadarRow = { subject };
       radarCompanies.forEach(c => {
         const name = c.name.split(' ')[0];
-        const val = hasLiveStats ? c : (c as any);
         switch (i) {
-          case 0: row[name] = normalize(val.marketCap || 0, maxMCap); break;
-          case 1: row[name] = normalize(hasLiveStats ? val.volume : val.employees || 0, hasLiveStats ? Math.max(...liveCompanies.map(lc => lc.volume || 1)) : 100000); break;
-          case 2: row[name] = normalize(Math.abs(val.changePercent || 0), maxChange); break;
-          case 3: row[name] = normalize((val.changePercent || 0) + 50, 100); break; 
-          case 4: row[name] = normalize(val.marketCap || 0, maxMCap); break;
+          case 0: row[name] = normalize(c.marketCap || 0, maxMCap); break;
+          case 1: row[name] = normalize(hasLiveStats ? c.volume ?? 0 : c.employees || 0, hasLiveStats ? Math.max(...liveCompanies.map(lc => lc.volume || 1)) : 100000); break;
+          case 2: row[name] = normalize(Math.abs(getCompanyChangePercent(c)), maxChange); break;
+          case 3: row[name] = normalize(getCompanyChangePercent(c) + 50, 100); break; 
+          case 4: row[name] = normalize(c.marketCap || 0, maxMCap); break;
         }
       });
       return row;
@@ -170,18 +186,18 @@ const Dashboard = () => {
     ];
 
     // Stock performance ranking
-    const stockRanking = (hasLiveStats ? liveCompanies : staticCompanies.filter(c => c.ticker))
-      .sort((a: any, b: any) => (b.changePercent || 0) - (a.changePercent || 0))
-      .map((c: any) => ({
-        ticker: c.symbol || c.ticker!, 
+    const stockRanking = ((hasLiveStats ? liveCompanies : staticCompanies.filter(c => c.ticker)) as DashboardCompany[])
+      .sort((a, b) => getCompanyChangePercent(b) - getCompanyChangePercent(a))
+      .map((c) => ({
+        ticker: c.symbol || c.ticker || "", 
         name: c.name, 
-        sector: c.sector || SECTOR_MAP[c.symbol] || "Other", 
-        price: c.price || c.stockPrice,
-        change: c.changePercent || c.priceChangePercent, 
+        sector: c.sector || SECTOR_MAP[c.symbol ?? ""] || "Other", 
+        price: c.price || c.stockPrice || 0,
+        change: getCompanyChangePercent(c), 
         marketCap: c.marketCap, 
-        revenue: (c as any).revenue || (c.price * (c.volume || 0) / 1000),
-        peRatio: (c as any).metrics?.peRatio || 25.4, 
-        margin: (c as any).metrics?.grossMargin || 32,
+        revenue: getCompanyRevenue(c),
+        peRatio: c.metrics?.peRatio || 25.4, 
+        margin: c.metrics?.grossMargin || 32,
       }));
 
     const top5Names = radarCompanies.map(c => c.name.split(' ')[0]);
@@ -191,7 +207,7 @@ const Dashboard = () => {
       radarData, radarSubjects, top5Names,
       funnelData, stockRanking,
     };
-  }, [snapshot, hasLiveStats, liveCompanies]);
+  }, [hasLiveStats, liveCompanies]);
 
   // Segment data from snapshot
   const segmentData = (() => {

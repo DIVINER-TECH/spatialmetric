@@ -27,7 +27,7 @@ serve(async (req) => {
     if (!jobId) throw new Error("Missing job_id in webhook");
 
     const { data: post, error: postError } = await supabase
-        .from("social_posts" as any)
+        .from("social_posts")
         .select("*")
         .eq("canva_job_id", jobId)
         .single();
@@ -35,7 +35,7 @@ serve(async (req) => {
     if (postError || !post) throw new Error(`Could not find post for Canva Job ${jobId}`);
 
     if (status === 'failure') {
-        await supabase.from("social_posts" as any).update({ status: 'failed', error_log: 'Canva rendering failed' }).eq("id", post.id);
+        await supabase.from("social_posts").update({ status: 'failed', error_log: 'Canva rendering failed' }).eq("id", post.id);
         return new Response(JSON.stringify({ success: false }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
@@ -44,7 +44,7 @@ serve(async (req) => {
     // Then call GET /v1/exports to get the images.
     // For this stub, we assume success and move to 'rendered'
     
-    await supabase.from("social_posts" as any).update({ 
+    await supabase.from("social_posts").update({ 
         status: 'rendered',
         // In reality, asset_urls would be populated by downloading the exports
         asset_urls: ['https://placeholder.com/slide1.jpg'] 

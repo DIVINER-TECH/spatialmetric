@@ -14,6 +14,29 @@ type ParsedItem = {
   publishedAt?: string;
 };
 
+type RssItem = {
+  title?: string;
+  link?: string;
+  description?: string;
+  pubDate?: string;
+};
+
+type AtomLink = string | { href?: string };
+
+type AtomEntry = {
+  title?: string;
+  link?: AtomLink | AtomLink[];
+  summary?: string;
+  content?: string;
+  updated?: string;
+  published?: string;
+};
+
+type ParsedFeed = {
+  rss?: { channel?: { item?: RssItem | RssItem[] } };
+  feed?: { entry?: AtomEntry | AtomEntry[] };
+};
+
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: "",
@@ -25,7 +48,7 @@ const normalizeSummary = (value?: string) => {
   return cleaned.slice(0, 280);
 };
 
-const parseRss = (feed: any): ParsedItem[] => {
+const parseRss = (feed: ParsedFeed): ParsedItem[] => {
   const items = feed?.rss?.channel?.item ?? [];
   const list = Array.isArray(items) ? items : [items];
   return list
@@ -38,7 +61,7 @@ const parseRss = (feed: any): ParsedItem[] => {
     .filter((item) => item.title && item.url);
 };
 
-const parseAtom = (feed: any): ParsedItem[] => {
+const parseAtom = (feed: ParsedFeed): ParsedItem[] => {
   const entries = feed?.feed?.entry ?? [];
   const list = Array.isArray(entries) ? entries : [entries];
   return list

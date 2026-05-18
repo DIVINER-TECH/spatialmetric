@@ -14,6 +14,25 @@ type NewsItem = {
   source?: { name?: string } | null;
 };
 
+type SupabaseStorageClient = {
+  storage: {
+    from: (bucket: string) => {
+      upload: (path: string, body: Blob, options: { contentType: string }) => Promise<{ error: unknown }>;
+      getPublicUrl: (path: string) => { data: { publicUrl: string } };
+    };
+  };
+};
+
+type ContentInsert = {
+  type: string;
+  title: string;
+  excerpt: string | null;
+  content: string | null;
+  tags: string[];
+  sources: NewsItem[];
+  metadata: Record<string, unknown>;
+};
+
 const buildSourceContext = (items: NewsItem[]) => {
   return items.map((item, idx) => {
     const published = item.published_at ? new Date(item.published_at).toISOString().split("T")[0] : "unknown";
@@ -51,7 +70,7 @@ const groqAIRequest = async (apiKey: string, systemPrompt: string, userPrompt: s
   return JSON.parse(content);
 };
 
-const generateAndUploadImage = async (supabase: any, prompt: string): Promise<string | null> => {
+const generateAndUploadImage = async (supabase: SupabaseStorageClient, prompt: string): Promise<string | null> => {
   try {
     const enhancedPrompt = `${prompt}. High quality, cinematic digital art, futuristic technology, spatial computing, minimal corporate aesthetic`;
     const tempUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&nologo=true`;
@@ -63,7 +82,7 @@ const generateAndUploadImage = async (supabase: any, prompt: string): Promise<st
     const blob = await imgResponse.blob();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
     
-    const { data, error } = await supabase.storage.from("article_images").upload(fileName, blob, { contentType: "image/jpeg" });
+    const { error } = await supabase.storage.from("article_images").upload(fileName, blob, { contentType: "image/jpeg" });
     if (error) return null;
     
     const { data: publicData } = supabase.storage.from("article_images").getPublicUrl(fileName);
@@ -105,7 +124,7 @@ serve(async (req) => {
     if (newsItems.length === 0) throw new Error("No recent news items found");
 
     const sourceContext = buildSourceContext(newsItems);
-    const inserts: any[] = [];
+    const inserts: ContentInsert[] = [];
 
     const jsonInstructions = "Return the response as a JSON object matching the requested schema. Use plain text, no markdown bold/italic.";
 

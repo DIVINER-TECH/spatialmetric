@@ -18,7 +18,7 @@ const Newsletter = () => {
     if (!email || !email.includes('@')) return;
     setLoading(true);
     try {
-      const { error } = await supabase.from('newsletter_subscribers' as any).insert({ email });
+      const { error } = await supabase.from('newsletter_subscribers').insert({ email });
       if (error) {
         if (error.code === '23505') {
           toast.info('You\'re already subscribed!');

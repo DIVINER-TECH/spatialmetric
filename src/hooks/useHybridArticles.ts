@@ -2,6 +2,19 @@ import { useMemo, useState } from 'react';
 import { useContentItems, type ContentItem } from '@/hooks/useContentItems';
 import { articles, type Article } from '@/data/articles';
 
+type ArticleMetadata = {
+    subcategory?: string;
+    region?: string;
+    imageUrl?: string;
+    keyTakeaways?: string[];
+    metrics?: Article['metrics'];
+};
+
+const getArticleMetadata = (metadata: ContentItem['metadata']): ArticleMetadata => {
+    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return {};
+    return metadata as ArticleMetadata;
+};
+
 // Infer category from tags for AI-generated content
 const inferCategory = (item: ContentItem): Article['category'] => {
     const tags = item.tags ?? [];
@@ -14,15 +27,17 @@ const inferCategory = (item: ContentItem): Article['category'] => {
 };
 
 // Transform ContentItem from database to Article type
-const transformContentItem = (item: ContentItem): Article => ({
+const transformContentItem = (item: ContentItem): Article => {
+    const metadata = getArticleMetadata(item.metadata);
+    return {
     id: item.id,
     slug: item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     title: item.title,
     excerpt: item.excerpt || '',
     content: item.content || '',
     category: inferCategory(item),
-    subcategory: (item.metadata as any)?.subcategory || 'AI Generated',
-    region: (item.metadata as any)?.region,
+    subcategory: metadata.subcategory || 'AI Generated',
+    region: metadata.region,
     author: {
         name: 'SpatialMetrics AI',
         avatar: 'AI',
@@ -34,10 +49,11 @@ const transformContentItem = (item: ContentItem): Article => ({
     trending: false,
     featured: false,
     tags: item.tags || [],
-    imageUrl: (item.metadata as any)?.imageUrl || '/placeholder.svg',
-    keyTakeaways: (item.metadata as any)?.keyTakeaways || [],
-    metrics: (item.metadata as any)?.metrics,
-});
+    imageUrl: metadata.imageUrl || '/placeholder.svg',
+    keyTakeaways: metadata.keyTakeaways || [],
+    metrics: metadata.metrics,
+    };
+};
 
 export const useHybridArticles = (category?: Article['category'], initialLimit: number = 6) => {
     const [limit, setLimit] = useState(initialLimit);

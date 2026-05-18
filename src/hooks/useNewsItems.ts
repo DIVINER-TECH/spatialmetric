@@ -1,6 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+type NewsItemRow = {
+  id: string;
+  title: string;
+  url: string;
+  summary: string | null;
+  published_at: string | null;
+  news_sources: { name: string } | null;
+};
+
 export type NewsItem = {
   id: string;
   title: string;
@@ -21,7 +30,7 @@ export const useNewsItems = (limit = 30) => {
         .limit(limit);
 
       if (error) throw error;
-      return (data ?? []).map((item: any) => ({
+      return ((data ?? []) as NewsItemRow[]).map((item) => ({
         id: item.id,
         title: item.title,
         url: item.url,

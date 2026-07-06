@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { LiveIndicator } from '@/components/shared/LiveIndicator';
 import { AIInsightsFeed } from '@/components/ai/AIInsightsFeed';
+import { ContentCoverageBoard } from '@/components/ai/ContentCoverageBoard';
 import { useHybridArticles } from '@/hooks/useHybridArticles';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { useMarketSnapshot } from '@/hooks/useMarketSnapshot';
@@ -321,6 +322,7 @@ const MarketIntelligence = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   className="space-y-10"
                 >
+                  <ContentCoverageBoard />
                   <AIInsightsFeed />
 
                   <Card className="glass-premium border-black/5 overflow-hidden shadow-sm">

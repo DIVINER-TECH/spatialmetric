@@ -65,7 +65,7 @@ CREATE TRIGGER set_social_posts_updated_at
 CREATE OR REPLACE FUNCTION public.trigger_social_copy_generation()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.type = 'article' THEN
+    IF NEW.type = 'article' AND LOWER(COALESCE(NEW.metadata ->> 'auto_generate_social', 'false')) = 'true' THEN
         PERFORM
             net.http_post(
                 url := 'https://' || (SELECT value FROM secrets WHERE name = 'SUPABASE_PROJECT_REF') || '.supabase.co/functions/v1/generate-carousel-copy',

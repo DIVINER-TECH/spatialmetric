@@ -33,6 +33,44 @@ type ContentInsert = {
   metadata: Record<string, unknown>;
 };
 
+const HOURS_72 = 72;
+const HOURS_24 = 24;
+
+const getFreshnessHours = (items: NewsItem[]) => {
+  const dates = items
+    .map((item) => item.published_at ? new Date(item.published_at).getTime() : null)
+    .filter((value): value is number => value !== null && !Number.isNaN(value));
+
+  if (dates.length === 0) return null;
+
+  const newest = Math.max(...dates);
+  return (Date.now() - newest) / (1000 * 60 * 60);
+};
+
+const deriveCoverageNeeds = (items: NewsItem[]) => {
+  const haystack = items
+    .map((item) => `${item.title} ${item.summary ?? ""}`.toLowerCase())
+    .join(" ");
+
+  const needs = [
+    { key: "enterprise-adoption", label: "Enterprise adoption", terms: ["enterprise", "workflow", "training", "b2b", "productivity"] },
+    { key: "regional-trends", label: "Regional trends", terms: ["europe", "mena", "asean", "japan", "south korea", "india", "singapore"] },
+    { key: "startup-funding", label: "Startup funding", terms: ["series a", "series b", "seed", "funding", "raise", "venture"] },
+    { key: "hardware-platforms", label: "Hardware platforms", terms: ["headset", "display", "optics", "device", "vision pro", "quest", "xr"] },
+    { key: "regulation-policy", label: "Regulation and policy", terms: ["privacy", "regulatory", "policy", "gdpr", "compliance"] },
+  ];
+
+  return needs
+    .map((need) => ({
+      ...need,
+      score: need.terms.reduce((score, term) => score + (haystack.includes(term) ? 0 : 1), 0),
+    }))
+    .filter((need) => need.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ key, label }) => ({ key, label }));
+};
+
 const buildSourceContext = (items: NewsItem[]) => {
   return items.map((item, idx) => {
     const published = item.published_at ? new Date(item.published_at).toISOString().split("T")[0] : "unknown";
@@ -123,6 +161,13 @@ serve(async (req) => {
     })) as NewsItem[];
     if (newsItems.length === 0) throw new Error("No recent news items found");
 
+    const freshnessHours = getFreshnessHours(newsItems);
+    if (freshnessHours === null || freshnessHours > HOURS_72) {
+      throw new Error("News feed is stale and cannot generate current content");
+    }
+
+    const coverageNeeds = deriveCoverageNeeds(newsItems);
+
     const sourceContext = buildSourceContext(newsItems);
     const inserts: ContentInsert[] = [];
 
@@ -174,10 +219,80 @@ serve(async (req) => {
     ]);
 
     // Build the Inserts Array
-    inserts.push({ type: "market-brief", title: brief.headline ?? "Daily Market Brief", excerpt: brief.summary ?? null, content: brief.summary ?? null, tags: ["market-brief"], sources: newsItems, metadata: { ...brief, imageUrl: imgBrief } });
-    inserts.push({ type: "article", title: mi1.title, excerpt: mi1.excerpt, content: mi1.content, tags: [...(mi1.tags ?? []), "market-intelligence"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: mi1.keyTakeaways ?? [], subcategory: mi1.subcategory ?? "Market Analysis", imageUrl: imgMi1 } });
-    inserts.push({ type: "article", title: tech1.title, excerpt: tech1.excerpt, content: tech1.content, tags: [...(tech1.tags ?? []), "tech-explain"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: tech1.keyTakeaways ?? [], subcategory: tech1.subcategory ?? "Technology Deep Dive", imageUrl: imgTech1 } });
-    inserts.push({ type: "article", title: spatial.title, excerpt: spatial.excerpt, content: spatial.content, tags: [...(spatial.tags ?? []), "spatial-updates"], sources: newsItems, metadata: { cadence: mode, keyTakeaways: spatial.keyTakeaways ?? [], subcategory: spatial.subcategory ?? "Industry Update", imageUrl: imgSpatial } });
+    inserts.push({
+      type: "market-brief",
+      title: brief.headline ?? "Daily Market Brief",
+      excerpt: brief.summary ?? null,
+      content: brief.summary ?? null,
+      tags: ["market-brief"],
+      sources: newsItems,
+      metadata: {
+        ...brief,
+        imageUrl: imgBrief,
+        freshnessHours,
+        sourceCount: newsItems.length,
+        validated: true,
+        coverageNeeds,
+        generatedAt: new Date().toISOString(),
+      },
+    });
+    inserts.push({
+      type: "article",
+      title: mi1.title,
+      excerpt: mi1.excerpt,
+      content: mi1.content,
+      tags: [...(mi1.tags ?? []), "market-intelligence"],
+      sources: newsItems,
+      metadata: {
+        cadence: mode,
+        keyTakeaways: mi1.keyTakeaways ?? [],
+        subcategory: mi1.subcategory ?? "Market Analysis",
+        imageUrl: imgMi1,
+        freshnessHours,
+        sourceCount: newsItems.length,
+        validated: true,
+        coverageNeeds,
+        generatedAt: new Date().toISOString(),
+      },
+    });
+    inserts.push({
+      type: "article",
+      title: tech1.title,
+      excerpt: tech1.excerpt,
+      content: tech1.content,
+      tags: [...(tech1.tags ?? []), "tech-explain"],
+      sources: newsItems,
+      metadata: {
+        cadence: mode,
+        keyTakeaways: tech1.keyTakeaways ?? [],
+        subcategory: tech1.subcategory ?? "Technology Deep Dive",
+        imageUrl: imgTech1,
+        freshnessHours,
+        sourceCount: newsItems.length,
+        validated: true,
+        coverageNeeds,
+        generatedAt: new Date().toISOString(),
+      },
+    });
+    inserts.push({
+      type: "article",
+      title: spatial.title,
+      excerpt: spatial.excerpt,
+      content: spatial.content,
+      tags: [...(spatial.tags ?? []), "spatial-updates"],
+      sources: newsItems,
+      metadata: {
+        cadence: mode,
+        keyTakeaways: spatial.keyTakeaways ?? [],
+        subcategory: spatial.subcategory ?? "Industry Update",
+        imageUrl: imgSpatial,
+        freshnessHours,
+        sourceCount: newsItems.length,
+        validated: true,
+        coverageNeeds,
+        generatedAt: new Date().toISOString(),
+      },
+    });
 
     const { error: insertError } = await supabase.from("content_items").insert(inserts);
     if (insertError) throw insertError;

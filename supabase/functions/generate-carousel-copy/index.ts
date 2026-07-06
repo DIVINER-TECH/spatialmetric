@@ -53,10 +53,23 @@ serve(async (req) => {
       return new Response(JSON.stringify({ message: "Not an article, skipping" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    const metadata = record.metadata && typeof record.metadata === "object" && !Array.isArray(record.metadata)
+      ? record.metadata as Record<string, unknown>
+      : {};
+    const autoGenerateSocial = metadata.auto_generate_social === true || metadata.auto_generate_social === "true";
+
+    if (!autoGenerateSocial) {
+      return new Response(JSON.stringify({
+        success: true,
+        skipped: true,
+        message: "Auto social generation disabled for this article",
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     // 1. Generate Carousel Copy via Groq
     const carouselResult = await groqAIRequest(groqKey,
-      "You are a high-end social media strategist for a venture capital firm. Convert technical articles into viral slide carousels. Return exactly 5 slides. Format: { \"slides\": [ { \"id\": 1, \"headline\": \"string\", \"body\": \"max 15 words\", \"call_to_action\": \"string\" } ] }",
-      `Distill this article into 5 punchy slides:\n\nTITLE: ${record.title}\nCONTENT: ${record.content.substring(0, 3000)}`
+      "You are a high-end social media strategist for a venture capital firm. Convert technical articles into high-retention educational slide carousels. Return exactly 5 slides. Each slide must have a strong hook, a concrete takeaway, and a concise call to action. Format: { \"slides\": [ { \"id\": 1, \"headline\": \"string\", \"body\": \"max 16 words\", \"call_to_action\": \"string\" } ] }",
+      `Create a carousel that improves engagement while staying SEO-aligned with the article:\n\nTITLE: ${record.title}\nSUMMARY: ${record.excerpt || ''}\nCONTENT: ${record.content.substring(0, 3500)}\nTAGS: ${(record.tags || []).join(', ')}`
     );
 
     // 2. Clear previous attempts and Insert into social_posts

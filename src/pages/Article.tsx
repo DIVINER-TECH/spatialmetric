@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -9,7 +10,6 @@ import { ArrowLeft, Clock, Calendar, Share2, Bookmark, TrendingUp, MapPin, Bot }
 import { useArticle } from '@/hooks/useArticles';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import { format } from 'date-fns';
-import { calculateReadingTime } from '@/lib/readingTime';
 import ArticleRenderer from '@/components/articles/ArticleRenderer';
 
 
@@ -17,6 +17,46 @@ import ArticleRenderer from '@/components/articles/ArticleRenderer';
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const { article, relatedArticles } = useArticle(slug || '');
+
+  useEffect(() => {
+    if (!article) return;
+
+    const title = `${article.title} | SpatialMetrics`;
+    const description = article.seoDescription || article.excerpt;
+    const url = `${window.location.origin}/article/${article.slug}`;
+
+    document.title = title;
+
+    const ensureMeta = (attr: 'name' | 'property', key: string, value: string) => {
+      const selector = `meta[${attr}="${key}"]`;
+      let tag = document.head.querySelector(selector) as HTMLMetaElement | null;
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(attr, key);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', value);
+    };
+
+    const setLink = (selector: string, href: string) => {
+      let tag = document.head.querySelector(selector) as HTMLLinkElement | null;
+      if (!tag) {
+        tag = document.createElement('link');
+        tag.setAttribute('rel', 'canonical');
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('href', href);
+    };
+
+    ensureMeta('name', 'description', description);
+    ensureMeta('property', 'og:title', title);
+    ensureMeta('property', 'og:description', description);
+    ensureMeta('property', 'og:type', 'article');
+    ensureMeta('property', 'og:url', url);
+    ensureMeta('name', 'twitter:title', title);
+    ensureMeta('name', 'twitter:description', description);
+    setLink('link[rel="canonical"]', url);
+  }, [article]);
 
   if (!article) {
     return (
@@ -98,6 +138,19 @@ const Article = () => {
               </div>
             </div>
           </header>
+
+          {article.metrics && article.metrics.length > 0 && (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              {article.metrics.map((metric) => (
+                <Card key={metric.label} className="border-black/5 bg-secondary/30">
+                  <CardContent className="p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">{metric.label}</p>
+                    <p className="text-2xl font-bold font-mono tracking-tighter text-primary">{metric.value}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
           {/* Key Takeaways */}
           <Card className="mb-8 border-primary/30 bg-primary/5">

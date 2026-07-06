@@ -5,6 +5,7 @@ export interface Article {
   slug: string;
   title: string;
   excerpt: string;
+  seoDescription?: string;
   content: string;
   category: 'market-intelligence' | 'tech-explain' | 'events' | 'companies' | 'spatial-updates';
   subcategory: string;

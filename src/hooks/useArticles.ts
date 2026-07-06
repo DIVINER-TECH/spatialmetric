@@ -64,7 +64,8 @@ export const useArticle = (slug: string) => {
           },
           category: articleData.category as Article['category'],
           keyTakeaways: articleData.key_takeaways || [],
-          imageUrl: articleData.image_url || '/placeholder.svg'
+          imageUrl: articleData.image_url || '/placeholder.svg',
+          seoDescription: articleData.seo_description || articleData.excerpt || '',
         } as Article;
       }
 
@@ -100,6 +101,7 @@ export const useArticle = (slug: string) => {
         slug: (match.title as string).toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         title: match.title,
         excerpt: match.excerpt || '',
+        seoDescription: (meta.seoDescription as string) || match.excerpt || '',
         content: match.content || '',
         category,
         subcategory: (meta.subcategory as string) || 'AI Generated',

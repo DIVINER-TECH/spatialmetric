@@ -41,6 +41,11 @@ export interface TrackedCompany {
     breakthroughs?: Array<{ year: number; title: string; description: string }>;
 }
 
+export type ArticleSEO = {
+  seoDescription?: string;
+  relatedTopics?: string[];
+};
+
 export type CompanyType = 'all' | 'unicorn' | 'startup' | 'public';
 export type CompanyStage = string;
 export type CompanyRegion = 'all' | 'na' | 'eu' | 'asean' | 'pacific' | 'south-asia' | 'mena';

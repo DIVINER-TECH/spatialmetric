@@ -10,9 +10,12 @@ import { toast } from 'sonner';
 
 interface GeneratedArticle {
   title: string;
+  slug?: string;
   excerpt: string;
+  seoDescription?: string;
   content: string;
   keyTakeaways: string[];
+  hook?: string;
   tags: string[];
   metrics?: { label: string; value: string }[];
 }
@@ -115,6 +118,13 @@ export const ArticleGenerator = () => {
             </div>
           </div>
 
+          <div>
+            <label className="text-sm text-muted-foreground mb-2 block">SEO Angle</label>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              The generator should return an article headline, search-friendly summary, and strong opening hook so the piece can rank and hold attention.
+            </p>
+          </div>
+
           <Button
             onClick={generateArticle}
             disabled={isGenerating || !topic.trim()}
@@ -150,6 +160,20 @@ export const ArticleGenerator = () => {
 
             <h2 className="text-xl font-semibold mb-3">{generatedArticle.title}</h2>
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed">{generatedArticle.excerpt}</p>
+
+            {generatedArticle.seoDescription && (
+              <div className="mb-6 p-4 rounded-lg bg-muted/30 border border-border/50">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2">SEO Description</p>
+                <p className="text-sm leading-relaxed">{generatedArticle.seoDescription}</p>
+              </div>
+            )}
+
+            {generatedArticle.hook && (
+              <div className="mb-6 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-primary mb-2">Opening Hook</p>
+                <p className="text-sm leading-relaxed">{generatedArticle.hook}</p>
+              </div>
+            )}
 
             {generatedArticle.metrics && generatedArticle.metrics.length > 0 && (
               <div className="grid grid-cols-3 gap-3 mb-6">

@@ -34,7 +34,6 @@ type ContentInsert = {
 };
 
 const HOURS_72 = 72;
-const HOURS_24 = 24;
 
 const getFreshnessHours = (items: NewsItem[]) => {
   const dates = items
